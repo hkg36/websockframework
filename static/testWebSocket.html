@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body onload="start_connect()">
+<style type="text/css">
+    .info_style
+    {
+        border:1px solid #FF6699;
+    }
+</style>
+<script type="text/javascript" src="script/json2.js"></script>
+<script type="text/javascript" src="script/jquery-git2.min.js"></script>
+<script type="text/javascript">
+var ws;
+function start_connect(){
+    ws = new WebSocket("ws://"+location.hostname+":8000/ws");
+    ws.onopen = function() {
+     $("#state").html("connected");
+    };
+    ws.onmessage = function (evt) {
+       $("#host").append('<div class="info_style">'+evt.data+'</div>')
+    }
+    ws.onclose=function(){
+        $("#state").html("connect losted")
+        setTimeout("start_connect()",1000)
+    }
+}
+function  randomChar(l)  {
+  var  x="0123456789qwertyuioplkjhgfdsazxcvbnm";
+  var  tmp="";
+  for(var  i=0;i<  l;i++)  {
+  tmp  +=  x.charAt(Math.ceil(Math.random()*100000000)%x.length);
+  }
+  return  tmp;
+}
+function sendWord()
+{
+    ws.send(JSON.stringify({
+        function:$("#function").val(),
+        params:{
+            data:$("#postmsg").val()
+        },
+        client_code:randomChar(10)
+    }))
+}
+</script>
+<div id="state"></div><br />
+<input type="text" id="function" value="subtest.test"><br />
+<input type="text" id="postmsg"><input type="button" onclick="javascript:sendWord()" value="click">
+<div id="host">
+</div>
+</body>
+</html>
