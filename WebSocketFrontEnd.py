@@ -32,6 +32,9 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
         self.last_act_time=time.time()
     def on_close(self):
         connection_list.pop(self.connid,'')
+        msg=Message(body='{"function":"connection_lost","params":{}}',delivery_mode=2)
+        msg.headers={"connid":self.connid,'cip':self.cip}
+        mqserver.publish(msg)
     def on_pong(self,data):
         self.last_act_time=time.time()
 

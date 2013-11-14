@@ -18,7 +18,7 @@ class BackWork(QueueWorker2.QueueWorker):
         function=request.get("function",None)
         if function:
             function_params=request.get("params",None)
-            if function_params and isinstance(function_params,dict):
+            if function_params is not None and isinstance(function_params,dict):
                 try:
                     mfunc=importlib.import_module('processor.'+function)
                 except Exception,e:
