@@ -1,5 +1,5 @@
-__author__ = 'amen'
+from WebSiteBasePage import AutoPage
 
-class HelloWorld(object):
+class HelloWorld(AutoPage):
     def GET(self):
         return "hello word day 2"
