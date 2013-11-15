@@ -1,5 +1,5 @@
-from WebSiteBasePage import AutoPage
+import WebSiteBasePage
 
-class HelloWorld(AutoPage):
+class HelloWorld(WebSiteBasePage.AutoPage):
     def GET(self):
         return "hello word day 2"

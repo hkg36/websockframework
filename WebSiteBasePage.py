@@ -14,7 +14,7 @@ def LoadPageList(module_root='webpages'):
         for f in files:
             if f.endswith('.pyc') or f=='__init__.py':
                 continue
-            mod=importlib.import_module('.'+f[:-3],root_path)
+            mod=importlib.import_module(root_path+'.'+f[:-3])
             for name in mod.__dict__:
                 tp=mod.__dict__[name]
                 try:
