@@ -11,7 +11,6 @@ def LoadPageList(module_root='webpages'):
     list_dirs = os.walk(module_root)
     for root, dirs, files in list_dirs:
         root_path=root.replace('/','.')
-        root_path=root_path
         for f in files:
             if f.endswith('.pyc') or f=='__init__.py':
                 continue

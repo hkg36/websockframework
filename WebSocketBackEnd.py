@@ -4,11 +4,34 @@ import importlib
 import traceback
 import getopt
 import sys
+import os
+import BackEndEnvData
 try:
     import ujson as json
 except Exception,e:
     import json
 
+def LoadProcFunctionList(module_root='processor'):
+    pathlist={}
+    list_dirs = os.walk(module_root)
+    for root, dirs, files in list_dirs:
+        root_path=root.replace('/','.')
+        for f in files:
+            if f.endswith('.pyc') or f=='__init__.py':
+                continue
+            mod=importlib.import_module('.'+f[:-3],root_path)
+            try:
+                runfunc=mod.run
+                path=root[len(module_root)+1:]
+                if path:
+                    path='%s.%s'%(path,f[:-3])
+                else:
+                    path=f[:-3]
+                pathlist[path]=runfunc
+            except Exception,e:
+                pass
+    return pathlist
+function_list=None
 class BackWork(QueueWorker2.QueueWorker):
     def RequestWork(self,params,body,reply_queue):
         try:
@@ -19,14 +42,14 @@ class BackWork(QueueWorker2.QueueWorker):
         if function:
             function_params=request.get("params",None)
             if function_params is not None and isinstance(function_params,dict):
-                try:
-                    mfunc=importlib.import_module('processor.'+function)
-                except Exception,e:
+                mfunc=function_list.get(function)
+                if mfunc is None:
                     return params,'no function'
                 try:
-                    mfunc.reply_info={'queueid':reply_queue,'connid':params.get('connid'),'clientip':params.get('cip')}
-                    result=mfunc.run(**function_params)
-                    del mfunc.reply_info
+                    BackEndEnvData.reply_queue=reply_queue
+                    BackEndEnvData.connection_id=params.get('connid')
+                    BackEndEnvData.client_ip=params.get('cip')
+                    result=mfunc(**function_params)
                     if 'client_code' in request and isinstance(result,dict):
                         result['client_code']=request['client_code']
                     if isinstance(result,dict) or isinstance(result,list):
@@ -37,6 +60,8 @@ class BackWork(QueueWorker2.QueueWorker):
                     return params,traceback.format_exc()
         return params,"command format error,check again"
 if __name__ == '__main__':
+    function_list=LoadProcFunctionList()
+    print function_list
     Queue_User="guest"
     Queue_PassWord="guest"
     Queue_Server='127.0.0.1'
