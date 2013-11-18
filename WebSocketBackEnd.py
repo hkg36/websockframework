@@ -61,7 +61,6 @@ class BackWork(QueueWorker2.QueueWorker):
         return params,"command format error,check again"
 if __name__ == '__main__':
     function_list=LoadProcFunctionList()
-    print function_list
     Queue_User="guest"
     Queue_PassWord="guest"
     Queue_Server='127.0.0.1'
