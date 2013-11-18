@@ -6,8 +6,8 @@
 </head>
 <body>
 <form method="post">
-    <input type="text" name="id" list="ids">
-    <textarea cols="50" rows="20" name="content"></textarea>
+    目标屏幕id<input type="text" name="id" list="ids"><br />
+    html代码(必须能直接插入div标签下)<textarea cols="50" rows="20" name="content"></textarea><br />
     <datalist id="ids" >
     {% for id in idlist %}
     <option> {{ id }}

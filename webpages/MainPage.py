@@ -3,14 +3,14 @@ import web
 import dbconfig
 from datamodel.connection_info import ConnectionInfo
 import QueuePush
+import website_queueconfig
 
-Queue_User="guest"
-Queue_PassWord="guest"
-Queue_Server='127.0.0.1'
-Queue_Port=None
-Queue_Path='/websocketserver'
-
-pusher=QueuePush.QueuePush(Queue_Server,Queue_Port,Queue_User,Queue_PassWord,Queue_Path)
+pusher=QueuePush.QueuePush(
+    website_queueconfig.Queue_Server,
+    website_queueconfig.Queue_Port,
+    website_queueconfig.Queue_User,
+    website_queueconfig.Queue_PassWord,
+    website_queueconfig.Queue_Path)
 
 class MainPage(WebSiteBasePage.AutoPage):
     def GET(self):
