@@ -1,3 +1,4 @@
+#coding:utf-8
 import WebSiteBasePage
 import web
 import dbconfig
@@ -19,13 +20,19 @@ class MainPage(WebSiteBasePage.AutoPage):
         post_params=web.input()
         post_data=post_params['content']
         session=dbconfig.Session()
-        conn_info=session.query(ConnectionInfo).filter(ConnectionInfo.client_id==post_params['id']).first()
-        pusher.Push(conn_info.queue_id,conn_info.connection_id,post_data)
-        return self.buildpage()
-    def buildpage(self):
+        try:
+            conn_info=session.query(ConnectionInfo).filter(ConnectionInfo.client_id==post_params['id']).first()
+            if conn_info:
+                pusher.Push(conn_info.queue_id,conn_info.connection_id,post_data)
+                return self.buildpage()
+            else:
+                return self.buildpage(u'屏幕id不存在')
+        except Exception,e:
+            return self.buildpage(str(e))
+    def buildpage(self,extinfo=''):
         session=dbconfig.Session()
         idlist=[]
         for conninfo in session.query(ConnectionInfo).all():
             idlist.append(conninfo.client_id)
         tpl=WebSiteBasePage.jinja2_env.get_template('Main.html')
-        return tpl.render(idlist=idlist)
+        return tpl.render(extinfo=extinfo,idlist=idlist)

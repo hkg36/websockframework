@@ -5,6 +5,9 @@
     <title>hello world</title>
 </head>
 <body>
+<div style="color: red">
+    {{ extinfo }}
+</div>
 <form method="post">
     目标屏幕id<input type="text" name="id" list="ids"><br />
     html代码(必须能直接插入div标签下)<textarea cols="50" rows="20" name="content"></textarea><br />
@@ -12,7 +15,6 @@
     {% for id in idlist %}
     <option> {{ id }}
     {% endfor %}
-
     </datalist>
     <input type="submit" value="提交">
 </form>

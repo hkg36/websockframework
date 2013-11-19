@@ -5,13 +5,24 @@
 </head>
 <body onload="start_connect()">
 <script type="text/javascript" src="script/json2.js"></script>
-<script type="text/javascript" src="script/jquery-git2.min.js"></script>
+<script type="text/javascript" src="script/jquery-2.0.3.min.js"></script>
 <script type="text/javascript">
 var ws;
 function start_connect(){
     ws = new WebSocket("ws://"+location.hostname+":8000/ws");
     ws.onopen = function() {
      $("#state").html("connected");
+        if(screen_id)
+        {
+            var poststr=JSON.stringify({
+                function:"regist",
+                params:{
+                    id:screen_id
+                },
+                client_code:randomChar(10)
+            })
+            ws.send(poststr)
+        }
     };
     ws.onmessage = function (evt) {
        $("#frame_content").html(evt.data)
@@ -39,12 +50,14 @@ function sendWord()
         client_code:randomChar(10)
     }))
 }
+var screen_id=0
     function regist()
     {
+        screen_id=$("#client_id").val()
         var poststr=JSON.stringify({
             function:"regist",
             params:{
-                id:$("#client_id").val()
+                id:screen_id
             },
             client_code:randomChar(10)
         })
