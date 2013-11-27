@@ -20,7 +20,7 @@ class QueuePush(object):
             self.producer=Producer(self.channel)
         self.producer.publish(body=body,delivery_mode=2,headers={'connid':connectid},
                                       routing_key=queueid,
-                                      compression='gzip')
+                                      compression='gzip',retry=True)
 if __name__ == '__main__':
     Queue_User="guest"
     Queue_PassWord="guest"
