@@ -8,9 +8,10 @@
 <div style="color: red">
     {{ extinfo }}
 </div>
+<script type="text/javascript" src="static/script/jquery-2.0.3.min.js"></script>
 <form method="post">
     目标屏幕id<input type="text" name="id" list="ids"><br />
-    html代码(必须能直接插入div标签下)<textarea cols="50" rows="20" name="content"></textarea><br />
+    html代码(必须能直接插入div标签下)<textarea cols="50" rows="20" name="content" id="content"></textarea><br />
     <datalist id="ids" >
     {% for id in idlist %}
     <option> {{ id }}
@@ -18,5 +19,11 @@
     </datalist>
     <input type="submit" value="提交">
 </form>
+<script type="text/javascript">
+    $("#content").val('刷新二维码测试,修改div的data内容就能修改二维码了<div id="qr" data="http://www.baidu.com">' +
+            '</div><script type="text/javascript">var qr = qrcode(4,"M");' +
+            'var data=$("#qr").attr("data");qr.addData(data);qr.make();' +
+            'var imgtag=qr.createImgTag(10);$("#qr").html(imgtag);'+"</sc"+"ript>")
+</script>
 </body>
 </html>

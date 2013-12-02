@@ -20,12 +20,18 @@ connection_list={}
 class RabbitMQServer(tornado.websocket.WebSocketHandler):
     last_act_time=0
     def open(self):
+        self.usezlib=int(self.get_argument('usezlib',0))
         self.connid=str(uuid.uuid4())
         print self.connid+' connected'
         connection_list[self.connid]=self
         self.last_act_time=time.time()
         self.cip=self.request.remote_ip
     def on_message(self, message):
+        try:
+            if self.usezlib:
+                message=zlib.decompress(message)
+        except Exception,e:
+            pass
         msg=Message(body=message,delivery_mode=2,reply_to=mqserver.back_queue)
         msg.headers={"connid":self.connid,'cip':self.cip}
         mqserver.publish(msg)
@@ -77,8 +83,11 @@ class RabbitMQ_Queue(object):
             conn=connection_list.get(connid,None)
             if conn:
                 retbody=msg.body
-                if msg.headers.get('compression')=='application/x-gzip':
+                compressed=msg.headers.get('compression')=='application/x-gzip'
+                if compressed and not conn.usezlib:
                     retbody=zlib.decompress(retbody)
+                elif not compressed and conn.usezlib:
+                    retbody=zlib.compress(retbody)
                 conn.write_message(retbody)
                 conn.last_act_time=time.time()
     def on_queue_disconnect(self):
