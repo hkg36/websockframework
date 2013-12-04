@@ -6,10 +6,8 @@ import getopt
 import sys
 import os
 import BackEndEnvData
-try:
-    import ujson as json
-except Exception,e:
-    import json
+import ujson as json
+import importlib
 
 def LoadProcFunctionList(module_root='processor'):
     pathlist={}
@@ -52,8 +50,8 @@ class BackWork(QueueWorker2.QueueWorker):
                     result=mfunc(**function_params)
                     if 'client_code' in request and isinstance(result,dict):
                         result['client_code']=request['client_code']
-                    if isinstance(result,dict) or isinstance(result,list):
-                        return params,json.dumps(result)
+                    if isinstance(result,(dict,list)):
+                        return params,json.dumps(result,ensure_ascii=False)
                     elif isinstance(result,basestring):
                         return params,result
                 except BaseException,e:
@@ -61,23 +59,18 @@ class BackWork(QueueWorker2.QueueWorker):
         return params,"command format error,check again"
 if __name__ == '__main__':
     function_list=LoadProcFunctionList()
-    Queue_User="guest"
-    Queue_PassWord="guest"
-    Queue_Server='127.0.0.1'
-    Queue_Port=5672
-    Queue_Path='/websocketserver'
-    opts, args=getopt.getopt(sys.argv[1:],'h:p:u:w:a:',
-                             ['queuehost=','queueport=','queueusr=','queuepsw=','queuepath='])
+
+    config_model='configs.frontend'
+    opts, args=getopt.getopt(sys.argv[1:],'c:',
+                             ['config='])
     for k,v in opts:
-        if k in ('-h','--queuehost'):
-            Queue_Server=v
-        elif k in ('-p','--queueport'):
-            Queue_Port=int(v)
-        elif k in ('-u','--queueusr'):
-            Queue_User=v
-        elif k in ('-w','--queuepsw'):
-            Queue_PassWord=v
-        elif k in ('-a','--queuepath'):
-            Queue_Path=v
-    worker=BackWork(Queue_Server,Queue_Port,Queue_Path,Queue_User,Queue_PassWord,'task')
+        if k in ('-c','--config'):
+            config_model=v
+    try:
+        configs=importlib.import_module(config_model)
+    except Exception,e:
+        print str(e)
+        exit(0)
+    worker=BackWork(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
+                    configs.Queue_User,configs.Queue_PassWord,'task')
     worker.run()

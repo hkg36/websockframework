@@ -15,6 +15,7 @@ from stormed.frame import status
 import uuid
 import zlib
 import getopt
+import importlib
 
 connection_list={}
 class RabbitMQServer(tornado.websocket.WebSocketHandler):
@@ -118,33 +119,21 @@ def main():
                                               ], **settings)
     http_server = tornado.httpserver.HTTPServer(application,xheaders=True)
 
-    bind_addr='0.0.0.0'
-    bind_port=8000
-    Queue_User="guest"
-    Queue_PassWord="guest"
-    Queue_Server='127.0.0.1'
-    Queue_Port=5672
-    Queue_Path='/websocketserver'
+    config_model='configs.frontend'
     global mqserver
-    opts, args=getopt.getopt(sys.argv[1:],'H:P:h:p:u:w:a:',
-                             ['host=','port=','queuehost=','queueport=','queueusr=','queuepsw=','queuepath='])
+    opts, args=getopt.getopt(sys.argv[1:],'c:',
+                             ['config='])
     for k,v in opts:
-        if k in ('-H','--host'):
-            bind_addr=v
-        elif k in ('-P','--port'):
-            bind_port=int(v)
-        elif k in ('-h','--queuehost'):
-            Queue_Server=v
-        elif k in ('-p','--queueport'):
-            Queue_Port=int(v)
-        elif k in ('-u','--queueusr'):
-            Queue_User=v
-        elif k in ('-w','--queuepsw'):
-            Queue_PassWord=v
-        elif k in ('-a','--queuepath'):
-            Queue_Path=v
-    mqserver=RabbitMQ_Queue(Queue_Server,Queue_User,Queue_PassWord,Queue_Path,Queue_Port)
-    http_server.listen(bind_port,bind_addr)
+        if k in ('-c','--config'):
+            config_model=v
+    try:
+        configs=importlib.import_module(config_model)
+    except Exception,e:
+        print str(e)
+        exit(0)
+    mqserver=RabbitMQ_Queue(configs.Queue_Server,configs.Queue_User,
+                            configs.Queue_PassWord,configs.Queue_Path,configs.Queue_Port)
+    http_server.listen(configs.bind_port,configs.bind_addr)
     tornado.ioloop.IOLoop.instance().add_timeout(time.time()+CHECK_TIMEOUT,RunPingFuncion)
     tornado.ioloop.IOLoop.instance().start()
 
