@@ -21,6 +21,13 @@ class QueuePush(object):
         self.producer.publish(body=body,delivery_mode=2,headers={'connid':connectid},
                                       routing_key=queueid,
                                       compression='gzip',retry=True)
+    def Close(self,queueid,connectid):
+        if self.connection is None or self.connection.connected==False:
+            self.connection = Connection(hostname=self.server,port=self.port,userid=self.usr,password=self.psw,virtual_host=self.path)
+            self.channel = self.connection.channel()
+            self.producer=Producer(self.channel)
+        self.producer.publish(body='close',delivery_mode=2,headers={'connid':connectid,'close_connect':'1'},
+                              routing_key=queueid,retry=True)
 if __name__ == '__main__':
     Queue_User="guest"
     Queue_PassWord="guest"
@@ -45,4 +52,7 @@ if __name__ == '__main__':
         if not vin:
             print 'nothing to send'
             continue
-        pusher.Push(queueid,connid,vin)
+        if vin=='close':
+            pusher.Close(queueid,connid)
+        else:
+            pusher.Push(queueid,connid,vin)

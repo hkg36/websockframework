@@ -22,7 +22,7 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
     last_act_time=0
     def open(self):
         self.usezlib=int(self.get_argument('usezlib',0))
-        self.connid=str(uuid.uuid4())
+        self.connid=uuid.uuid4().get_hex()
         print self.connid+' connected'
         connection_list[self.connid]=self
         self.last_act_time=time.time()
@@ -58,7 +58,7 @@ class RabbitMQ_Queue(object):
         self.Queue_PassWord=Queue_PassWord
         self.Queue_Path=Queue_Path
         self.Queue_Port=Queue_Port
-        self.back_queue=str(uuid.uuid4())
+        self.back_queue=uuid.uuid4().get_hex()
         self._start_new_connect()
     def on_connect(self):
         if self.conn.status!=status.OPENED:
@@ -83,13 +83,17 @@ class RabbitMQ_Queue(object):
         if connid:
             conn=connection_list.get(connid,None)
             if conn:
+                if int(msg.headers.get("close_connect",0)):
+                    connection_list.pop(conn.connid,'')
+                    conn.close()
+                    return
                 retbody=msg.body
                 compressed=msg.headers.get('compression')=='application/x-gzip'
                 if compressed and not conn.usezlib:
                     retbody=zlib.decompress(retbody)
                 elif not compressed and conn.usezlib:
                     retbody=zlib.compress(retbody)
-                conn.write_message(retbody)
+                conn.write_message(retbody,binary=conn.usezlib)
                 conn.last_act_time=time.time()
     def on_queue_disconnect(self):
         time.sleep(5)
