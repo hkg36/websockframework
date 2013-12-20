@@ -6,7 +6,7 @@ class Post(dbconfig.DBBase):
     postid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
     uid=Column(BigInteger,nullable=False)
     group_id=Column(BigInteger,default=0)
-    text=Column(String(4096))
+    content=Column(String(4096))
     picture=Column(String(1024))
     video=Column(String(1024))
     voice=Column(String(1024))
