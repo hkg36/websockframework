@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>手机测试</title>
+</head>
+<body>
+<script type="text/javascript" src="../static/script/json2.js"></script>
+<script type="text/javascript" src="../static/script/jquery-2.0.3.min.js"></script>
+<form method="get">
+    phone <input type="text" name="phone" id="phone"><input type="button" value="取得code" onclick="getcode()"><br />
+    code <input type="text" name="code" id="code"><br />
+    <input type="submit" >
+</form>
+<script type="text/javascript">
+    function getcode()
+    {
+        $.ajax({
+                 url:"/getcode?phone="+$('#phone').val(),
+                success:function (data, textStatus){
+                    var resdata=JSON.parse(data)
+                    var code=resdata['code']
+                    alert(code)
+                    $('#code').val(code)
+                }
+                })
+    }
+</script>
+</body>
+</html>
