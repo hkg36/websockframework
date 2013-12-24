@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>手机客户端websocket</title>
+</head>
+<body>
+<style>
+    .infopane
+    {
+        float:left;
+        width: 50%;
+    }
+    .info_style
+    {
+        border:1px solid #FF6699;
+        word-break: break-all;
+    }
+</style>
+<div style="width: 100%">
+<div class="infopane">
+    <div id="state"></div>
+sessionid<input type="text" id="sessionid"><input type="button" value="开始" onclick="clickstart()"><br/>
+    <textarea style="width: 400px;height: 100px" id="command">{
+	"func":"function_name",
+	"parm":{
+        "parm1":value,
+	}
+}</textarea><br />
+    <input type="button" value="提交命令" onclick="sendWord()"><input type="button" value="clear log" onclick="clearlog()"><br />
+    <div id="host" style="width: 100%">
+
+    </div>
+</div>
+<div class="infopane">
+
+</div>
+</div>
+
+<script type="text/javascript" src="script/json2.js"></script>
+<script type="text/javascript" src="script/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+var ws;
+function start_connect(){
+    ws = new WebSocket("ws://"+location.hostname+":8000/ws");
+    ws.onopen = function() {
+     $("#state").html("connected");
+    };
+    ws.onmessage = function (evt) {
+       $("#host").append('<div class="info_style">'+evt.data.replace('\n','<br />')+'</div>')
+    }
+    ws.onclose=function(){
+        $("#state").html("connect losted")
+        setTimeout("start_connect()",1000)
+    }
+}
+function  randomChar(l)  {
+  var  x="0123456789qwertyuioplkjhgfdsazxcvbnm";
+  var  tmp="";
+  for(var  i=0;i<  l;i++)  {
+  tmp  +=  x.charAt(Math.ceil(Math.random()*100000000)%x.length);
+  }
+  return  tmp;
+}
+function sendWord()
+{
+    var data=JSON.parse($('#command').val())
+    var cdata=randomChar(10)
+    data['cdata']=cdata
+
+    var string_data=JSON.stringify(data)
+    ws.send(string_data)
+}
+    start_connect()
+    function clickstart()
+    {
+        ws.send(JSON.stringify(
+                {
+                    func:"session.start",
+                    parm:{
+                        sessionid:$("#sessionid").val()
+                    },
+                    cdata:randomChar(10)
+                }
+        ))
+    }
+    function clearlog()
+    {
+        $("#host").empty()
+    }
+</script>
+
+</body>
+</html>

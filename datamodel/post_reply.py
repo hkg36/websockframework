@@ -6,5 +6,6 @@ class PostReply(dbconfig.DBBase):
     replyid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
     postid=Column(BigInteger,nullable=False)
     uid=Column(BigInteger,nullable=False)
-    text=Column(String(4096))
+    content=Column(String(4096))
     like=Column(Integer,default=0)
+    time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))

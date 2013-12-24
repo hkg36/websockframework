@@ -21,7 +21,7 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                 return anyjson.dumps({'error':'time out'})
             if vcode==code:
                 Session=dbconfig.Session()
-                user_info=Session.query(datamodel.user.User).filter(datamodel.user.User.phone).first()
+                user_info=Session.query(datamodel.user.User).filter(datamodel.user.User.phone==phone).first()
                 if user_info is None:
                     user_info=datamodel.user.User()
                     user_info.phone=phone

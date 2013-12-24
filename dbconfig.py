@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import redis
 import memcache
 
-db=create_engine("mysql://root:@localhost/site")
+db=create_engine("mysql://root:@localhost/site?charset=utf8")
 DBBase=declarative_base(name="DBBase")
 Session = sessionmaker(bind=db)
 

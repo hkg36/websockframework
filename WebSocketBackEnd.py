@@ -36,9 +36,9 @@ class BackWork(QueueWorker2.QueueWorker):
             request=json.loads(body)
         except Exception,e:
             return params,'body error:%s'%str(e)
-        function=request.get("function",None)
+        function=request.get("func",None)
         if function:
-            function_params=request.get("params",None)
+            function_params=request.get("parm",None)
             if function_params is not None and isinstance(function_params,dict):
                 mfunc=function_list.get(function)
                 if mfunc is None:
@@ -48,15 +48,15 @@ class BackWork(QueueWorker2.QueueWorker):
                     BackEndEnvData.connection_id=params.get('connid')
                     BackEndEnvData.client_ip=params.get('cip')
                     result=mfunc(**function_params)
-                    if 'client_code' in request and isinstance(result,dict):
-                        result['client_code']=request['client_code']
+                    if 'cdata' in request and isinstance(result,dict):
+                        result['cdata']=request['cdata']
                     if isinstance(result,(dict,list)):
                         return params,json.dumps(result,ensure_ascii=False)
                     elif isinstance(result,basestring):
                         return params,result
                 except BaseException,e:
                     return params,traceback.format_exc()
-        return params,"command format error,check again"
+        return params,"error"
 if __name__ == '__main__':
     function_list=LoadProcFunctionList()
 

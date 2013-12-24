@@ -38,6 +38,7 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
         mqserver.publish(msg)
         self.last_act_time=time.time()
     def on_close(self):
+        print "%s closed"%self.connid
         connection_list.pop(self.connid,'')
         msg=Message(body='{"function":"connection_lost","params":{}}',delivery_mode=2)
         msg.headers={"connid":self.connid,'cip':self.cip}
@@ -52,13 +53,13 @@ class RabbitMQ_Queue(object):
         self.conn.on_disconnect=self.on_queue_disconnect
         self.conn.on_error=self.on_queue_error
         self.conn.connect(self.on_connect)
-    def __init__(self,Queue_Server,Queue_User,Queue_PassWord,Queue_Path,Queue_Port=None):
+    def __init__(self,Queue_Server,Queue_User,Queue_PassWord,Queue_Path,BackQueueName,Queue_Port=None):
         self.Queue_Server=Queue_Server
         self.Queue_User=Queue_User
         self.Queue_PassWord=Queue_PassWord
         self.Queue_Path=Queue_Path
         self.Queue_Port=Queue_Port
-        self.back_queue=uuid.uuid4().get_hex()
+        self.back_queue="WSBack-"+BackQueueName
         self._start_new_connect()
     def on_connect(self):
         if self.conn.status!=status.OPENED:
@@ -86,6 +87,7 @@ class RabbitMQ_Queue(object):
                 if int(msg.headers.get("close_connect",0)):
                     connection_list.pop(conn.connid,'')
                     conn.close()
+                    conn.on_close()
                     return
                 retbody=msg.body
                 compressed=msg.headers.get('compression')=='application/x-gzip'
@@ -136,7 +138,7 @@ def main():
         print str(e)
         exit(0)
     mqserver=RabbitMQ_Queue(configs.Queue_Server,configs.Queue_User,
-                            configs.Queue_PassWord,configs.Queue_Path,configs.Queue_Port)
+                            configs.Queue_PassWord,configs.Queue_Path,configs.front_name,configs.Queue_Port)
     http_server.listen(configs.bind_port,configs.bind_addr)
     tornado.ioloop.IOLoop.instance().add_timeout(time.time()+CHECK_TIMEOUT,RunPingFuncion)
     tornado.ioloop.IOLoop.instance().start()
