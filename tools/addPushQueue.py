@@ -5,7 +5,7 @@ import anyjson
 from datamodel.tools.json_encode import new_alchemy_encoder
 def AddPostPublish(newpost):
     try:
-        json_post=json.dumps(newpost, cls=new_alchemy_encoder(), check_circular=False)
+        json_post=json.dumps(newpost.toJson())
     except Exception,e:
         print e
         return

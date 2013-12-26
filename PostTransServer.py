@@ -13,7 +13,7 @@ import zlib
 class PostTransServer(QueueWorker2.QueueWorker):
     def RequestWork(self,params,body,reply_queue):
         post=anyjson.loads(body)
-        gid=post['group_id']
+        gid=post['gid']
         uid=post['uid']
         uids=set()
         session=dbconfig.Session()

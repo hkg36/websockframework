@@ -1,0 +1,10 @@
+<menu>
+    <session>
+        <start>{"func":"session.start","param":{"sessionid":""}}</start>
+    </session>
+    <user>
+        <add_friend>{"func":"user.add_friend","param":{"uid":0}}</add_friend>
+        <updata>{"func":"user.updata","param":{"nick":"昵称","sex":0,"birthday":"1984-1-1","marriage":0,"height":0}}</updata>
+        <info>{"func":"user.info","param":{"uids":[1,2]}}</info>
+    </user>
+</menu>

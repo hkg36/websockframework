@@ -59,7 +59,16 @@ function start_connect(){
      $("#state").html("connected");
     };
     ws.onmessage = function (evt) {
-        var jdata=JSON.parse(evt.data)
+        var jdata
+        try{
+            jdata=JSON.parse(evt.data)
+        }
+        catch (err)
+        {
+            alert(evt.data)
+            return
+        }
+
         if(jdata['push']==true)
             $("#push_pane").append('<div class="push_style">'+evt.data+'</div>')
         else
