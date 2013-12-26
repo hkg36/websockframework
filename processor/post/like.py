@@ -7,7 +7,6 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import anyjson
 @CheckSession
 def run(postid):
     session=dbconfig.Session()
@@ -19,4 +18,5 @@ def run(postid):
         session.merge(likerecord)
         session.query(Post).filter(Post.postid==postid).update({Post.like:Post.like+1})
         session.commit()
+    session.close()
     return Res()

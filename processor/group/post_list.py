@@ -41,4 +41,5 @@ def run(gid,pos=0,count=50):
         ilike_record=session.query(PostLike).filter(and_(PostLike.postid==post.postid,PostLike.uid==BackEndEnvData.uid)).first()
         pdata['ilike']=True if ilike_record is not None else False
         plist.append(pdata)
+    session.close()
     return Res({'posts':plist})

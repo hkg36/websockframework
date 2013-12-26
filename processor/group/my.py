@@ -5,7 +5,6 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import anyjson
 @CheckSession
 def run():
     session=dbconfig.Session()
@@ -13,4 +12,5 @@ def run():
     glist=[]
     for gm in gms:
         glist.append({'gid':gm.gid,'type':gm.type,'time':gm.time})
+    session.close()
     return Res({'groups':glist})

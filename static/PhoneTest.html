@@ -16,6 +16,11 @@
         border:1px solid #FF6699;
         word-break: break-all;
     }
+    .push_style
+    {
+        border:1px solid #336633;
+        word-break: break-all;
+    }
 </style>
 <div style="width: 100%">
 <div class="infopane">
@@ -33,7 +38,14 @@ sessionid<input type="text" id="sessionid"><input type="button" value="开始" o
     </div>
 </div>
 <div class="infopane">
-
+ <input type="button" value="clear push log" onclick="clearpushlog()">
+    <script type="text/javascript">
+        function clearpushlog()
+        {
+            $('#push_pane').empty()
+        }
+    </script>
+  <div id="push_pane" style="width: 100%"/>
 </div>
 </div>
 
@@ -47,7 +59,11 @@ function start_connect(){
      $("#state").html("connected");
     };
     ws.onmessage = function (evt) {
-       $("#host").append('<div class="info_style">'+evt.data.replace('\n','<br />')+'</div>')
+        var jdata=JSON.parse(evt.data)
+        if(jdata['push']==true)
+            $("#push_pane").append('<div class="push_style">'+evt.data+'</div>')
+        else
+            $("#host").append('<div class="info_style">'+evt.data+'</div>')
     }
     ws.onclose=function(){
         $("#state").html("connect losted")
@@ -64,7 +80,15 @@ function  randomChar(l)  {
 }
 function sendWord()
 {
-    var data=JSON.parse($('#command').val())
+    var data
+    try{
+    data=JSON.parse($('#command').val())
+    }
+    catch (err)
+    {
+        alert(err.description)
+        return
+    }
     var cdata=randomChar(10)
     data['cdata']=cdata
 

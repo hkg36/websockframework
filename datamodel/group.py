@@ -17,3 +17,8 @@ class Group(dbconfig.DBBase):
                 "board":self.group_board,
                 "type":self.type,
                 "time":self.time}
+
+class GroupWatchUpdate(dbconfig.DBBase):
+    __tablename__ = 'group_watch'
+    uid=Column(BigInteger,primary_key=True,nullable=False,autoincrement=False)
+    gid=Column(BigInteger,nullable=False,index=True)

@@ -17,4 +17,5 @@ def run(gid,frompos):
         pdata=PostToJson(post)
         pdata['ilike']=False
         plist.append(pdata)
+    session.close()
     return Res({'posts':plist})

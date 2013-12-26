@@ -4,3 +4,5 @@ client_ip=None
 
 
 uid=None
+
+queue_producer=None

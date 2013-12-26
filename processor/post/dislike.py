@@ -16,4 +16,5 @@ def run(postid):
         session.delete(likerecord)
         session.query(Post).filter(Post.postid==postid).update({Post.like:Post.like-1})
         session.commit()
+    session.close()
     return Res()

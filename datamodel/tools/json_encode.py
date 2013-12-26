@@ -3,6 +3,8 @@ print json.dumps(e, cls=new_alchemy_encoder(), check_circular=False)
 """
 import json
 from sqlalchemy.ext.declarative import DeclarativeMeta
+import datetime
+import time
 def new_alchemy_encoder():
     _visited_objs = []
     class AlchemyEncoder(json.JSONEncoder):
@@ -16,8 +18,12 @@ def new_alchemy_encoder():
                 # an SQLAlchemy class
                 fields = {}
                 for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
-                    fields[field] = getattr(obj,field)
+                    chkattr=getattr(obj,field)
+                    if hasattr(chkattr, '__call__') == False:
+                        fields[field] = chkattr
                 # a json-encodable dict
                 return fields
+            elif isinstance(obj,datetime.datetime):
+                return time.mktime(obj.timetuple())
             return json.JSONEncoder.default(self, obj)
     return AlchemyEncoder

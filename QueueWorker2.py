@@ -6,25 +6,19 @@ import json
 import zlib
 class QueueWorker(object):
     def __init__(self,host,port,virtual_host,usr,psw,queue_name):
-        self.host=host
-        self.port=port
-        self.virtual_host=virtual_host
-        self.usr=usr
-        self.psw=psw
-        self.queue_name=queue_name
+        self.connection = Connection(hostname=host,port=port,userid=usr,password=psw,virtual_host=virtual_host)
+        self.channel = self.connection.channel()
+        self.producer=Producer(self.channel)
+        self.task_queue = Queue(queue_name,durable=True)
+        self.consumer = Consumer(self.channel,self.task_queue,no_ack=False)
+        self.consumer.qos(prefetch_count=1)
+        self.consumer.register_callback(self.RequestCallBack)
     def run(self):
         try:
-            connection = Connection(hostname=self.host,port=self.port,userid=self.usr,password=self.psw,virtual_host=self.virtual_host)
-            channel = connection.channel()
-            self.producer=Producer(channel)
-            task_queue = Queue(self.queue_name,durable=True)
-            consumer = Consumer(channel,task_queue,no_ack=False)
-            consumer.qos(prefetch_count=1)
-            consumer.register_callback(self.RequestCallBack)
-            consumer.consume()
+            self.consumer.consume()
             while True:
-                connection.drain_events()
-            connection.close()
+                self.connection.drain_events()
+            self.connection.close()
         except BaseException,e:
             print e
 

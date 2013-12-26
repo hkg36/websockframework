@@ -16,4 +16,5 @@ def run(uid):
     ulist=[]
     for user in users:
         ulist.append(user.toJson())
+    session.close()
     return Res({"users":ulist})

@@ -73,4 +73,5 @@ if __name__ == '__main__':
         exit(0)
     worker=BackWork(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
                     configs.Queue_User,configs.Queue_PassWord,'task')
+    BackEndEnvData.queue_producer=worker.producer
     worker.run()

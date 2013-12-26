@@ -5,7 +5,7 @@ import dbconfig
 class FriendList(dbconfig.DBBase):
     __tablename__ = 'friendlist'
     uid=Column(BigInteger,nullable=False)
-    friendid=Column(BigInteger,nullable=False)
+    friendid=Column(BigInteger,nullable=False,index=True)
     type=Column(Integer,default=0) #添加途径
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 

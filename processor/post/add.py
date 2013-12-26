@@ -1,11 +1,12 @@
 from datamodel.post import Post
+from tools.addPushQueue import AddPostPublish
 from tools.helper import Res
 from tools.session import CheckSession
 
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import anyjson
+
 @CheckSession
 def run(gid,content):
     session=dbconfig.Session()
@@ -16,4 +17,5 @@ def run(gid,content):
     newpost=session.merge(newpost)
     session.flush()
     session.commit()
+    AddPostPublish(newpost)
     return Res({'postid':newpost.postid})
