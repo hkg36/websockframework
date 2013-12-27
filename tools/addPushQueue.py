@@ -21,3 +21,8 @@ def AddMessageTrans(newmessage):
     BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                         routing_key='sys.message_to_notify',
                                         compression='gzip')
+def AddPhoneBookUpdated(uid):
+    json_msg=anyjson.dumps({'uid':uid})
+    BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
+                                        routing_key='sys.user_phonebook_update',
+                                        compression='gzip')

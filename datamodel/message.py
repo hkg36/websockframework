@@ -13,7 +13,7 @@ class Message(dbconfig.DBBase):
     voice=Column(String(1024))
     width=Column(Integer)
     height=Column(Integer)
-    lenght=Column(Integer)
+    length=Column(Integer)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
     def toJson(self):
@@ -28,8 +28,8 @@ class Message(dbconfig.DBBase):
             data['height']=self.height
         if self.video:
             data['video']=self.video
-            data['lenght']=self.lenght
+            data['length']=self.length
         if self.voice:
             data['voice']=self.voice
-            data['lenght']=self.lenght
+            data['length']=self.length
         return data

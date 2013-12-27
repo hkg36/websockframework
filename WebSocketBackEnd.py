@@ -48,6 +48,7 @@ class BackWork(QueueWorker2.QueueWorker):
                     BackEndEnvData.connection_id=params.get('connid')
                     BackEndEnvData.client_ip=params.get('cip')
                     result=mfunc(**function_params)
+                    result['push']=False
                     if 'cdata' in request and isinstance(result,dict):
                         result['cdata']=request['cdata']
                     if isinstance(result,(dict,list)):

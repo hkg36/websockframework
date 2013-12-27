@@ -14,20 +14,16 @@ class QueuePush(object):
         self.path=Queue_Path
         self.connection=None
     def Push(self,queueid,connectid,body):
-        if self.connection is None or self.connection.connected==False:
-            self.connection = Connection(hostname=self.server,port=self.port,userid=self.usr,password=self.psw,virtual_host=self.path)
-            self.channel = self.connection.channel()
-            self.producer=Producer(self.channel)
-        self.producer.publish(body=body,delivery_mode=2,headers={'connid':connectid},
-                                      routing_key=queueid,
-                                      compression='gzip',retry=True)
+        self.rawPush(queueid,{'connid':connectid},body)
     def Close(self,queueid,connectid):
+        self.rawPush(queueid,{'connid':connectid,'close_connect':'1'},'close')
+    def rawPush(self,routing_key,headers,body):
         if self.connection is None or self.connection.connected==False:
             self.connection = Connection(hostname=self.server,port=self.port,userid=self.usr,password=self.psw,virtual_host=self.path)
             self.channel = self.connection.channel()
             self.producer=Producer(self.channel)
-        self.producer.publish(body='close',delivery_mode=2,headers={'connid':connectid,'close_connect':'1'},
-                              routing_key=queueid,retry=True)
+        self.producer.publish(body=body,delivery_mode=2,headers=headers,
+                              routing_key=routing_key,retry=True)
 if __name__ == '__main__':
     Queue_User="guest"
     Queue_PassWord="guest"

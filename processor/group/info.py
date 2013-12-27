@@ -5,7 +5,6 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import anyjson
 @CheckSession
 def run(gid):
     if isinstance(gid,list)==False:

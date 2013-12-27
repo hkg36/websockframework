@@ -13,7 +13,7 @@ class Post(dbconfig.DBBase):
     voice=Column(String(1024))
     width=Column(Integer)
     height=Column(Integer)
-    lenght=Column(Integer)
+    length=Column(Integer)
     like=Column(Integer,default=0)
     replycount=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
@@ -33,8 +33,8 @@ class Post(dbconfig.DBBase):
             data['height']=post.height
         if post.video:
             data['video']=post.video
-            data['lenght']=post.lenght
+            data['length']=post.length
         if post.voice:
             data['voice']=post.voice
-            data['lenght']=post.lenght
+            data['length']=post.length
         return data

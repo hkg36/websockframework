@@ -6,6 +6,7 @@ class User(dbconfig.DBBase):
     uid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
     phone=Column(String(40),unique=True,nullable=False)
     nick=Column(String(32),index=True)
+    signature=Column(String(512))
     password=Column(String(128))
     headpic=Column(String(1024))
     sex=Column(Integer,default=0)
@@ -18,6 +19,7 @@ class User(dbconfig.DBBase):
     def toJson(self):
         return {"uid":self.uid,
                 "nick":self.nick,
+                "signature":self.signature,
                 "headpic":self.headpic,
                 "sex":self.sex,
                 "birthday":self.birthday,
