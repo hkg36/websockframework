@@ -4,11 +4,11 @@ import qiniu.rs
 import web
 import anyjson
 import dbconfig
-import datamodel.post
+import datamodel.message
 import website_config
 from webpages.MainPage import pusher
 
-class Post(WebSiteBasePage.AutoPage):
+class Message(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
         sessionid=params.get('sessionid',None)
@@ -18,47 +18,45 @@ class Post(WebSiteBasePage.AutoPage):
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/upload/PostDone'%website_config.hostname
+        policy.callbackUrl='http://%s/upload/MessageDone'%website_config.hostname
         policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
-                            '"gid":"$(x:gid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%data['uid']
+                            '"toid":"$(x:toid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%data['uid']
         uptoken = policy.token()
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return anyjson.dumps({'token':uptoken})
-        tpl=WebSiteBasePage.jinja2_env.get_template('upload/Post.html')
+        tpl=WebSiteBasePage.jinja2_env.get_template('upload/Message.html')
         return tpl.render(token=uptoken)
-    def POST(self):
-        pass
 
-class PostDone(WebSiteBasePage.AutoPage):
+class MessageDone(WebSiteBasePage.AutoPage):
     SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=anyjson.loads(web.data())
         session=dbconfig.Session()
-        newpost=datamodel.post.Post()
-        newpost.uid=imgdata['uid']
-        newpost.group_id=imgdata['gid']
-        newpost.content=imgdata['content']
+        newmsg=datamodel.message.Message()
+        newmsg.fromid=imgdata['uid']
+        newmsg.toid=imgdata['toid']
+        newmsg.content=imgdata['content']
         fileurl=self.SITE+imgdata['hash']
         filetype=int(imgdata['filetype'])
         if filetype==1:
-            newpost.picture=fileurl
-            newpost.width=imgdata['width']
-            newpost.height=imgdata['height']
+            newmsg.picture=fileurl
+            newmsg.width=imgdata['width']
+            newmsg.height=imgdata['height']
         elif filetype==2:
-            newpost.voice=fileurl
-            newpost.length=imgdata['length']
+            newmsg.voice=fileurl
+            newmsg.length=imgdata['length']
         elif filetype==3:
-            newpost.video=fileurl
-            newpost.length=imgdata['length']
-        newpost=session.merge(newpost)
+            newmsg.video=fileurl
+            newmsg.length=imgdata['length']
+        newmsg=session.merge(newmsg)
         session.flush()
         session.commit()
 
         try:
-            json_post=anyjson.dumps(newpost.toJson())
-            pusher.rawPush(routing_key='sys.post_to_notify',headers={},body=json_post)
+            json_post=anyjson.dumps(newmsg.toJson())
+            pusher.rawPush(routing_key='sys.message_to_notify',headers={},body=json_post)
         except Exception,e:
             return anyjson.dumps({'errno':5,'error':str(e)})
 
-        return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost.postid}})
+        return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'msgid':newmsg.msgid}})

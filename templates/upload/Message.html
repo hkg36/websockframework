@@ -2,10 +2,14 @@
 <html>
 <head>
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>上传头像</title>
+    <title>多媒体私信测试</title>
 </head>
 <body>
 <form method="post" action="http://up.qiniu.com/" enctype="multipart/form-data">
+		toid<input name="x:toid" type="text" ><br />
+		content<input name="x:content" type="text" ><br />
+		filetype<input name="x:filetype" type="text" value=1> 1是图片，2是声音，3是视频<br />
+		length<input name="x:length" type="text" value=""><br />
   		<input name="token" type="hidden" value="{{ token }}"><br />
   		file<input name="file" type="file" /><br />
   		<input type="submit" value="提交"/>

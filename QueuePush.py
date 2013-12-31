@@ -23,7 +23,7 @@ class QueuePush(object):
             self.channel = self.connection.channel()
             self.producer=Producer(self.channel)
         self.producer.publish(body=body,delivery_mode=2,headers=headers,
-                              routing_key=routing_key,retry=True)
+                              routing_key=routing_key,retry=True,compression='gzip')
 if __name__ == '__main__':
     Queue_User="guest"
     Queue_PassWord="guest"

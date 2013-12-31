@@ -9,6 +9,7 @@ import random
 import anyjson
 import time
 import datamodel.user
+import tools.sms
 
 class PhoneLogin(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -46,4 +47,5 @@ class getcode(WebSiteBasePage.AutoPage):
         phone=params['phone']
         gcode=str(random.randint(1000,9999))
         dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=600)
-        return anyjson.dumps({'code':gcode})
+        sms_res=tools.sms.SendSms(phone,gcode)
+        return anyjson.dumps({'code':gcode,'excode':sms_res})

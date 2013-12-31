@@ -20,7 +20,7 @@
                 success:function (data, textStatus){
                     var resdata=JSON.parse(data)
                     var code=resdata['code']
-                    alert(code)
+                    alert(JSON.stringify(resdata))
                     $('#code').val(code)
                 }
                 })
