@@ -4,14 +4,14 @@ import web
 import dbconfig
 from datamodel.connection_info import ConnectionInfo
 import QueuePush
-import website_queueconfig
+import website_config
 
 pusher=QueuePush.QueuePush(
-    website_queueconfig.Queue_Server,
-    website_queueconfig.Queue_Port,
-    website_queueconfig.Queue_User,
-    website_queueconfig.Queue_PassWord,
-    website_queueconfig.Queue_Path)
+    website_config.Queue_Server,
+    website_config.Queue_Port,
+    website_config.Queue_User,
+    website_config.Queue_PassWord,
+    website_config.Queue_Path)
 
 class MainPage(WebSiteBasePage.AutoPage):
     def GET(self):

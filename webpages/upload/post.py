@@ -5,6 +5,7 @@ import web
 import anyjson
 import dbconfig
 import datamodel.post
+import website_config
 
 
 class Post(WebSiteBasePage.AutoPage):
@@ -17,7 +18,7 @@ class Post(WebSiteBasePage.AutoPage):
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://124.207.209.54:81/uploadimgdone'
+        policy.callbackUrl='http://%s/upload/PostDone'%website_config.hostname
         policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
                             '"gid":"$(x:gid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%data['uid']
         uptoken = policy.token()

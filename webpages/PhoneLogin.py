@@ -20,14 +20,15 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
             if vcode is None:
                 return anyjson.dumps({'error':'time out'})
             if vcode==code:
-                Session=dbconfig.Session()
-                user_info=Session.query(datamodel.user.User).filter(datamodel.user.User.phone==phone).first()
+                session=dbconfig.Session()
+                user_info=session.query(datamodel.user.User).filter(datamodel.user.User.phone==phone).first()
                 if user_info is None:
                     user_info=datamodel.user.User()
                     user_info.phone=phone
-                    user_info=Session.merge(user_info)
-                    Session.flush()
-                Session.commit()
+                    user_info=session.merge(user_info)
+                    session.flush()
+                session.commit()
+
                 dbconfig.memclient.delete(str('vcode:%s'%phone))
                 session_id=GenSession()
                 TIMEOUTTIME=3600*24*5

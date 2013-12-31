@@ -1,7 +1,7 @@
 import WebSiteBasePage
 import web
 import QueuePush
-import website_queueconfig
+import website_config
 from MainPage import pusher
 class TestWebsocketPush(WebSiteBasePage.AutoPage):
     def GET(self):
