@@ -13,4 +13,5 @@ def run(gid):
     watchg.gid=gid
     session.merge(watchg)
     session.commit()
+    session.close()
     return Res()

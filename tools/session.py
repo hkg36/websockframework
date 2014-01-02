@@ -20,8 +20,10 @@ def CheckSession(func):
         cinfo=session.query(ConnectionInfo).filter(and_(ConnectionInfo.connection_id==BackEndEnvData.connection_id,
                                                   ConnectionInfo.queue_id==BackEndEnvData.reply_queue)).first()
         if cinfo is None:
+            session.close()
             return {"errno":1,"error":"session not found","result":{}}
         BackEndEnvData.uid=cinfo.uid
+        session.close()
         result= func(*args,**kwargs)
         BackEndEnvData.uid=None
         return result

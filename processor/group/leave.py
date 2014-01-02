@@ -12,4 +12,5 @@ def run(gid):
     session=dbconfig.Session()
     session.query(GroupMember).filter(and_(GroupMember.gid==gid,GroupMember.uid==BackEndEnvData.uid)).delete()
     session.commit()
+    session.close()
     return Res()

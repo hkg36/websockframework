@@ -15,4 +15,5 @@ def run(gid,type=1):
     gmember.type=type
     session.merge(gmember)
     session.commit()
+    session.close()
     return Res()

@@ -16,10 +16,12 @@ def run(name,board,type=0):
     newgroup.type=type
     newgroup=session.merge(newgroup)
     session.flush()
+    new_gid=newgroup.gid
     gmember=GroupMember()
     gmember.gid=newgroup.gid
     gmember.uid=BackEndEnvData.uid
     gmember.type=0
     session.merge(gmember)
     session.commit()
-    return Res({'gid':newgroup.gid})
+    session.close()
+    return Res({'gid':new_gid})

@@ -16,4 +16,5 @@ def run(gid):
     session.delete(group_to_del)
     session.query(GroupMember).filter(GroupMember.gid==group_to_del.gid).delete()
     session.commit()
+    session.close()
     return Res()

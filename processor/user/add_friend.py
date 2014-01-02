@@ -19,4 +19,5 @@ def run(uid,type=0):
             friend.type=type
             session.merge(friend)
     session.commit()
+    session.close()
     return Res()

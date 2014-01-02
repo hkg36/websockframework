@@ -27,4 +27,5 @@ def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height
 
     session.merge(user)
     session.commit()
+    session.close()
     return Res()

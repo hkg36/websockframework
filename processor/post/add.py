@@ -16,6 +16,9 @@ def run(gid,content):
     newpost.content=content
     newpost=session.merge(newpost)
     session.flush()
+    newpost_id=newpost.postid
+    newpost_json=newpost.toJson()
     session.commit()
-    AddPostPublish(newpost)
-    return Res({'postid':newpost.postid})
+    session.close()
+    AddPostPublish(newpost_json)
+    return Res({'postid':newpost_id})

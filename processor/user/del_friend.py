@@ -15,4 +15,5 @@ def run(uid):
     session.query(FriendList).filter(and_(FriendList.uid==BackEndEnvData.uid,
                                           FriendList.friendid.in_(uid))).delete('fetch')
     session.commit()
+    session.close()
     return Res()

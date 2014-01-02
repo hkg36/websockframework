@@ -18,4 +18,5 @@ def run(id):
 
     session.merge(conninfo)
     session.commit()
+    session.close()
     return {"reged":id}

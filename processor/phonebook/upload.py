@@ -16,5 +16,6 @@ def run(phone_list):
         pb.name=one.get('name')
         session.merge(pb)
     session.commit()
+    session.close()
     AddPhoneBookUpdated(BackEndEnvData.uid)
     return Res()

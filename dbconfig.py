@@ -6,7 +6,7 @@ import memcache
 import tools.dbAutoSwitchSlave
 import qiniu.conf
 
-db=create_engine("mysql://root:@localhost/site?charset=utf8")
+db=create_engine("mysql://root:@localhost/site?charset=utf8",pool_recycle=10)
 DBBase=declarative_base(name="DBBase")
 #Session = sessionmaker(bind=db)
 Session = sessionmaker(bind=db,class_=tools.dbAutoSwitchSlave.RoutingSession,slave_bind=[])

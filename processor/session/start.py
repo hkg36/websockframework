@@ -17,5 +17,7 @@ def run(sessionid):
         cinfo.connection_id=BackEndEnvData.connection_id
         cinfo.queue_id=BackEndEnvData.reply_queue
         session.merge(cinfo)
+    user_json=user_data.toJson()
     session.commit()
-    return {"errno":0,"error":"no error","result":user_data.toJson()}
+    session.close()
+    return {"errno":0,"error":"no error","result":user_json}

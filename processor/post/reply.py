@@ -15,6 +15,8 @@ def run(postid,content):
     newreply.content=content
     newreply=session.merge(newreply)
     session.flush()
+    newreplyid=newreply.replyid
     session.query(Post).filter(Post.postid==postid).update({Post.replycount:Post.replycount+1})
     session.commit()
-    return Res({"replyid":newreply.replyid})
+    session.close()
+    return Res({"replyid":newreplyid})

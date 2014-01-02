@@ -42,4 +42,5 @@ class HeadImgDone(WebSiteBasePage.AutoPage):
         user.headpic=fileurl
         session.merge(user)
         session.commit()
+        session.close()
         return anyjson.dumps({"errno":0,"error":"Success","url":fileurl})

@@ -53,12 +53,14 @@ class PostDone(WebSiteBasePage.AutoPage):
             newpost.length=imgdata['length']
         newpost=session.merge(newpost)
         session.flush()
+        newpost_json=newpost.toJson()
+        newpost_id=newpost.postid
         session.commit()
-
+        session.close()
         try:
-            json_post=anyjson.dumps(newpost.toJson())
+            json_post=anyjson.dumps(newpost_json)
             pusher.rawPush(routing_key='sys.post_to_notify',headers={},body=json_post)
         except Exception,e:
             return anyjson.dumps({'errno':5,'error':str(e)})
 
-        return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost.postid}})
+        return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost_id}})

@@ -15,6 +15,9 @@ def run(uid,content):
     newmsg.content=content
     newmsg=session.merge(newmsg)
     session.flush()
+    newmsg_id=newmsg.msgid
+    newmsg_json=newmsg.toJson()
     session.commit()
-    AddMessageTrans(newmsg)
-    return Res({'msgid':newmsg.msgid})
+    session.close()
+    AddMessageTrans(newmsg_json)
+    return Res({'msgid':newmsg_id})

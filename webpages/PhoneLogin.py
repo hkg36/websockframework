@@ -28,13 +28,15 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                     user_info.phone=phone
                     user_info=session.merge(user_info)
                     session.flush()
+                uid=user_info.uid
                 session.commit()
+                session.close()
 
                 dbconfig.memclient.delete(str('vcode:%s'%phone))
                 session_id=GenSession()
                 TIMEOUTTIME=3600*24*5
                 time_out=time.time()+TIMEOUTTIME
-                dbconfig.memclient.set(str('session:%s'%session_id),{'uid':user_info.uid},TIMEOUTTIME)
+                dbconfig.memclient.set(str('session:%s'%session_id),{'uid':uid},TIMEOUTTIME)
                 return anyjson.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
             else:
                 return anyjson.dumps({'error':'code error'})
