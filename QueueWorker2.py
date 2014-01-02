@@ -4,6 +4,11 @@ from kombu import Exchange, Queue
 import traceback
 import json
 import zlib
+import kombu.serialization
+import codecs
+def word_decode(t, coding):
+    return codecs.decode(t,coding,'ignore')
+kombu.serialization._decode=word_decode
 class QueueWorker(object):
     def __init__(self,host,port,virtual_host,usr,psw,queue_name):
         self.connection = Connection(hostname=host,port=port,userid=usr,password=psw,virtual_host=virtual_host)
@@ -20,6 +25,7 @@ class QueueWorker(object):
                 self.connection.drain_events()
             self.connection.close()
         except BaseException,e:
+            print traceback.format_exc()
             print e
 
     def RequestCallBack(self,body, message):

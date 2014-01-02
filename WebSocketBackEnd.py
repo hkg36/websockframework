@@ -1,3 +1,4 @@
+#coding:utf-8
 __author__ = 'amen'
 import QueueWorker2
 import importlib
@@ -27,7 +28,7 @@ def LoadProcFunctionList(module_root='processor'):
                     path=f[:-3]
                 pathlist[path]=runfunc
             except Exception,e:
-                pass
+                print path,str(e)
     return pathlist
 function_list=None
 class BackWork(QueueWorker2.QueueWorker):
@@ -70,7 +71,7 @@ if __name__ == '__main__':
     try:
         configs=importlib.import_module(config_model)
     except Exception,e:
-        print str(e)
+        print 'config error',str(e)
         exit(0)
     worker=BackWork(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
                     configs.Queue_User,configs.Queue_PassWord,'task')
