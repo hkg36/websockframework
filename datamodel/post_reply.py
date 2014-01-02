@@ -9,3 +9,5 @@ class PostReply(dbconfig.DBBase):
     content=Column(String(4096))
     like=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+
+    __table_args__=({'mysql_engine':'MyISAM'},)

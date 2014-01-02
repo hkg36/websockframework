@@ -7,7 +7,7 @@ import BackEndEnvData
 import dbconfig
 import anyjson
 @CheckSession
-def run(uid):
+def run(uid,type=0):
     if isinstance(uid,list)==False:
         uid=[uid]
     session=dbconfig.Session()
@@ -16,6 +16,7 @@ def run(uid):
             friend=FriendList()
             friend.uid=BackEndEnvData.uid
             friend.friendid=id
+            friend.type=type
             session.merge(friend)
     session.commit()
     return Res()

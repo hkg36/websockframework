@@ -7,4 +7,4 @@ class PostLike(dbconfig.DBBase):
     uid=Column(BigInteger,nullable=False)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
-    __table_args__ = (PrimaryKeyConstraint('postid', 'uid', name='postlike_uc'),)
+    __table_args__ = (PrimaryKeyConstraint('postid', 'uid', name='postlike_uc'),{'mysql_engine':'MyISAM'})

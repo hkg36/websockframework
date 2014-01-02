@@ -9,7 +9,7 @@ class Group(dbconfig.DBBase):
     group_board=Column(String(4096))
     type=Column(Integer)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
-
+    __table_args__=({'mysql_engine':'MyISAM'},)
     def toJson(self):
         return {'gid':self.gid,
                 "creator":self.creator,
@@ -22,3 +22,4 @@ class GroupWatchUpdate(dbconfig.DBBase):
     __tablename__ = 'group_watch'
     uid=Column(BigInteger,primary_key=True,nullable=False,autoincrement=False)
     gid=Column(BigInteger,nullable=False,index=True)
+    __table_args__=({'mysql_engine':'MyISAM'},)

@@ -1,6 +1,7 @@
 #coding:utf-8
 __author__ = 'amen'
 import urllib2
+from lxml import etree
 CorpID = u"zxtj00098";
 Pwd = u"zx383211";
 urlx = "http://sdk.cdzxkj.com/"
@@ -20,5 +21,15 @@ def SendSms(phone,code):
     response=urllib2.urlopen(req)
     rescode=int(response.read())
     return rescode,result_code.get(rescode)
+def SendSms2(phone,code):
+    msg=u"您的莱信验证码为:%s，请在5分钟内输入完成验证。【莱福思】"%code
+    body=u"username=lwsk&password=kjhs78210p&mobile=%s&content=%s&planTime=&extMo="%(phone,msg)
+    req = urllib2.Request("http://new.28inter.com:8008/sms/smsInterface.do",headers={"Content-Type":"application/x-www-form-urlencoded"})
+    req.data=body.encode('utf-8')
+    response=urllib2.urlopen(req)
+    f=etree.parse(response)
+    rescode=f.xpath('/result/resultcode/text()')
+    return rescode
 if __name__ == '__main__':
-    SendSms("18072846927",2346)
+    code=SendSms2("18072846927",3456)
+    print code

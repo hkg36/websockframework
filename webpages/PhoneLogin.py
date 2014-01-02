@@ -47,5 +47,5 @@ class getcode(WebSiteBasePage.AutoPage):
         phone=params['phone']
         gcode=str(random.randint(1000,9999))
         dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=600)
-        sms_res=tools.sms.SendSms(phone,gcode)
+        sms_res=None #tools.sms.SendSms(phone,gcode)
         return anyjson.dumps({'code':gcode,'excode':sms_res})
