@@ -36,7 +36,7 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                 session_id=GenSession()
                 TIMEOUTTIME=3600*24*5
                 time_out=time.time()+TIMEOUTTIME
-                dbconfig.memclient.set(str('session:%s'%session_id),{'uid':uid},TIMEOUTTIME)
+                dbconfig.memclient.set(str('session:%s'%session_id),{'uid':uid})
                 return anyjson.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
             else:
                 return anyjson.dumps({'error':'code error'})
