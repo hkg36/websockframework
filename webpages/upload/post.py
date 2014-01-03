@@ -7,6 +7,7 @@ import dbconfig
 import datamodel.post
 import website_config
 from webpages.MainPage import pusher
+import urllib
 
 class Post(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -38,7 +39,9 @@ class PostDone(WebSiteBasePage.AutoPage):
         newpost=datamodel.post.Post()
         newpost.uid=imgdata['uid']
         newpost.group_id=imgdata['gid']
-        newpost.content=imgdata['content']
+        content_data=imgdata.get('content')
+        if content_data:
+            newpost.content=urllib.unquote_plus(content_data.encode('ascii')).decode('utf-8')
         fileurl=self.SITE+imgdata['hash']
         filetype=int(imgdata['filetype'])
         if filetype==1:

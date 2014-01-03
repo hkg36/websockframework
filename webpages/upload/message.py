@@ -7,6 +7,7 @@ import dbconfig
 import datamodel.message
 import website_config
 from webpages.MainPage import pusher
+import urllib
 
 class Message(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -36,7 +37,9 @@ class MessageDone(WebSiteBasePage.AutoPage):
         newmsg=datamodel.message.Message()
         newmsg.fromid=imgdata['uid']
         newmsg.toid=imgdata['toid']
-        newmsg.content=imgdata['content']
+        content_data=imgdata.get('content')
+        if content_data:
+            newmsg.content=urllib.unquote_plus(content_data.encode('ascii')).decode('utf-8')
         fileurl=self.SITE+imgdata['hash']
         filetype=int(imgdata['filetype'])
         if filetype==1:
