@@ -8,12 +8,11 @@ import dbconfig
 import anyjson
 @CheckSession
 def run(gid,type=1):
-    session=dbconfig.Session()
-    gmember=GroupMember()
-    gmember.gid=gid
-    gmember.uid=BackEndEnvData.uid
-    gmember.type=type
-    session.merge(gmember)
-    session.commit()
-    session.close()
+    with dbconfig.Session() as session:
+        gmember=GroupMember()
+        gmember.gid=gid
+        gmember.uid=BackEndEnvData.uid
+        gmember.type=type
+        session.merge(gmember)
+        session.commit()
     return Res()

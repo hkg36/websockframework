@@ -35,35 +35,32 @@ class PostDone(WebSiteBasePage.AutoPage):
     SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=anyjson.loads(web.data())
-        session=dbconfig.Session()
-        newpost=datamodel.post.Post()
-        newpost.uid=imgdata['uid']
-        newpost.group_id=imgdata['gid']
-        content_data=imgdata.get('content')
-        if content_data:
-            newpost.content=urllib.unquote_plus(content_data.encode('ascii')).decode('utf-8')
-        fileurl=self.SITE+imgdata['hash']
-        filetype=int(imgdata['filetype'])
-        if filetype==1:
-            newpost.picture=fileurl
-            newpost.width=imgdata['width']
-            newpost.height=imgdata['height']
-        elif filetype==2:
-            newpost.voice=fileurl
-            newpost.length=imgdata['length']
-        elif filetype==3:
-            newpost.video=fileurl
-            newpost.length=imgdata['length']
-        newpost=session.merge(newpost)
-        session.flush()
-        newpost_json=newpost.toJson()
-        newpost_id=newpost.postid
-        session.commit()
-        session.close()
-        try:
-            json_post=anyjson.dumps(newpost_json)
-            pusher.rawPush(routing_key='sys.post_to_notify',headers={},body=json_post)
-        except Exception,e:
-            return anyjson.dumps({'errno':5,'error':str(e)})
+        with  dbconfig.Session() as session:
+            newpost=datamodel.post.Post()
+            newpost.uid=imgdata['uid']
+            newpost.group_id=imgdata['gid']
+            content_data=imgdata.get('content')
+            if content_data:
+                newpost.content=urllib.unquote_plus(content_data.encode('ascii')).decode('utf-8')
+            fileurl=self.SITE+imgdata['hash']
+            filetype=int(imgdata['filetype'])
+            if filetype==1:
+                newpost.picture=fileurl
+                newpost.width=imgdata['width']
+                newpost.height=imgdata['height']
+            elif filetype==2:
+                newpost.voice=fileurl
+                newpost.length=imgdata['length']
+            elif filetype==3:
+                newpost.video=fileurl
+                newpost.length=imgdata['length']
+            newpost=session.merge(newpost)
+            session.flush()
+            session.commit()
+            try:
+                json_post=anyjson.dumps(newpost.toJson())
+                pusher.rawPush(routing_key='sys.post_to_notify',headers={},body=json_post)
+            except Exception,e:
+                return anyjson.dumps({'errno':5,'error':str(e)})
 
-        return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost_id}})
+            return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost.postid}})

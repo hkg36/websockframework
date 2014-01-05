@@ -16,14 +16,12 @@ def GenSession():
 
 def CheckSession(func):
     def warp(*args,**kwargs):
-        session=dbconfig.Session()
-        cinfo=session.query(ConnectionInfo).filter(and_(ConnectionInfo.connection_id==BackEndEnvData.connection_id,
-                                                  ConnectionInfo.queue_id==BackEndEnvData.reply_queue)).first()
-        if cinfo is None:
-            session.close()
-            return {"errno":1,"error":"session not found","result":{}}
-        BackEndEnvData.uid=cinfo.uid
-        session.close()
+        with dbconfig.Session() as session:
+            cinfo=session.query(ConnectionInfo).filter(and_(ConnectionInfo.connection_id==BackEndEnvData.connection_id,
+                                                      ConnectionInfo.queue_id==BackEndEnvData.reply_queue)).first()
+            if cinfo is None:
+                return {"errno":1,"error":"session not found","result":{}}
+            BackEndEnvData.uid=cinfo.uid
         result= func(*args,**kwargs)
         BackEndEnvData.uid=None
         return result

@@ -11,10 +11,9 @@ import anyjson
 def run(uid):
     if isinstance(uid,list)==False:
         uid=[uid]
-    session=dbconfig.Session()
-    users=session.query(User).filter(User.uid.in_(uid)).all()
-    ulist=[]
-    for user in users:
-        ulist.append(user.toJson())
-    session.close()
+    with dbconfig.Session() as session:
+        users=session.query(User).filter(User.uid.in_(uid)).all()
+        ulist=[]
+        for user in users:
+            ulist.append(user.toJson())
     return Res({"users":ulist})

@@ -16,15 +16,14 @@ class PostTransServer(QueueWorker2.QueueWorker):
         gid=post['gid']
         uid=post['uid']
         uids=set()
-        session=dbconfig.Session()
-        gwus=session.query(GroupWatchUpdate).filter(GroupWatchUpdate.gid==gid).all()
-        for gwu in gwus:
-            uids.add(gwu.uid)
-        fds=session.query(FriendList).filter(FriendList.friendid==uid).all()
-        for fd in fds:
-            uids.add(fd.uid)
-        allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
-        session.close()
+        with dbconfig.Session() as session:
+            gwus=session.query(GroupWatchUpdate).filter(GroupWatchUpdate.gid==gid).all()
+            for gwu in gwus:
+                uids.add(gwu.uid)
+            fds=session.query(FriendList).filter(FriendList.friendid==uid).all()
+            for fd in fds:
+                uids.add(fd.uid)
+            allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
         to_push=anyjson.dumps({"push":True,
                                     "type":"newpost",
                                     "data":{

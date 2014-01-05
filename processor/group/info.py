@@ -9,10 +9,9 @@ import dbconfig
 def run(gid):
     if isinstance(gid,list)==False:
         gid=[gid]
-    session=dbconfig.Session()
-    gps=session.query(Group).filter(Group.gid.in_(gid)).all()
-    glist=[]
-    for gp in gps:
-        glist.append(gp.toJson())
-    session.close()
+    with dbconfig.Session() as session:
+        gps=session.query(Group).filter(Group.gid.in_(gid)).all()
+        glist=[]
+        for gp in gps:
+            glist.append(gp.toJson())
     return Res({"groups":glist})

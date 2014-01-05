@@ -11,9 +11,8 @@ import anyjson
 def run(uid):
     if isinstance(uid,list)==False:
         uid=[uid]
-    session=dbconfig.Session()
-    session.query(FriendList).filter(and_(FriendList.uid==BackEndEnvData.uid,
-                                          FriendList.friendid.in_(uid))).delete('fetch')
-    session.commit()
-    session.close()
+    with dbconfig.Session() as session:
+        session.query(FriendList).filter(and_(FriendList.uid==BackEndEnvData.uid,
+                                              FriendList.friendid.in_(uid))).delete('fetch')
+        session.commit()
     return Res()

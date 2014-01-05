@@ -9,10 +9,9 @@ import dbconfig
 
 @CheckSession
 def run(postid,pos=0,count=20):
-    session=dbconfig.Session()
-    replys=session.query(PostReply).filter(PostReply.postid==postid).offset(pos).limit(count).all()
-    rplist=[]
-    for reply in replys:
-        rplist.append(reply.toJson())
-    session.close()
-    return Res({'replys':rplist})
+    with dbconfig.Session() as session:
+        replys=session.query(PostReply).filter(PostReply.postid==postid).offset(pos).limit(count).all()
+        rplist=[]
+        for reply in replys:
+            rplist.append(reply.toJson())
+        return Res({'replys':rplist})

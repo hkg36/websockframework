@@ -9,10 +9,9 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(postid,pos=0,count=50):
-    session=dbconfig.Session()
-    lks=session.query(PostLike).filter(PostLike.postid==postid).order_by(PostLike.time.desc()).offset(pos).limit(count).all()
-    lklist=[]
-    for lk in lks:
-        lklist.append({'uid':lk.uid,'time':lk.time})
-    session.close()
+    with dbconfig.Session() as session:
+        lks=session.query(PostLike).filter(PostLike.postid==postid).order_by(PostLike.time.desc()).offset(pos).limit(count).all()
+        lklist=[]
+        for lk in lks:
+            lklist.append({'uid':lk.uid,'time':lk.time})
     return Res({'users':lklist})

@@ -8,14 +8,13 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(phone_list):
-    session=dbconfig.Session()
-    for one in phone_list:
-        pb=PhoneBook()
-        pb.uid=BackEndEnvData.uid
-        pb.phone=one['phone']
-        pb.name=one.get('name')
-        session.merge(pb)
-    session.commit()
-    session.close()
+    with dbconfig.Session() as session:
+        for one in phone_list:
+            pb=PhoneBook()
+            pb.uid=BackEndEnvData.uid
+            pb.phone=one['phone']
+            pb.name=one.get('name')
+            session.merge(pb)
+        session.commit()
     AddPhoneBookUpdated(BackEndEnvData.uid)
     return Res()

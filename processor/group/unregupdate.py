@@ -8,8 +8,7 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(gid):
-    session=dbconfig.Session()
-    session.query(GroupWatchUpdate).filter(and_(GroupWatchUpdate.gid==gid,GroupWatchUpdate.uid==BackEndEnvData.uid)).delete()
-    session.commit()
-    session.close()
+    with dbconfig.Session() as session:
+        session.query(GroupWatchUpdate).filter(and_(GroupWatchUpdate.gid==gid,GroupWatchUpdate.uid==BackEndEnvData.uid)).delete()
+        session.commit()
     return Res()

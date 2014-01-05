@@ -7,11 +7,10 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(gid):
-    session=dbconfig.Session()
-    watchg=GroupWatchUpdate()
-    watchg.uid=BackEndEnvData.uid
-    watchg.gid=gid
-    session.merge(watchg)
-    session.commit()
-    session.close()
-    return Res()
+    with dbconfig.Session() as session:
+        watchg=GroupWatchUpdate()
+        watchg.uid=BackEndEnvData.uid
+        watchg.gid=gid
+        session.merge(watchg)
+        session.commit()
+        return Res()

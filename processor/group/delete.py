@@ -9,12 +9,11 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(gid):
-    session=dbconfig.Session()
-    group_to_del=session.query(Group).filter(Group.gid==gid).first()
-    if group_to_del.creator!=BackEndEnvData.uid:
-        return Res(errno=2,error="group is not yours")
-    session.delete(group_to_del)
-    session.query(GroupMember).filter(GroupMember.gid==group_to_del.gid).delete()
-    session.commit()
-    session.close()
-    return Res()
+    with dbconfig.Session() as session:
+        group_to_del=session.query(Group).filter(Group.gid==gid).first()
+        if group_to_del.creator!=BackEndEnvData.uid:
+            return Res(errno=2,error="group is not yours")
+        session.delete(group_to_del)
+        session.query(GroupMember).filter(GroupMember.gid==group_to_del.gid).delete()
+        session.commit()
+        return Res()

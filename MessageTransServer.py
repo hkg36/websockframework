@@ -15,9 +15,8 @@ class PostTransServer(QueueWorker2.QueueWorker):
     def RequestWork(self,params,body,reply_queue):
         post=anyjson.loads(body)
         toid=post['toid']
-        session=dbconfig.Session()
-        conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
-        session.close()
+        with dbconfig.Session() as session:
+            conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
         to_push=anyjson.dumps({"push":True,
                                     "type":"newmsg",
                                     "data":{

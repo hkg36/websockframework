@@ -21,23 +21,21 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
             if vcode is None:
                 return anyjson.dumps({'error':'time out'})
             if vcode==code:
-                session=dbconfig.Session()
-                user_info=session.query(datamodel.user.User).filter(datamodel.user.User.phone==phone).first()
-                if user_info is None:
-                    user_info=datamodel.user.User()
-                    user_info.phone=phone
-                    user_info=session.merge(user_info)
-                    session.flush()
-                uid=user_info.uid
-                session.commit()
-                session.close()
+                with dbconfig.Session() as session:
+                    user_info=session.query(datamodel.user.User).filter(datamodel.user.User.phone==phone).first()
+                    if user_info is None:
+                        user_info=datamodel.user.User()
+                        user_info.phone=phone
+                        user_info=session.merge(user_info)
+                        session.flush()
+                        session.commit()
 
-                dbconfig.memclient.delete(str('vcode:%s'%phone))
-                session_id=GenSession()
-                TIMEOUTTIME=3600*24*5
-                time_out=time.time()+TIMEOUTTIME
-                dbconfig.memclient.set(str('session:%s'%session_id),{'uid':uid})
-                return anyjson.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
+                    dbconfig.memclient.delete(str('vcode:%s'%phone))
+                    session_id=GenSession()
+                    TIMEOUTTIME=3600*24*5
+                    time_out=time.time()+TIMEOUTTIME
+                    dbconfig.memclient.set(str('session:%s'%session_id),{'uid':user_info.uid})
+                    return anyjson.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
             else:
                 return anyjson.dumps({'error':'code error'})
         tpl=WebSiteBasePage.jinja2_env.get_template('PhoneLogin.html')

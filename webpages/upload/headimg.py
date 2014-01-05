@@ -33,14 +33,12 @@ class HeadImgDone(WebSiteBasePage.AutoPage):
     SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=anyjson.loads(web.data())
-        session=dbconfig.Session()
-        user=session.query(datamodel.user.User).filter(datamodel.user.User.uid==imgdata['uid']).first()
-        if user is None:
-            session.close()
-            return anyjson.dumps({"errno":1,"error":"user lost"})
-        fileurl=self.SITE+imgdata['hash']
-        user.headpic=fileurl
-        session.merge(user)
-        session.commit()
-        session.close()
+        with dbconfig.Session() as session:
+            user=session.query(datamodel.user.User).filter(datamodel.user.User.uid==imgdata['uid']).first()
+            if user is None:
+                return anyjson.dumps({"errno":1,"error":"user lost"})
+            fileurl=self.SITE+imgdata['hash']
+            user.headpic=fileurl
+            session.merge(user)
+            session.commit()
         return anyjson.dumps({"errno":0,"error":"Success","url":fileurl})

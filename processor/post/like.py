@@ -9,14 +9,13 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(postid):
-    session=dbconfig.Session()
-    likerecord=session.query(PostLike).filter(and_(PostLike.postid==postid,PostLike.uid==BackEndEnvData.uid)).first()
-    if likerecord is None:
-        likerecord=PostLike()
-        likerecord.postid=postid
-        likerecord.uid=BackEndEnvData.uid
-        session.merge(likerecord)
-        session.query(Post).filter(Post.postid==postid).update({Post.like:Post.like+1})
-        session.commit()
-    session.close()
+    with dbconfig.Session() as session:
+        likerecord=session.query(PostLike).filter(and_(PostLike.postid==postid,PostLike.uid==BackEndEnvData.uid)).first()
+        if likerecord is None:
+            likerecord=PostLike()
+            likerecord.postid=postid
+            likerecord.uid=BackEndEnvData.uid
+            session.merge(likerecord)
+            session.query(Post).filter(Post.postid==postid).update({Post.like:Post.like+1})
+            session.commit()
     return Res()

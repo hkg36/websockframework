@@ -19,25 +19,24 @@ class PhoneBookRecommendServer(QueueWorker2.QueueWorker):
     def RequestWork(self,params,body,reply_queue):
         post=anyjson.loads(body)
         uid=post['uid']
-        session=dbconfig.Session()
-        phonelist=session.query(PhoneBook).filter(PhoneBook.uid==uid).all()
-        phones=[]
-        for pinfo in phonelist:
-            phones.append(pinfo.phone)
-        fds=session.query(FriendList).filter(FriendList.uid==uid).all()
-        friendids=[]
-        for fd in fds:
-            friendids.append(fd.friendid)
+        with dbconfig.Session() as session:
+            phonelist=session.query(PhoneBook).filter(PhoneBook.uid==uid).all()
+            phones=[]
+            for pinfo in phonelist:
+                phones.append(pinfo.phone)
+            fds=session.query(FriendList).filter(FriendList.uid==uid).all()
+            friendids=[]
+            for fd in fds:
+                friendids.append(fd.friendid)
 
-        if friendids:
-            users=session.query(User).filter(and_(User.phone.in_(phones),not_(User.uid.in_(friendids)))).all()
-        else:
-            users=session.query(User).filter(User.phone.in_(phones)).all()
-        userlist=[]
-        for u in users:
-            userlist.append(u.toJson(showphone=True))
-        conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==uid).first()
-        session.close()
+            if friendids:
+                users=session.query(User).filter(and_(User.phone.in_(phones),not_(User.uid.in_(friendids)))).all()
+            else:
+                users=session.query(User).filter(User.phone.in_(phones)).all()
+            userlist=[]
+            for u in users:
+                userlist.append(u.toJson(showphone=True))
+            conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==uid).first()
         to_push=anyjson.dumps({"push":True,
                                     "type":"fromphonebook",
                                     "data":{
