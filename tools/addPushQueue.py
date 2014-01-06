@@ -18,3 +18,8 @@ def AddPhoneBookUpdated(uid):
     BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                         routing_key='sys.user_phonebook_update',
                                         compression='gzip')
+def AddEventNotify(event):
+    json_msg=anyjson.dumps(event.toJson())
+    BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
+                                        routing_key='sys.event',
+                                        compression='gzip')
