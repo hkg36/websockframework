@@ -9,13 +9,19 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(gid,uid):
+    if isinstance(uid,list)==False:
+        uid=[uid]
     with dbconfig.Session() as session:
-        event=Events()
-        event.touid=uid
-        event.type="group_invite"
-        event.param1=gid
-        event.param2=BackEndEnvData.uid
-        event=session.merge(event)
+        events=[]
+        for u in uid:
+            event=Events()
+            event.touid=u
+            event.type="group_invite"
+            event.param1=gid
+            event.param2=BackEndEnvData.uid
+            event=session.merge(event)
+            events.append(event)
         session.commit()
-        AddEventNotify(event)
+        for ev in events:
+            AddEventNotify(ev)
     return Res()
