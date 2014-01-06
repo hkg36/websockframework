@@ -7,7 +7,7 @@ import BackEndEnvData
 import dbconfig
 import anyjson
 @CheckSession
-def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height=None):
+def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height=None,position=None):
     with dbconfig.Session() as session:
         user=session.query(User).filter(User.uid==BackEndEnvData.uid).first();
         if user is None:
@@ -24,6 +24,8 @@ def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height
             user.marriage=marriage
         if height:
             user.height=height
+        if position:
+            user.position=position
 
         session.merge(user)
         session.commit()

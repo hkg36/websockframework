@@ -15,6 +15,7 @@ class User(dbconfig.DBBase):
     marriage = Column(Integer)
     background_image = Column(String(1024))
     height = Column(Integer, default=0)
+    position = Column(String(256))
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     __table_args__=({'mysql_engine':'MyISAM'},)
     def toJson(self,showphone=False):
@@ -27,6 +28,7 @@ class User(dbconfig.DBBase):
                 "marriage":self.marriage,
                 "background_image":self.background_image,
                 "height":self.height,
+                "position":self.position,
                 "create_time":time.mktime(self.create_time.timetuple())}
         if showphone:
             data['phone']=self.phone
