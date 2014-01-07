@@ -16,6 +16,13 @@ class User(dbconfig.DBBase):
     background_image = Column(String(1024))
     height = Column(Integer, default=0)
     position = Column(String(256))
+
+    actor=Column(Integer,default=0)
+    actor_level=Column(Integer,default=0)
+    active_by=Column(BigInteger,default=0)
+    active_level=Column(Integer,default=0)
+    active_time=Column(TIMESTAMP)
+
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     __table_args__=({'mysql_engine':'MyISAM'},)
     def toJson(self,showphone=False):
@@ -29,7 +36,13 @@ class User(dbconfig.DBBase):
                 "background_image":self.background_image,
                 "height":self.height,
                 "position":self.position,
+                "actor":self.actor,
+                "actor_level":self.actor_level,
+                "active_by":self.active_by,
+                "active_level":self.active_level,
                 "create_time":time.mktime(self.create_time.timetuple())}
+        if self.active_time:
+            data["active_time"]=time.mktime(self.active_time.timetuple())
         if showphone:
             data['phone']=self.phone
         return data
