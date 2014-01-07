@@ -4,7 +4,7 @@
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>手机客户端websocket</title>
 </head>
-<body>
+<body onload="start_connect()">
 <style>
     .infopane
     {
@@ -104,7 +104,6 @@ function sendWord()
     var string_data=JSON.stringify(data)
     ws.send(string_data)
 }
-    start_connect()
     function clickstart()
     {
         ws.send(JSON.stringify(

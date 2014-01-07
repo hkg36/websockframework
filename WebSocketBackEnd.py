@@ -1,14 +1,12 @@
-#coding:utf-8
 __author__ = 'amen'
-import QueueWorker2
+import os
 import importlib
-import traceback
+import json
+import BackEndEnvData
 import getopt
 import sys
-import os
-import BackEndEnvData
-import ujson as json
-import importlib
+import QueueWork
+import traceback
 
 def LoadProcFunctionList(module_root='processor'):
     pathlist={}
@@ -31,34 +29,38 @@ def LoadProcFunctionList(module_root='processor'):
                 print path,str(e)
     return pathlist
 function_list=None
-class BackWork(QueueWorker2.QueueWorker):
-    def RequestWork(self,params,body,reply_queue):
-        try:
-            request=json.loads(body)
-        except Exception,e:
-            return params,'body error:%s'%str(e)
-        function=request.get("func",None)
-        if function:
-            function_params=request.get("parm",None)
-            if function_params is not None and isinstance(function_params,dict):
-                mfunc=function_list.get(function)
-                if mfunc is None:
-                    return params,'no function'
-                try:
-                    BackEndEnvData.reply_queue=reply_queue
-                    BackEndEnvData.connection_id=params.get('connid')
-                    BackEndEnvData.client_ip=params.get('cip')
-                    result=mfunc(**function_params)
-                    result['push']=False
-                    if 'cdata' in request and isinstance(result,dict):
-                        result['cdata']=request['cdata']
-                    if isinstance(result,(dict,list)):
-                        return params,json.dumps(result,ensure_ascii=False)
-                    elif isinstance(result,basestring):
-                        return params,result
-                except BaseException,e:
-                    return params,traceback.format_exc()
-        return params,"error"
+
+
+def RequestWork(params,body,reply_queue):
+    try:
+        request=json.loads(body)
+    except Exception,e:
+        return params,'body error:%s'%str(e)
+    function=request.get("func",None)
+    if function:
+        function_params=request.get("parm",None)
+        if function_params is not None and isinstance(function_params,dict):
+            mfunc=function_list.get(function)
+            if mfunc is None:
+                return params,'no function'
+            try:
+                BackEndEnvData.reply_queue=reply_queue
+                BackEndEnvData.connection_id=params.get('connid')
+                BackEndEnvData.client_ip=params.get('cip')
+                result=mfunc(**function_params)
+                if result is None:
+                    return
+                result['push']=False
+                if 'cdata' in request and isinstance(result,dict):
+                    result['cdata']=request['cdata']
+                if isinstance(result,(dict,list)):
+                    return params,json.dumps(result,ensure_ascii=False)
+                elif isinstance(result,basestring):
+                    return params,result
+            except BaseException,e:
+                return params,traceback.format_exc()
+    return params,"error"
+
 if __name__ == '__main__':
     function_list=LoadProcFunctionList()
 
@@ -73,7 +75,8 @@ if __name__ == '__main__':
     except Exception,e:
         print 'config error',str(e)
         exit(0)
-    worker=BackWork(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
+    QueueWork.WorkFunction=RequestWork
+    QueueWork.init(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
                     configs.Queue_User,configs.Queue_PassWord,'task')
-    BackEndEnvData.queue_producer=worker.producer
-    worker.run()
+    BackEndEnvData.queue_producer=QueueWork.producer
+    QueueWork.run()
