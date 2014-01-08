@@ -5,6 +5,7 @@ import sys
 from datamodel.connection_info import ConnectionInfo
 from datamodel.group import GroupWatchUpdate
 from datamodel.friendlist import FriendList
+from datamodel.group_member import GroupMember
 import dbconfig
 import anyjson
 import zlib
@@ -15,7 +16,8 @@ def RequestWork(params,body,reply_queue):
     uid=post['uid']
     uids=set()
     with dbconfig.Session() as session:
-        gwus=session.query(GroupWatchUpdate).filter(GroupWatchUpdate.gid==gid).all()
+        gwus=session.query(GroupMember).filter(GroupMember.gid==gid).all()
+        #gwus=session.query(GroupWatchUpdate).filter(GroupWatchUpdate.gid==gid).all()
         for gwu in gwus:
             uids.add(gwu.uid)
         fds=session.query(FriendList).filter(FriendList.friendid==uid).all()
