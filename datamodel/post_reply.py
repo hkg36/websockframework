@@ -10,8 +10,6 @@ class PostReply(dbconfig.DBBase):
     like=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
-    __table_args__=({'mysql_engine':'MyISAM'},)
-
     def toJson(reply):
         return {
             "replyid":reply.replyid,

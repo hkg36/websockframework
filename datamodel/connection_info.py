@@ -6,5 +6,4 @@ class ConnectionInfo(dbconfig.DBBase):
     queue_id =  Column(String(128),index=True,nullable=False)
     connection_id = Column(String(128),nullable=False)
 
-    __table_args__ = (UniqueConstraint('connection_id', 'queue_id'),
-                        {'mysql_engine':'MyISAM'})
+    __table_args__ = (UniqueConstraint('connection_id', 'queue_id'),)

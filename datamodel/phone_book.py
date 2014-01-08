@@ -8,4 +8,4 @@ class PhoneBook(dbconfig.DBBase):
     phone=Column(String(32),nullable=False,index=True)
     name=Column(String(32))
 
-    __table_args__ = (PrimaryKeyConstraint('uid', 'phone'),{'mysql_engine':'MyISAM'})
+    __table_args__ = (PrimaryKeyConstraint('uid', 'phone'),)

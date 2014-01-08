@@ -11,7 +11,6 @@ class Events(dbconfig.DBBase):
     param2=Column(BigInteger)
     param3=Column(BigInteger)
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
-    __table_args__=({'mysql_engine':'MyISAM'},)
 
     def toJson(self):
         return {'eid':self.eid,

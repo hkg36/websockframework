@@ -15,7 +15,6 @@ class Message(dbconfig.DBBase):
     height=Column(Integer)
     length=Column(Integer)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
-    __table_args__=({'mysql_engine':'MyISAM'},)
     def toJson(self):
         data={'msgid':self.msgid,
               'fromid':self.fromid,
