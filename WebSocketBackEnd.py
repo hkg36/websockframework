@@ -21,7 +21,7 @@ def LoadProcFunctionList(module_root='processor'):
                 runfunc=mod.run
                 path=root[len(module_root)+1:]
                 if path:
-                    path='%s.%s'%(path,f[:-3])
+                    path='%s.%s'%(path.replace('/','.'),f[:-3])
                 else:
                     path=f[:-3]
                 pathlist[path]=runfunc
