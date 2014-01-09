@@ -19,4 +19,4 @@ class Events(dbconfig.DBBase):
                 'param1':self.param1,
                 'param2':self.param2,
                 'param3':self.param3,
-                'create_time':time.mktime(self.create_time.timetuple())}
+                'create_time':self.create_time}

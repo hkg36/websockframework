@@ -20,7 +20,7 @@ class Message(dbconfig.DBBase):
               'fromid':self.fromid,
               'toid':self.toid,
               'content':self.content,
-              'time':time.mktime(self.time.timetuple())}
+              'time':self.time}
         if self.picture:
             data['picture']=self.picture
             data['width']=self.width

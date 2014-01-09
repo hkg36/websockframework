@@ -39,9 +39,9 @@ class User(dbconfig.DBBase):
                 "actor_level":self.actor_level,
                 "active_by":self.active_by,
                 "active_level":self.active_level,
-                "create_time":time.mktime(self.create_time.timetuple())}
+                "create_time":self.create_time}
         if self.active_time:
-            data["active_time"]=time.mktime(self.active_time.timetuple())
+            data["active_time"]=self.active_time
         if showphone:
             data['phone']=self.phone
         return data

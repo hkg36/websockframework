@@ -24,7 +24,7 @@ class Post(dbconfig.DBBase):
                 'content':post.content,
                 'like':post.like,
                 'replycount':post.replycount,
-                'time':time.mktime(post.time.timetuple())
+                'time':post.time
                 }
         if post.picture:
             data['picture']=post.picture

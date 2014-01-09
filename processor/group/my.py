@@ -12,5 +12,5 @@ def run():
         gms=session.query(GroupMember).filter(GroupMember.uid==BackEndEnvData.uid).all()
         glist=[]
         for gm in gms:
-            glist.append({'gid':gm.gid,'type':gm.type,'time':time.mktime(gm.time.timetuple())})
+            glist.append({'gid':gm.gid,'type':gm.type,'time':gm.time})
         return Res({'groups':glist})

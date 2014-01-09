@@ -7,6 +7,7 @@ import getopt
 import sys
 import QueueWork
 import traceback
+import datetime,time
 
 def LoadProcFunctionList(module_root='processor'):
     pathlist={}
@@ -30,6 +31,11 @@ def LoadProcFunctionList(module_root='processor'):
     return pathlist
 function_list=None
 
+class AutoFitJson(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj,datetime.datetime):
+            return time.mktime(obj.timetuple())
+        return json.JSONEncoder.default(self, obj)
 
 def RequestWork(params,body,reply_queue):
     try:
@@ -54,7 +60,7 @@ def RequestWork(params,body,reply_queue):
                 if 'cdata' in request and isinstance(result,dict):
                     result['cdata']=request['cdata']
                 if isinstance(result,(dict,list)):
-                    return params,json.dumps(result,ensure_ascii=False)
+                    return params,json.dumps(result,ensure_ascii=False,cls=AutoFitJson)
                 elif isinstance(result,basestring):
                     return params,result
             except BaseException,e:
