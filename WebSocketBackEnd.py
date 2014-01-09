@@ -1,3 +1,5 @@
+from tools.helper import AutoFitJson
+
 __author__ = 'amen'
 import os
 import importlib
@@ -30,12 +32,6 @@ def LoadProcFunctionList(module_root='processor'):
                 print path,str(e)
     return pathlist
 function_list=None
-
-class AutoFitJson(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj,datetime.datetime):
-            return time.mktime(obj.timetuple())
-        return json.JSONEncoder.default(self, obj)
 
 def RequestWork(params,body,reply_queue):
     try:

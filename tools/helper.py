@@ -1,5 +1,6 @@
 __author__ = 'amen'
 import GeoCombine
+import time,datetime,json
 def Res(res={},errno=0,error='no error'):
     return {"errno":errno,"error":error,"result":res}
 def GetFileLink(db_file_record):
@@ -24,5 +25,10 @@ def CombineGeo(long,lat):
     long_int=int((long+180)*10e6)
     return GeoCombine.Combine(long_int,lat_int)
 
+class AutoFitJson(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj,datetime.datetime):
+            return time.mktime(obj.timetuple())
+        return json.JSONEncoder.default(self, obj)
 if __name__ == '__main__':
     print CombineGeo(147.9873,32.5678)
