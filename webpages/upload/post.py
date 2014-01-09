@@ -1,3 +1,5 @@
+from tools.helper import AutoFitJson
+
 __author__ = 'amen'
 import WebSiteBasePage
 import qiniu.rs
@@ -8,6 +10,7 @@ import datamodel.post
 import website_config
 from webpages.MainPage import pusher
 import urllib
+import json
 
 class Post(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -58,9 +61,9 @@ class PostDone(WebSiteBasePage.AutoPage):
             session.flush()
             session.commit()
             try:
-                json_post=anyjson.dumps(newpost.toJson())
+                json_post=json.dumps(newpost.toJson(),cls=AutoFitJson)
                 pusher.rawPush(routing_key='sys.post_to_notify',headers={},body=json_post)
             except Exception,e:
-                return anyjson.dumps({'errno':5,'error':str(e)})
+                return json.dumps({'errno':5,'error':str(e)})
 
-            return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost.postid}})
+            return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost.postid}},cls=AutoFitJson)

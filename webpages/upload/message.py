@@ -1,3 +1,5 @@
+from tools.helper import AutoFitJson
+
 __author__ = 'amen'
 import WebSiteBasePage
 import qiniu.rs
@@ -8,6 +10,7 @@ import datamodel.message
 import website_config
 from webpages.MainPage import pusher
 import urllib
+import json
 
 class Message(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -56,9 +59,9 @@ class MessageDone(WebSiteBasePage.AutoPage):
             session.flush()
             session.commit()
             try:
-                json_post=anyjson.dumps(newmsg.toJson())
+                json_post=json.dumps(newmsg.toJson(),cls=AutoFitJson)
                 pusher.rawPush(routing_key='sys.message_to_notify',headers={},body=json_post)
             except Exception,e:
-                return anyjson.dumps({'errno':5,'error':str(e)})
+                return json.dumps({'errno':5,'error':str(e)})
 
-            return anyjson.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'msgid':newmsg.msgid}})
+            return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'msgid':newmsg.msgid}},cls=AutoFitJson)

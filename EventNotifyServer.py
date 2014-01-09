@@ -12,7 +12,7 @@ import dbconfig
 import anyjson
 import zlib
 
-def RequestWork(self,params,body,reply_queue):
+def RequestWork(params,body,reply_queue):
     event=anyjson.loads(body)
     toid=event['touid']
     eo=LoadEvent(event)
@@ -27,7 +27,7 @@ def RequestWork(self,params,body,reply_queue):
                                     "event":eo
                                 }
                             })
-    self.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
+    QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')
 if __name__ == '__main__':

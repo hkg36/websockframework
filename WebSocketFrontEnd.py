@@ -40,7 +40,7 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
     def on_close(self):
         print "%s closed"%self.connid
         connection_list.pop(self.connid,'')
-        msg=Message(body='{"function":"connection_lost","params":{}}',delivery_mode=2)
+        msg=Message(body='{"func":"connection_lost","parm":{}}',delivery_mode=2)
         msg.headers={"connid":self.connid,'cip':self.cip}
         mqserver.publish(msg)
     def on_pong(self,data):
