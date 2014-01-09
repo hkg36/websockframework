@@ -9,3 +9,9 @@ class UserGeoPosition(dbconfig.DBBase):
     lat=Column(Float,nullable=False)
     long=Column(Float,nullable=Float)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+
+    def toJson(self):
+        return {"uid":self.uid,
+                "lat":self.lat,
+                "long":self.long,
+                "time":self.time}
