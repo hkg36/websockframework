@@ -8,3 +8,8 @@ class PostLike(dbconfig.DBBase):
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
     __table_args__ = (PrimaryKeyConstraint('postid', 'uid', name='postlike_uc'),)
+
+    def toJson(self):
+        return {"postid":self.postid,
+                "uid":self.uid,
+                "time":self.time}

@@ -1,6 +1,7 @@
 from sqlalchemy import and_
 from datamodel.post import Post
 from datamodel.post_like import PostLike
+from tools.addPushQueue import AddLikeNotify
 from tools.helper import Res
 from tools.session import CheckSession
 
@@ -15,7 +16,8 @@ def run(postid):
             likerecord=PostLike()
             likerecord.postid=postid
             likerecord.uid=BackEndEnvData.uid
-            session.merge(likerecord)
+            likerecord=session.merge(likerecord)
             session.query(Post).filter(Post.postid==postid).update({Post.like:Post.like+1})
             session.commit()
+            AddLikeNotify(likerecord)
     return Res()

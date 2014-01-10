@@ -25,3 +25,13 @@ def AddEventNotify(event):
     BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                         routing_key='sys.event',
                                         compression='gzip')
+def AddReplyNotify(reply):
+    json_msg=json.dumps(reply.toJson(),cls=AutoFitJson)
+    BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
+                                        routing_key='sys.newreply',
+                                        compression='gzip')
+def AddLikeNotify(postlike):
+    json_msg=json.dumps(postlike.toJson(),cls=AutoFitJson)
+    BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
+                                        routing_key='sys.newlike',
+                                        compression='gzip')
