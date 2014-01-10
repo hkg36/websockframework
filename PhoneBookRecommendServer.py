@@ -11,11 +11,12 @@ from datamodel.friendlist import FriendList
 from datamodel.phone_book import PhoneBook
 from datamodel.user import User
 import dbconfig
-import anyjson
+import json
 import zlib
+from tools.helper import AutoFitJson
 
 def RequestWork(params,body,reply_queue):
-    post=anyjson.loads(body)
+    post=json.loads(body)
     uid=post['uid']
     with dbconfig.Session() as session:
         phonelist=session.query(PhoneBook).filter(PhoneBook.uid==uid).all()
@@ -35,12 +36,12 @@ def RequestWork(params,body,reply_queue):
         for u in users:
             userlist.append(u.toJson(showphone=True))
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==uid).first()
-    to_push=anyjson.dumps({"push":True,
+    to_push=json.dumps({"push":True,
                                 "type":"fromphonebook",
                                 "data":{
                                     "users":userlist
                                 }
-                            })
+                            },cls=AutoFitJson)
     QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')
