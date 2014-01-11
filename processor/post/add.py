@@ -15,7 +15,6 @@ def run(gid,content):
         newpost.group_id=gid
         newpost.content=content
         newpost=session.merge(newpost)
-        session.flush()
         session.commit()
         AddPostPublish(newpost.toJson())
         return Res({'postid':newpost.postid})

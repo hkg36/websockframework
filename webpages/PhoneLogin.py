@@ -27,7 +27,6 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                         user_info=datamodel.user.User()
                         user_info.phone=phone
                         user_info=session.merge(user_info)
-                        session.flush()
                         session.commit()
 
                     dbconfig.memclient.delete(str('vcode:%s'%phone))

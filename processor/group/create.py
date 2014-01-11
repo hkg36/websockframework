@@ -15,7 +15,7 @@ def run(name,board,type=0):
         newgroup.group_board=board
         newgroup.type=type
         newgroup=session.merge(newgroup)
-        session.flush()
+        session.commit()
         gmember=GroupMember()
         gmember.gid=newgroup.gid
         gmember.uid=BackEndEnvData.uid

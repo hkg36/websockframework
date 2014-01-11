@@ -58,7 +58,6 @@ class PostDone(WebSiteBasePage.AutoPage):
                 newpost.video=fileurl
                 newpost.length=imgdata['length']
             newpost=session.merge(newpost)
-            session.flush()
             session.commit()
             try:
                 json_post=json.dumps(newpost.toJson(),cls=AutoFitJson)

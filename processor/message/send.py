@@ -14,7 +14,6 @@ def run(uid,content):
         newmsg.fromid=BackEndEnvData.uid
         newmsg.content=content
         newmsg=session.merge(newmsg)
-        session.flush()
         session.commit()
         AddMessageTrans(newmsg.toJson())
         return Res({'msgid':newmsg.msgid})

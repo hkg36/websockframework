@@ -15,7 +15,6 @@ def run(postid,content):
         newreply.uid=BackEndEnvData.uid
         newreply.content=content
         newreply=session.merge(newreply)
-        session.flush()
         session.query(Post).filter(Post.postid==postid).update({Post.replycount:Post.replycount+1})
         session.commit()
         AddReplyNotify(newreply)
