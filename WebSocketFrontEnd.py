@@ -70,7 +70,7 @@ class RabbitMQ_Queue(object):
             self.channel = self.conn.channel()
             self.channel.queue_declare('task', durable=True,
                              callback=self.on_queue_creation)
-            self.channel.queue_declare(self.back_queue,auto_delete=True,callback=self.on_queue_back_created)
+            self.channel.queue_declare(self.back_queue,auto_delete=True,callback=self.on_queue_back_created,durable=False)
     def on_queue_creation(self,qinfo):
         print "queue %s created"%qinfo.queue
         self.task_queue=qinfo.queue
