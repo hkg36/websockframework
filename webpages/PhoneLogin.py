@@ -1,3 +1,4 @@
+#coding:utf8
 from tools.session import GenSession
 from tools.urls import GetClientWSSite
 
@@ -9,8 +10,7 @@ import random
 import anyjson
 import time
 import datamodel.user
-import tools.sms
-
+from MainPage import pusher
 class PhoneLogin(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input()
@@ -44,7 +44,10 @@ class getcode(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input()
         phone=params['phone']
+        if dbconfig.memclient.get(str('sms_timeout:%s'%phone)) is not None:
+            return anyjson.dumps({"msg":"请等待30秒后再重新发送"})
         gcode=str(random.randint(1000,9999))
         dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=600)
-        sms_res=None #tools.sms.SendSms(phone,gcode)
-        return anyjson.dumps({'code':gcode,'excode':sms_res})
+        dbconfig.memclient.set(str('sms_timeout:%s'%phone),'ok',time=30)
+        pusher.sendCode(phone,gcode)
+        return anyjson.dumps({'code':gcode})
