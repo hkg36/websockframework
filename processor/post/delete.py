@@ -1,5 +1,6 @@
-from operator import and_
 from datamodel.post import Post
+from datamodel.post_like import PostLike
+from datamodel.post_reply import PostReply
 from tools.helper import Res
 from tools.session import CheckSession
 
@@ -15,6 +16,8 @@ def run(postid):
             if post.uid!=BackEndEnvData.uid:
                 return Res(errno=2,error="not creator")
             session.delete(post)
+            session.query(PostLike).filter(PostLike.postid==postid).delete()
+            session.query(PostReply).filter(PostReply.postid==postid).delete()
             session.commit()
         else:
             return Res(errno=3,error="not exist")
