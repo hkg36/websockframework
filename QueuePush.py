@@ -32,7 +32,7 @@ class QueuePush(object):
                               routing_key=routing_key,retry=True,compression='gzip')
     def sendCode(self,phone,code):
         self._InitConnect()
-        json_str=json.dumps({'phone':str(phone),"content":u"您的莱信验证码为:%s，请在5分钟内输入完成验证。【莱福思】"%str(code)})
+        json_str=json.dumps({'phone':str(phone),"content":u"您的莱信验证码为:%s，请在5分钟内输入完成验证。【莱福思】"%str(code)},ensure_ascii=False)
         self.smsCodeProduce.publish(body=json_str,retry=True,compression='gzip')
 if __name__ == '__main__':
     Queue_User="guest"

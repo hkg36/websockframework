@@ -19,9 +19,9 @@ def RequestWork(params,body):
     msg = urllib.quote(content.encode('utf-8'))
     curl=pycurl.Curl()
     curl.fp = StringIO()
-    #curl.setopt(pycurl.URL, "http://60.191.57.85:8881/sms.aspx?account=771005&password=3F7J4C56&mobile=%s&content=%s&action=send&sendTime=&extno="%
-                            #(phone,msg))
-    curl.setopt(pycurl.URL, "http://60.191.57.85:8881/sms.aspx?account=771005&password=3F7J4C56&action=overage")
+    curl.setopt(pycurl.URL, ("http://60.191.57.85:8881/sms.aspx?account=771005&password=3F7J4C56&mobile=%s&content=%s&action=send&sendTime=&extno="%
+                            (phone,msg)).encode())
+    #curl.setopt(pycurl.URL, "http://60.191.57.85:8881/sms.aspx?account=771005&password=3F7J4C56&action=overage")
     curl.setopt(curl.WRITEFUNCTION, curl.fp.write)
     curl.perform()
     curl.fp.seek(0)
