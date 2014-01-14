@@ -35,10 +35,10 @@ def RequestWork(params,body,reply_queue):
             if iosdev:
                 user=session.query(User).filter(User.uid==post['fromid']).first()
                 allword=None
-                if 'content' in post:
+                if post.get('content',None):
                     allword=u"%s:%s"%(user.nick,post['content'])
                 else:
-                    allword=u"%s发了个图"%(user.nick)
+                    allword=u"%s发了一张图片"%(user.nick)
                 if iosdev.is_debug:
                     publish_debug_exchange.publish("body",headers={"message":allword,
                       "uhid":iosdev.device_token})
