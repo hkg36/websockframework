@@ -36,9 +36,9 @@ def RequestWork(params,body,reply_queue):
                 user=session.query(User).filter(User.uid==post['fromid']).first()
                 allword=None
                 if 'content' in post:
-                    allword=u"%s 对你说:%s"%(user.nick,post['content'])
+                    allword=u"%s:%s"%(user.nick,post['content'])
                 else:
-                    allword=u"%s 给你发了个好东西"%(user.nick)
+                    allword=u"%s发了个图"%(user.nick)
                 if iosdev.is_debug:
                     publish_debug_exchange.publish("body",headers={"message":allword,
                       "uhid":iosdev.device_token})
