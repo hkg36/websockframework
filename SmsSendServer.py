@@ -11,11 +11,10 @@ from StringIO import StringIO
 from lxml import etree
 
 def RequestWork(params,body):
-    print body
     jsonobj=json.loads(body)
     content=jsonobj['content']
     phone=jsonobj['phone']
-
+    print 'to phone',phone
     msg = urllib.quote(content.encode('utf-8'))
     curl=pycurl.Curl()
     curl.fp = StringIO()
@@ -31,7 +30,6 @@ def RequestWork(params,body):
     remain=doc.xpath('/returnsms/remainpoint/text()')
     if len(remain):
         remain=remain[0]
-
     print status,remain
 def RequestCallBack(body, message):
     headers=message.headers
