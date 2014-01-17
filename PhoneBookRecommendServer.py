@@ -18,7 +18,7 @@ from tools.helper import AutoFitJson
 def RequestWork(params,body,reply_queue):
     post=json.loads(body)
     uid=post['uid']
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         phonelist=session.query(PhoneBook).filter(PhoneBook.uid==uid).all()
         phones=[]
         for pinfo in phonelist:

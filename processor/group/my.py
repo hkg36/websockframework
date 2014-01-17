@@ -8,7 +8,7 @@ import dbconfig
 import time
 @CheckSession
 def run():
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         gms=session.query(GroupMember).filter(GroupMember.uid==BackEndEnvData.uid).all()
         glist=[]
         for gm in gms:

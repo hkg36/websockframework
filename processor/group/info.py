@@ -9,7 +9,7 @@ import dbconfig
 def run(gid):
     if isinstance(gid,list)==False:
         gid=[gid]
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         gps=session.query(Group).filter(Group.gid.in_(gid)).all()
         glist=[]
         for gp in gps:

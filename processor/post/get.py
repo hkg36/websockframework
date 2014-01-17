@@ -12,7 +12,7 @@ import dbconfig
 def run(postid):
     if isinstance(postid,list)==False:
         postid=[postid]
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         posts=session.query(Post).filter(Post.postid.in_(postid)).all()
         plist=[]
         for post in posts:

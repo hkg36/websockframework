@@ -10,7 +10,7 @@ import dbconfig
 
 @CheckSession
 def run(pos=0):
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         events=session.query(Events).filter(and_(Events.touid==BackEndEnvData.uid,Events.eid>pos))\
             .order_by(Events.eid.desc()).limit(50).all()
         eventlist=[]

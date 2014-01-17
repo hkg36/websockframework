@@ -7,7 +7,7 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(gid):
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         members=session.query(GroupMember).filter(GroupMember.gid==gid).order_by(GroupMember.time.desc()).all()
         memberlist=[]
         for m in members:

@@ -15,7 +15,7 @@ def RequestWork(params,body,reply_queue):
     gid=post['gid']
     uid=post['uid']
     uids=set()
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         gwus=session.query(GroupMember).filter(GroupMember.gid==gid).all()
         #gwus=session.query(GroupWatchUpdate).filter(GroupWatchUpdate.gid==gid).all()
         for gwu in gwus:

@@ -16,7 +16,7 @@ def run(long,lat):
     long_max=long+SEARCH_R
     geokey_min=CombineGeo(long_min,lat_min)
     geokey_max=CombineGeo(long_max,lat_max)
-    with dbconfig.Session(read=True) as session:
+    with dbconfig.Session() as session:
         users=session.query(UserGeoPosition).filter(
          and_(
          between(UserGeoPosition.geokey,geokey_min,geokey_max),
