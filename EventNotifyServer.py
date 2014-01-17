@@ -18,7 +18,7 @@ def RequestWork(params,body,reply_queue):
     eo=LoadEvent(event)
     if eo is None:
         return
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
 
     to_push=anyjson.dumps({"push":True,

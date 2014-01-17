@@ -4,11 +4,15 @@ import random
 class RoutingSession(Session):
     def __init__(self,**kwargs):
         kwargssuper=kwargs.copy()
-        del kwargssuper['slave_bind']
+        if 'slave_bind' in kwargssuper:
+            del kwargssuper['slave_bind']
+        if 'read' in kwargssuper:
+            del kwargssuper['read']
         super(RoutingSession, self).__init__(**kwargssuper)
         self.slave_bind=kwargs.get('slave_bind',[])
+        self.read=kwargs.get('read',False)
     def get_bind(self, mapper=None, clause=None ):
-        if self._flushing:
+        if self._flushing or self.read==False:
             return self.bind
         else:
             if self.slave_bind:

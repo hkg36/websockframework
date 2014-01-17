@@ -18,7 +18,7 @@ import zlib
 def RequestWork(params,body,reply_queue):
     post=anyjson.loads(body)
     toid=post['toid']
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
         if conn:
             to_push=anyjson.dumps({"push":True,

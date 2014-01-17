@@ -9,7 +9,7 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(postid,pos=0,count=50):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         lks=session.query(PostLike).filter(PostLike.postid==postid).order_by(PostLike.time.desc()).offset(pos).limit(count).all()
         lklist=[]
         for lk in lks:

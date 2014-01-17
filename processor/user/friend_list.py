@@ -9,7 +9,7 @@ import anyjson
 import time
 @CheckSession
 def run(uid=0,pos=0,count=10):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         allfriend=session.query(FriendList).filter(FriendList.uid==(BackEndEnvData.uid if uid==0 else uid))\
             .order_by(FriendList.time.desc())\
             .offset(pos).limit(count).all()

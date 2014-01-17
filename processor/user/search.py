@@ -8,7 +8,7 @@ import dbconfig
 import anyjson
 @CheckSession
 def run(nick=None):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         query=session.query(User)
         if nick:
             query=query.filter(User.nick.like(nick+'%')).order_by(User.nick)

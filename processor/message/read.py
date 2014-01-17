@@ -8,7 +8,7 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(afterid=0):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         if afterid==0:
             query=session.query(Message).filter(Message.toid==BackEndEnvData.uid).order_by(Message.msgid.desc()).limit(100)
         else:

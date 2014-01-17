@@ -14,7 +14,7 @@ import zlib
 def RequestWork(params,body,reply_queue):
     reply=json.loads(body)
     postid=reply['postid']
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         post=session.query(Post).filter(Post.postid==postid).first()
         if post.uid==reply['uid']:
             return

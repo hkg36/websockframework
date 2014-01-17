@@ -8,7 +8,7 @@ import dbconfig
 
 @CheckSession
 def run(level=1):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         user_info=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
         if user_info.actor==0:
             return Res({},2,'not a actor')

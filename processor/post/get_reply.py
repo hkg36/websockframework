@@ -9,7 +9,7 @@ import dbconfig
 
 @CheckSession
 def run(postid,pos=0,count=20):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         replys=session.query(PostReply).filter(PostReply.postid==postid).offset(pos).limit(count).all()
         rplist=[]
         for reply in replys:

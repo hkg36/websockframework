@@ -9,7 +9,7 @@ import BackEndEnvData
 import dbconfig
 @CheckSession
 def run(gid,frompos):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         posts=session.query(Post).filter(and_(Post.group_id==gid,Post.postid>frompos)).order_by(Post.postid.desc()).all()
         plist=[]
         for post in posts:

@@ -11,7 +11,7 @@ import anyjson
 def run(uid):
     if isinstance(uid,list)==False:
         uid=[uid]
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         users=session.query(User).filter(User.uid.in_(uid)).all()
         ulist=[]
         for user in users:

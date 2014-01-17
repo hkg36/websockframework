@@ -10,7 +10,7 @@ import dbconfig
 
 @CheckSession
 def run(gid,pos=0,count=50):
-    with dbconfig.Session() as session:
+    with dbconfig.Session(read=True) as session:
         query=session.query(Post).filter(Post.group_id==gid).order_by(Post.postid.desc())
         if pos>0:
             query=query.offset(pos)
