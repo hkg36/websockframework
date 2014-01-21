@@ -50,4 +50,4 @@ class getcode(WebSiteBasePage.AutoPage):
         dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=60*60)
         dbconfig.memclient.set(str('sms_timeout:%s'%phone),'ok',time=60)
         pusher.sendCode(phone,gcode)
-        return anyjson.dumps({'code':gcode})
+        return anyjson.dumps({'code':gcode,'androidversion':1,'androidurl':"http://server.xianchangjia.com/static/xxx.apk"})

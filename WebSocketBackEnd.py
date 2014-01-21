@@ -15,7 +15,7 @@ def LoadProcFunctionList(module_root='processor'):
     pathlist={}
     list_dirs = os.walk(module_root)
     for root, dirs, files in list_dirs:
-        root_path=root.replace('/','.')
+        root_path=root.replace(os.path.sep,'.')
         for f in files:
             if f.endswith('.pyc') or f=='__init__.py':
                 continue
@@ -24,7 +24,7 @@ def LoadProcFunctionList(module_root='processor'):
                 runfunc=mod.run
                 path=root[len(module_root)+1:]
                 if path:
-                    path='%s.%s'%(path.replace('/','.'),f[:-3])
+                    path='%s.%s'%(path.replace(os.path.sep,'.'),f[:-3])
                 else:
                     path=f[:-3]
                 pathlist[path]=runfunc
