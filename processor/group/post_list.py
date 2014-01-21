@@ -11,9 +11,10 @@ import dbconfig
 @CheckSession
 def run(gid,pos=0,count=50):
     with dbconfig.Session() as session:
-        query=session.query(Post).filter(Post.group_id==gid).order_by(Post.postid.desc())
-        if pos>0:
-            query=query.offset(pos)
+        if pos==0:
+            query=session.query(Post).filter(Post.group_id==gid).order_by(Post.postid.desc())
+        else:
+            query=session.query(Post).filter(and_(Post.group_id==gid,Post.postid<pos)).order_by(Post.postid.desc())
         query=query.limit(count)
         posts=query.all()
         plist=[]
