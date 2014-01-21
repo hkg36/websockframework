@@ -1,3 +1,4 @@
+#coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
 import dbconfig

@@ -1,3 +1,4 @@
+#coding:utf-8
 import QueueWork
 import getopt
 import importlib
@@ -7,11 +8,11 @@ from datamodel.group import GroupWatchUpdate
 from datamodel.friendlist import FriendList
 from datamodel.group_member import GroupMember
 import dbconfig
-import anyjson
+import json
 import zlib
 
 def RequestWork(params,body,reply_queue):
-    post=anyjson.loads(body)
+    post=json.loads(body)
     gid=post['gid']
     uid=post['uid']
     uids=set()
@@ -24,12 +25,12 @@ def RequestWork(params,body,reply_queue):
         for fd in fds:
             uids.add(fd.uid)
         allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
-    to_push=anyjson.dumps({"push":True,
+    to_push=json.dumps({"push":True,
                                 "type":"newpost",
                                 "data":{
                                     "post":post
                                 }
-                            })
+                            },ensure_ascii=False)
     for conn in allconn:
         QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,

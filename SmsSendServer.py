@@ -1,3 +1,4 @@
+#coding:utf-8
 from kombu import Connection
 from kombu.messaging import Consumer,Producer
 from kombu import Exchange, Queue

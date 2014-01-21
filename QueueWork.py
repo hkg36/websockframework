@@ -1,3 +1,4 @@
+#coding:utf-8
 __author__ = 'amen'
 from kombu import Connection
 from kombu.messaging import Consumer,Producer

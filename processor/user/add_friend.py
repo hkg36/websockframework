@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.events import Events
 from datamodel.friendlist import FriendList
 from tools.addPushQueue import AddEventNotify

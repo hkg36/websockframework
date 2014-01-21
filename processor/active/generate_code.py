@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.user import User
 from tools.helper import Res
 from tools.session import CheckSession, GenSession

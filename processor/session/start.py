@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.connection_info import ConnectionInfo
 from datamodel.user import User
 

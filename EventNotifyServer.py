@@ -1,3 +1,4 @@
+#coding:utf-8
 from tools.helper import LoadEvent
 
 __author__ = 'amen'

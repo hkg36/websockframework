@@ -12,21 +12,21 @@ from datamodel.connection_info import ConnectionInfo
 from datamodel.group import GroupWatchUpdate
 from datamodel.friendlist import FriendList
 import dbconfig
-import anyjson
+import json
 import zlib
 
 def RequestWork(params,body,reply_queue):
-    post=anyjson.loads(body)
+    post=json.loads(body)
     toid=post['toid']
     with dbconfig.Session() as session:
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
         if conn:
-            to_push=anyjson.dumps({"push":True,
+            to_push=json.dumps({"push":True,
                                         "type":"newmsg",
                                         "data":{
                                             "message":post
                                         }
-                                    })
+                                    },ensure_ascii=False)
             QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                           routing_key=conn.queue_id,
                                           compression='gzip')

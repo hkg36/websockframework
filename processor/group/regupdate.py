@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.group import GroupWatchUpdate
 from tools.helper import Res
 from tools.session import CheckSession

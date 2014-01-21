@@ -1,3 +1,4 @@
+#coding:utf-8
 import QueueWork
 import getopt
 import importlib

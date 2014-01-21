@@ -1,3 +1,4 @@
+#coding:utf-8
 from sqlalchemy import and_
 from datamodel.group_member import GroupMember
 from tools.helper import Res

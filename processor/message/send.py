@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.message import Message
 from tools.addPushQueue import AddMessageTrans
 from tools.helper import Res

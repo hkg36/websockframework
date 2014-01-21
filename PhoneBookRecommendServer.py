@@ -1,3 +1,4 @@
+#coding:utf-8
 from sqlalchemy import not_, and_
 
 __author__ = 'amen'

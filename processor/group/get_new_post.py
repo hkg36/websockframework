@@ -1,3 +1,4 @@
+#coding:utf-8
 from sqlalchemy import and_
 from datamodel.post import Post
 from datamodel.post_like import PostLike

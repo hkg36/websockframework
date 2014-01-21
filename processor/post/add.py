@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.post import Post
 from tools.addPushQueue import AddPostPublish
 from tools.helper import Res

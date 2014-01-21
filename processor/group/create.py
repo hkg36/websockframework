@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.group import Group
 from datamodel.group_member import GroupMember
 from tools.helper import Res

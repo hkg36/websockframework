@@ -1,3 +1,4 @@
+#coding:utf-8
 import WebSiteBasePage
 import web
 import QueuePush

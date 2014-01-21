@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.friendlist import FriendList
 from datamodel.user import User
 from tools.helper import Res

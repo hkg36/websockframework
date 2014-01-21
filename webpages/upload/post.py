@@ -1,3 +1,4 @@
+#coding:utf-8
 from tools.helper import AutoFitJson
 
 __author__ = 'amen'

@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.user_geo_position import UserGeoPosition
 from tools.helper import Res, CombineGeo
 from tools.session import CheckSession

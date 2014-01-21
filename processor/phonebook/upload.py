@@ -1,3 +1,4 @@
+#coding:utf-8
 from datamodel.phone_book import PhoneBook
 from tools.addPushQueue import AddPhoneBookUpdated
 from tools.helper import Res
