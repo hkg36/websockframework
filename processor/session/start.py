@@ -1,4 +1,5 @@
 #coding:utf-8
+from sqlalchemy import or_
 from datamodel.connection_info import ConnectionInfo
 from datamodel.user import User
 
@@ -13,9 +14,10 @@ def run(sessionid):
     with dbconfig.Session() as session:
         user_data=session.query(User).filter(User.uid==data['uid']).first()
         if user_data:
-            cinfo=session.query(ConnectionInfo).filter(ConnectionInfo.connection_id==BackEndEnvData.connection_id).first()
-            if cinfo is None:
-                cinfo=ConnectionInfo()
+            session.query(ConnectionInfo).filter(or_(ConnectionInfo.connection_id==BackEndEnvData.connection_id,
+                                                     ConnectionInfo.uid==data['uid'])).first()
+            session.commit()
+            cinfo=ConnectionInfo()
             cinfo.uid=user_data.uid
             cinfo.connection_id=BackEndEnvData.connection_id
             cinfo.queue_id=BackEndEnvData.reply_queue
