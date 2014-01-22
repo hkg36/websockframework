@@ -9,7 +9,7 @@ import BackEndEnvData
 import dbconfig
 
 
-@CheckSession
+@CheckSession()
 def run(pos=0):
     with dbconfig.Session() as session:
         events=session.query(Events).filter(and_(Events.touid==BackEndEnvData.uid,Events.eid>pos))\

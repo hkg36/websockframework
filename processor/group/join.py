@@ -7,7 +7,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 import anyjson
-@CheckSession
+@CheckSession()
 def run(gid,type=1):
     with dbconfig.Session() as session:
         gmember=GroupMember()

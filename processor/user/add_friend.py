@@ -9,7 +9,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 import anyjson
-@CheckSession
+@CheckSession()
 def run(uid,type=0):
     if isinstance(uid,list)==False:
         uid=[uid]

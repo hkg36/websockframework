@@ -8,7 +8,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 
-@CheckSession
+@CheckSession()
 def run(postid,pos=0,count=20):
     with dbconfig.Session() as session:
         replys=session.query(PostReply).filter(PostReply.postid==postid).offset(pos).limit(count).all()

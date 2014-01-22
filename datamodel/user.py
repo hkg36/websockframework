@@ -19,7 +19,7 @@ class User(dbconfig.DBBase):
     position = Column(String(256))
 
     actor=Column(Integer,default=0)
-    actor_level=Column(Integer,default=0)
+    actor_level=Column(Integer,default=1)
     active_by=Column(BigInteger,default=0)
     active_level=Column(Integer,default=0)
     active_time=Column(TIMESTAMP)

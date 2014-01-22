@@ -5,7 +5,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-@CheckSession
+@CheckSession()
 def run(device_token,is_debug):
     with dbconfig.Session() as session:
         device=IOSDevice()

@@ -9,7 +9,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 
-@CheckSession
+@CheckSession()
 def run(gid,pos=0,count=50):
     with dbconfig.Session() as session:
         if pos==0:

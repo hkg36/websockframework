@@ -9,7 +9,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 import anyjson
-@CheckSession
+@CheckSession()
 def run(postid):
     with dbconfig.Session() as session:
         likerecord=session.query(PostLike).filter(and_(PostLike.postid==postid,PostLike.uid==BackEndEnvData.uid)).first()

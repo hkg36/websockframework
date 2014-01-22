@@ -7,7 +7,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 
-@CheckSession
+@CheckSession()
 def run(long,lat):
     with dbconfig.Session() as session:
         userpos=UserGeoPosition()

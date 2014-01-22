@@ -7,7 +7,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 
-@CheckSession
+@CheckSession()
 def run(level=1):
     with dbconfig.Session() as session:
         user_info=session.query(User).filter(User.uid==BackEndEnvData.uid).first()

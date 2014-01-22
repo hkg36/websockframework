@@ -9,7 +9,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-@CheckSession
+@CheckSession()
 def run(postid):
     with dbconfig.Session() as session:
         likerecord=session.query(PostLike).filter(and_(PostLike.postid==postid,PostLike.uid==BackEndEnvData.uid)).first()

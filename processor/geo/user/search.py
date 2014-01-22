@@ -9,7 +9,7 @@ import BackEndEnvData
 import dbconfig
 
 SEARCH_R=0.03
-@CheckSession
+@CheckSession()
 def run(long,lat):
     lat_min=lat-SEARCH_R
     lat_max=lat+SEARCH_R

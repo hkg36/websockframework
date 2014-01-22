@@ -8,7 +8,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 import anyjson
-@CheckSession
+@CheckSession()
 def run(gid):
     with dbconfig.Session() as session:
         session.query(GroupMember).filter(and_(GroupMember.gid==gid,GroupMember.uid==BackEndEnvData.uid)).delete()

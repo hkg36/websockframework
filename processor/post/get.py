@@ -9,7 +9,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 
-@CheckSession
+@CheckSession()
 def run(postid):
     if isinstance(postid,list)==False:
         postid=[postid]

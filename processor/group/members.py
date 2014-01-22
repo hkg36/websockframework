@@ -6,7 +6,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-@CheckSession
+@CheckSession()
 def run(gid):
     with dbconfig.Session() as session:
         members=session.query(GroupMember).filter(GroupMember.gid==gid).order_by(GroupMember.time.desc()).all()

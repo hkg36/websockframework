@@ -7,7 +7,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-@CheckSession
+@CheckSession()
 def run(gid,name=None,board=None,type=0):
     with dbconfig.Session() as session:
         ginfo=session.query(Group).filter(Group.gid==gid).first()

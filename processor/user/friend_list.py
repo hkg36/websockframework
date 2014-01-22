@@ -8,7 +8,7 @@ import BackEndEnvData
 import dbconfig
 import anyjson
 import time
-@CheckSession
+@CheckSession()
 def run(uid=0,pos=0,count=10):
     with dbconfig.Session() as session:
         allfriend=session.query(FriendList).filter(FriendList.uid==(BackEndEnvData.uid if uid==0 else uid))\

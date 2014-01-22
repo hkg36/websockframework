@@ -8,7 +8,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 
-@CheckSession
+@CheckSession(level=1)
 def run(gid,content):
     with dbconfig.Session() as session:
         newpost=Post()

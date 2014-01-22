@@ -9,7 +9,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 
-@CheckSession
+@CheckSession()
 def run(postid):
     with dbconfig.Session() as session:
         post=session.query(Post).filter(Post.postid==postid).first()

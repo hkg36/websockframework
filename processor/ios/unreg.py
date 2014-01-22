@@ -5,7 +5,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-@CheckSession
+@CheckSession()
 def run():
     with dbconfig.Session() as session:
         session.query(IOSDevice).filter(IOSDevice.uid==BackEndEnvData.uid).delete()

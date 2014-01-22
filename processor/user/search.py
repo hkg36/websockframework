@@ -7,7 +7,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 import anyjson
-@CheckSession
+@CheckSession()
 def run(nick=None):
     with dbconfig.Session() as session:
         query=session.query(User)

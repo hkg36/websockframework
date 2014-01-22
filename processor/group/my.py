@@ -7,7 +7,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 import time
-@CheckSession
+@CheckSession()
 def run():
     with dbconfig.Session() as session:
         gms=session.query(GroupMember).filter(GroupMember.uid==BackEndEnvData.uid).all()

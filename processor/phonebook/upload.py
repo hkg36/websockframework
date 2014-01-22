@@ -7,7 +7,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-@CheckSession
+@CheckSession()
 def run(phone_list):
     with dbconfig.Session() as session:
         for one in phone_list:
