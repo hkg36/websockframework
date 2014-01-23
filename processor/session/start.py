@@ -6,7 +6,7 @@ from datamodel.user import User
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import anyjson
+import json
 def run(sessionid):
     data=dbconfig.memclient.get(str('session:%s'%sessionid))
     if data is None:

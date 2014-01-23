@@ -7,7 +7,7 @@ import web
 import dbconfig
 import WebSiteBasePage
 import random
-import anyjson
+import json
 import time
 import datamodel.user
 from MainPage import pusher
@@ -19,7 +19,7 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
         if phone and code:
             vcode=dbconfig.memclient.get(str('vcode:%s'%phone))
             if vcode is None:
-                return anyjson.dumps({'error':'time out'})
+                return json.dumps({'error':'time out'})
             if vcode==code:
                 with dbconfig.Session() as session:
                     user_info=session.query(datamodel.user.User).filter(datamodel.user.User.phone==phone).first()
@@ -34,9 +34,9 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                     TIMEOUTTIME=3600*24*5
                     time_out=time.time()+TIMEOUTTIME
                     dbconfig.memclient.set(str('session:%s'%session_id),{'uid':user_info.uid})
-                    return anyjson.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
+                    return json.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
             else:
-                return anyjson.dumps({'error':'code error'})
+                return json.dumps({'error':'code error'})
         tpl=WebSiteBasePage.jinja2_env.get_template('PhoneLogin.html')
         return tpl.render()
 
@@ -45,9 +45,9 @@ class getcode(WebSiteBasePage.AutoPage):
         params=web.input()
         phone=params['phone']
         if dbconfig.memclient.get(str('sms_timeout:%s'%phone)) is not None:
-            return anyjson.dumps({"msg":"请等待60秒后再重新发送"})
+            return json.dumps({"msg":"请等待60秒后再重新发送"})
         gcode=str(random.randint(1000,9999))
         dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=60*60)
         dbconfig.memclient.set(str('sms_timeout:%s'%phone),'ok',time=60)
         pusher.sendCode(phone,gcode)
-        return anyjson.dumps({'code':gcode,'androidversion':1,'androidurl':"http://server.xianchangjia.com/static/xxx.apk"})
+        return json.dumps({'code':gcode,'androidversion':1,'androidurl':"http://server.xianchangjia.com/static/xxx.apk"})

@@ -5,7 +5,7 @@ __author__ = 'amen'
 import WebSiteBasePage
 import qiniu.rs
 import web
-import anyjson
+import json
 import dbconfig
 import datamodel.message
 import website_config
@@ -29,14 +29,14 @@ class Message(WebSiteBasePage.AutoPage):
         uptoken = policy.token()
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return anyjson.dumps({'token':uptoken})
+            return json.dumps({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('upload/Message.html')
         return tpl.render(token=uptoken)
 
 class MessageDone(WebSiteBasePage.AutoPage):
     SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
-        imgdata=anyjson.loads(web.data())
+        imgdata=json.loads(web.data())
         with dbconfig.Session() as session:
             newmsg=datamodel.message.Message()
             newmsg.fromid=imgdata['uid']

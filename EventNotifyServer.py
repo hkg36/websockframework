@@ -10,11 +10,11 @@ from datamodel.connection_info import ConnectionInfo
 from datamodel.group import GroupWatchUpdate
 from datamodel.friendlist import FriendList
 import dbconfig
-import anyjson
+import json
 import zlib
 
 def RequestWork(params,body,reply_queue):
-    event=anyjson.loads(body)
+    event=json.loads(body)
     toid=event['touid']
     eo=LoadEvent(event)
     if eo is None:
@@ -22,7 +22,7 @@ def RequestWork(params,body,reply_queue):
     with dbconfig.Session() as session:
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
 
-    to_push=anyjson.dumps({"push":True,
+    to_push=json.dumps({"push":True,
                                 "type":"event",
                                 "data":{
                                     "event":eo

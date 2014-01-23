@@ -6,7 +6,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import anyjson
+import json
 @CheckSession()
 def run(nick=None):
     with dbconfig.Session() as session:

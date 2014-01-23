@@ -3,7 +3,7 @@ __author__ = 'amen'
 import WebSiteBasePage
 import qiniu.rs
 import web
-import anyjson
+import json
 import dbconfig
 import datamodel.user
 import website_config
@@ -24,7 +24,7 @@ class HeadImg(WebSiteBasePage.AutoPage):
         uptoken = policy.token()
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return anyjson.dumps({'token':uptoken})
+            return json.dumps({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('upload/HeadImg.html')
         return tpl.render(token=uptoken)
     def POST(self):
@@ -33,13 +33,13 @@ class HeadImg(WebSiteBasePage.AutoPage):
 class HeadImgDone(WebSiteBasePage.AutoPage):
     SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
-        imgdata=anyjson.loads(web.data())
+        imgdata=json.loads(web.data())
         with dbconfig.Session() as session:
             user=session.query(datamodel.user.User).filter(datamodel.user.User.uid==imgdata['uid']).first()
             if user is None:
-                return anyjson.dumps({"errno":1,"error":"user lost"})
+                return json.dumps({"errno":1,"error":"user lost"})
             fileurl=self.SITE+imgdata['hash']
             user.headpic=fileurl
             session.merge(user)
             session.commit()
-        return anyjson.dumps({"errno":0,"error":"Success","url":fileurl})
+        return json.dumps({"errno":0,"error":"Success","url":fileurl})

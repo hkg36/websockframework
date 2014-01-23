@@ -8,7 +8,7 @@ from tools.session import CheckSession
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import anyjson
+import json
 @CheckSession()
 def run(uid,type=0):
     if isinstance(uid,list)==False:
