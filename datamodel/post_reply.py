@@ -6,7 +6,7 @@ class PostReply(dbconfig.DBBase):
     __tablename__ = 'post_reply'
     replyid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
     postid=Column(BigInteger,nullable=False)
-    uid=Column(BigInteger,nullable=False)
+    uid=Column(BigInteger,nullable=False,index=True)
     content=Column(String(4096))
     like=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
@@ -19,3 +19,4 @@ class PostReply(dbconfig.DBBase):
             "content":reply.content,
             "time":reply.time
         }
+#Index('postreply_ur_index',PostReply.uid, PostReply.replyid)

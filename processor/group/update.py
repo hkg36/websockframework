@@ -8,7 +8,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(gid,name=None,board=None,type=0):
+def run(gid,name=None,board=None,type=0,position=None):
     with dbconfig.Session() as session:
         ginfo=session.query(Group).filter(Group.gid==gid).first()
         if ginfo is None:
@@ -21,6 +21,8 @@ def run(gid,name=None,board=None,type=0):
             ginfo.group_board = board
         if type:
             ginfo.type = type
+        if position:
+            ginfo.group_postion=position
         session.merge(ginfo)
         session.commit()
 

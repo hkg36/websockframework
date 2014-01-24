@@ -14,16 +14,17 @@ import dbconfig
 def run(from_reply=0):
     with dbconfig.Session() as session:
         reply_list=[]
-        posts=session.query(Post).filter(Post.uid).order_by(Post.postid.desc()).limit(20).all()
         post_ids=set()
+
+        posts=session.query(Post).filter(Post.uid).order_by(Post.postid.desc()).limit(20).all()
         for post in posts:
             post_ids.add(post.postid)
+        replys=session.query(PostReply).filter(PostReply.uid==BackEndEnvData.uid).order_by(PostReply.replyid.desc()).limit(30).all()
+        for reply in replys:
+            post_ids.add(reply.postid)
 
         subquery=session.query(PostReply)
-        if from_reply:
-            subquery=subquery.filter(and_(PostReply.postid.in_(list(post_ids)),PostReply.replyid>from_reply))
-        else:
-            subquery=subquery.filter(PostReply.postid.in_(list(post_ids)))
+        subquery=subquery.filter(and_(PostReply.postid.in_(list(post_ids)),PostReply.replyid>from_reply))
         replys=subquery.order_by(PostReply.replyid).limit(100).all()
         for reply in replys:
             reply_list.append(reply.toJson())

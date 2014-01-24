@@ -8,13 +8,14 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(name,board,type=0):
+def run(name,board,type=0,position=None):
     with dbconfig.Session() as session:
         newgroup=Group()
         newgroup.creator=BackEndEnvData.uid
         newgroup.group_name=name
         newgroup.group_board=board
         newgroup.type=type
+        newgroup.group_postion=position
         newgroup=session.merge(newgroup)
         session.commit()
         gmember=GroupMember()

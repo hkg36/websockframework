@@ -9,6 +9,7 @@ class Group(dbconfig.DBBase):
     creator=Column(BigInteger,nullable=False,index=True)
     group_name=Column(String(256),nullable=False)
     group_board=Column(String(4096))
+    group_postion=Column(String(256))
     type=Column(Integer)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     def toJson(self):
@@ -17,6 +18,7 @@ class Group(dbconfig.DBBase):
                 "name":self.group_name,
                 "board":self.group_board,
                 "type":self.type,
+                "position":self.group_postion,
                 "time":self.time}
 
 class GroupWatchUpdate(dbconfig.DBBase):
