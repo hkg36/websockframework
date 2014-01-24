@@ -31,8 +31,11 @@ def run():
     global connection,channel,producer,task_queue,consumer
     try:
         consumer.consume()
-        while True:
-            connection.drain_events()
+        try:
+            while True:
+                connection.drain_events()
+        except Exception,e:
+            print e
         connection.close()
     except BaseException,e:
         print traceback.format_exc()

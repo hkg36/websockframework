@@ -15,7 +15,7 @@ def run(sessionid):
         user_data=session.query(User).filter(User.uid==data['uid']).first()
         if user_data:
             session.query(ConnectionInfo).filter(or_(ConnectionInfo.connection_id==BackEndEnvData.connection_id,
-                                                     ConnectionInfo.uid==data['uid'])).first()
+                                                     ConnectionInfo.uid==data['uid'])).delete()
             session.commit()
             cinfo=ConnectionInfo()
             cinfo.uid=user_data.uid

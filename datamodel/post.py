@@ -6,7 +6,7 @@ import time
 class Post(dbconfig.DBBase):
     __tablename__ = 'post'
     postid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
-    uid=Column(BigInteger,nullable=False)
+    uid=Column(BigInteger,nullable=False,index=True)
     group_id=Column(BigInteger,default=0)
     content=Column(String(4096))
     picture=Column(String(1024))
