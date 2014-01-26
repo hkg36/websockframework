@@ -19,4 +19,4 @@ class PostReply(dbconfig.DBBase):
             "content":reply.content,
             "time":reply.time
         }
-#Index('postreply_ur_index',PostReply.uid, PostReply.replyid)
+#Index('postreply_pr_index',PostReply.postid, PostReply.replyid)

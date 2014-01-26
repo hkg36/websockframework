@@ -23,6 +23,9 @@ def run(from_reply=0):
         for reply in replys:
             post_ids.add(reply.postid)
 
+        if len(post_ids)==0:
+            return Res({"replys":[]})
+
         subquery=session.query(PostReply)
         subquery=subquery.filter(and_(PostReply.postid.in_(list(post_ids)),PostReply.replyid>from_reply))
         replys=subquery.order_by(PostReply.replyid).limit(100).all()
