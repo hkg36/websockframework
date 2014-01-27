@@ -8,12 +8,16 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(uid,content):
+def run(uid,content=None,lat=None,long=None):
+    if content==None and (lat==None or long==None):
+        return Res(errno=3,error="param error")
     with dbconfig.Session() as session:
         newmsg=Message()
         newmsg.toid=uid
         newmsg.fromid=BackEndEnvData.uid
         newmsg.content=content
+        newmsg.lat=lat
+        newmsg.long=long
         newmsg=session.merge(newmsg)
         session.commit()
         AddMessageTrans(newmsg.toJson())

@@ -37,14 +37,21 @@ def RequestWork(params,body,reply_queue):
                 allword=None
                 if post.get('content',None):
                     allword=u"%s:%s"%(user.nick,post['content'])
-                else:
+                elif post.get('picture',None):
                     allword=u"%s发了一张图片"%(user.nick)
-                if iosdev.is_debug:
-                    publish_debug_exchange.publish("body",headers={"message":allword,
-                      "uhid":iosdev.device_token})
-                else:
-                    publish_release_exchange.publish("body",headers={"message":allword,
-                      "uhid":iosdev.device_token})
+                elif post.get('video',None):
+                    allword=u"%s发了一段视频"%(user.nick)
+                elif post.get('voice',None):
+                    allword=u"%s发了一段音频"%(user.nick)
+                elif post.get('lat',None):
+                    allword=u"%s发了一个位置"%(user.nick)
+                if allword:
+                    if iosdev.is_debug:
+                        publish_debug_exchange.publish("body",headers={"message":allword,
+                          "uhid":iosdev.device_token})
+                    else:
+                        publish_release_exchange.publish("body",headers={"message":allword,
+                          "uhid":iosdev.device_token})
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None

@@ -15,21 +15,32 @@ class Message(dbconfig.DBBase):
     width=Column(Integer)
     height=Column(Integer)
     length=Column(Integer)
+    lat=Column(Float)
+    long=Column(Float)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     def toJson(self):
         data={'msgid':self.msgid,
               'fromid':self.fromid,
               'toid':self.toid,
-              'content':self.content,
               'time':self.time}
-        if self.picture:
+        if self.content:
+            data['type']='txt'
+            data['content']=self.content
+        elif self.picture:
+            data['type']='pic'
             data['picture']=self.picture
             data['width']=self.width
             data['height']=self.height
-        if self.video:
+        elif self.video:
+            data['type']='vdo'
             data['video']=self.video
             data['length']=self.length
-        if self.voice:
+        elif self.voice:
+            data['type']="vic"
             data['voice']=self.voice
             data['length']=self.length
+        elif self.lat and self.long:
+            data['type']="geo"
+            data['lat']=self.lat
+            data['long']=self.long
         return data
