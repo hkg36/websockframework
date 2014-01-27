@@ -24,7 +24,7 @@ class Message(WebSiteBasePage.AutoPage):
             return {"errno":1,"error":"session not found","result":{}}
         policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
         policy.callbackUrl='http://%s/upload/MessageDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
+        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
                             '"toid":"$(x:toid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%data['uid']
         uptoken = policy.token()
         if int(params['usepage'])==0:
