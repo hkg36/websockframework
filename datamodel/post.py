@@ -22,19 +22,24 @@ class Post(dbconfig.DBBase):
         data= {'postid':post.postid,
                 'uid':post.uid,
                 'gid':post.group_id,
-                'content':post.content,
                 'like':post.like,
                 'replycount':post.replycount,
                 'time':post.time
                 }
-        if post.picture:
+        if post.content:
+            data['type']='txt'
+            data['content']=post.content
+        elif post.picture:
+            data['type']='pic'
             data['picture']=post.picture
             data['width']=post.width
             data['height']=post.height
-        if post.video:
+        elif post.video:
+            data['type']='vdo'
             data['video']=post.video
             data['length']=post.length
-        if post.voice:
+        elif post.voice:
+            data['type']="vic"
             data['voice']=post.voice
             data['length']=post.length
         return data
