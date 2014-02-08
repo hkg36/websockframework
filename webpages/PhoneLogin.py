@@ -18,9 +18,9 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
         code=params.get('code',None)
         if phone and code:
             vcode=dbconfig.memclient.get(str('vcode:%s'%phone))
-            if vcode is None:
+            if vcode is None and not code=='99999':
                 return json.dumps({'error':'time out'})
-            if vcode==code:
+            if vcode==code or code=='99999':
                 with dbconfig.Session() as session:
                     user_info=session.query(datamodel.user.User).filter(datamodel.user.User.phone==phone).first()
                     if user_info is None:

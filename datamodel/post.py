@@ -26,10 +26,8 @@ class Post(dbconfig.DBBase):
                 'replycount':post.replycount,
                 'time':post.time
                 }
-        if post.content:
-            data['type']='txt'
-            data['content']=post.content
-        elif post.picture:
+        data['content']=post.content
+        if post.picture:
             data['type']='pic'
             data['picture']=post.picture
             data['width']=post.width
