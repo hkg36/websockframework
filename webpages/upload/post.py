@@ -67,3 +67,54 @@ class PostDone(WebSiteBasePage.AutoPage):
                 return json.dumps({'errno':5,'error':str(e)})
 
             return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost.postid}},cls=AutoFitJson)
+
+class PostEx(WebSiteBasePage.AutoPage):
+    def GET(self):
+        params=web.input(usepage='0')
+        sessionid=params.get('sessionid',None)
+        postid=params.get('postid',None)
+        if sessionid is None:
+            return "No Session id"
+        if postid is None:
+            return "No Post id"
+        data=dbconfig.memclient.get(str('session:%s'%sessionid))
+        if data is None:
+            return {"errno":1,"error":"session not found","result":{}}
+        with dbconfig.Session() as session:
+            oldpost=session.query(datamodel.post.Post).filter(datamodel.post.Post.postid==postid).first()
+            if oldpost is None or oldpost.uid!=data['uid']:
+                return "post not exists or not yours"
+        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+        policy.callbackUrl='http://%s/upload/PostExDone'%website_config.hostname
+        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                            '"length":"$(x:length)","postid":%d,"filetype":"$(x:filetype)"}'%int(postid)
+        uptoken = policy.token()
+        if int(params['usepage'])==0:
+            web.header("Content-type","application/json")
+            return json.dumps({'token':uptoken})
+        tpl=WebSiteBasePage.jinja2_env.get_template('upload/PostEx.html')
+        return tpl.render(token=uptoken)
+
+class PostExDone(WebSiteBasePage.AutoPage):
+    SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
+    def POST(self):
+        imgdata=json.loads(web.data())
+        with  dbconfig.Session() as session:
+            newpostex=datamodel.post.PostExData()
+            newpostex.postid=imgdata['postid']
+            fileurl=self.SITE+imgdata['hash']
+            filetype=int(imgdata['filetype'])
+            if filetype==1:
+                newpostex.picture=fileurl
+                newpostex.width=imgdata['width']
+                newpostex.height=imgdata['height']
+            elif filetype==2:
+                newpostex.voice=fileurl
+                newpostex.length=imgdata['length']
+            elif filetype==3:
+                newpostex.video=fileurl
+                newpostex.length=imgdata['length']
+            newpostex=session.merge(newpostex)
+            session.commit()
+
+            return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'did':newpostex.did}},cls=AutoFitJson)

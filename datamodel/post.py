@@ -41,3 +41,30 @@ class Post(dbconfig.DBBase):
             data['voice']=post.voice
             data['length']=post.length
         return data
+class PostExData(dbconfig.DBBase):
+    __tablename__ = 'post_ex_data'
+    did=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
+    postid=Column(BigInteger,index=True,nullable=False)
+    picture=Column(String(1024))
+    video=Column(String(1024))
+    voice=Column(String(1024))
+    width=Column(Integer)
+    height=Column(Integer)
+    length=Column(Integer)
+    def toJson(self):
+        data={'did':self.did,
+              'postid':self.postid}
+        if self.picture:
+            data['type']='pic'
+            data['picture']=self.picture
+            data['width']=self.width
+            data['height']=self.height
+        elif self.video:
+            data['type']='vdo'
+            data['video']=self.video
+            data['length']=self.length
+        elif self.voice:
+            data['type']="vic"
+            data['voice']=self.voice
+            data['length']=self.length
+        return data

@@ -3,8 +3,6 @@ from datamodel.friendlist import FriendList
 from datamodel.user import User
 from tools.helper import Res
 from tools.session import CheckSession
-
-__author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 import json
