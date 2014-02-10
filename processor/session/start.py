@@ -8,9 +8,10 @@ import BackEndEnvData
 import dbconfig
 import json
 def run(sessionid):
-    data=dbconfig.memclient.get(str('session:%s'%sessionid))
+    data=dbconfig.redisdb.get(str('session:%s'%sessionid))
     if data is None:
         return {"errno":1,"error":"session not found","result":{}}
+    data=json.loads(data)
     with dbconfig.Session() as session:
         user_data=session.query(User).filter(User.uid==data['uid']).first()
         if user_data:

@@ -14,7 +14,7 @@ DBBase=declarative_base(name="DBBase")
 #Session = sessionmaker(bind=db)
 Session = sessionmaker(bind=db,autocommit=False,autoflush=False,class_=AutoSession)
 
-redisdb=redis.StrictRedis()
+redisdb=redis.StrictRedis(host='192.173.1.213', port=6379)
 memclient=memcache.Client(['192.173.1.213:11211'])
 
 qiniu.conf.ACCESS_KEY = "x5yGWWp6fBGMwlJyEU0GVzilkNIa7Mc87ibrKpdU"

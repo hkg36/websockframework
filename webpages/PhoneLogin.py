@@ -10,6 +10,7 @@ import random
 import json
 import time
 import datamodel.user
+import datetime
 from MainPage import pusher
 class PhoneLogin(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -33,7 +34,7 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                     session_id=GenSession()
                     TIMEOUTTIME=3600*24*5
                     time_out=time.time()+TIMEOUTTIME
-                    dbconfig.memclient.set(str('session:%s'%session_id),{'uid':user_info.uid})
+                    dbconfig.redisdb.set(str('session:%s'%session_id),json.dumps({'uid':user_info.uid}),ex=datetime.timedelta(days=180))
                     return json.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
             else:
                 return json.dumps({'error':'code error'})

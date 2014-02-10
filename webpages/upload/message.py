@@ -19,9 +19,10 @@ class Message(WebSiteBasePage.AutoPage):
         sessionid=params.get('sessionid',None)
         if sessionid is None:
             return "No Session id"
-        data=dbconfig.memclient.get(str('session:%s'%sessionid))
+        data=dbconfig.redisdb.get(str('session:%s'%sessionid))
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
+        data=json.loads(data)
         policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
         policy.callbackUrl='http://%s/upload/MessageDone'%website_config.hostname
         policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
