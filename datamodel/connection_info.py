@@ -1,6 +1,9 @@
 #coding:utf-8
 from sqlalchemy import *
+
 import dbconfig
+
+
 class ConnectionInfo(dbconfig.DBBase):
     __tablename__ = 'connection_info'
     uid = Column(BigInteger, primary_key=True,nullable=False)

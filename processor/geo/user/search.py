@@ -1,11 +1,12 @@
 #coding:utf-8
 from sqlalchemy import between, and_
+
 from datamodel.user_geo_position import UserGeoPosition
 from tools.helper import Res, CombineGeo
 from tools.session import CheckSession
 
+
 __author__ = 'amen'
-import BackEndEnvData
 import dbconfig
 
 SEARCH_R=0.03

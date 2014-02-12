@@ -1,4 +1,4 @@
-from kombu import Connection,Exchange, Producer,Consumer, Queue
+from kombu import Connection,Exchange, Consumer, Queue
 
 Queue_User="guest"
 Queue_PassWord="guest"

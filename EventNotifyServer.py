@@ -7,11 +7,9 @@ import getopt
 import importlib
 import sys
 from datamodel.connection_info import ConnectionInfo
-from datamodel.group import GroupWatchUpdate
-from datamodel.friendlist import FriendList
 import dbconfig
 import json
-import zlib
+
 
 def RequestWork(params,body,reply_queue):
     event=json.loads(body)

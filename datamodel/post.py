@@ -1,8 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
-import time
+
+
 class Post(dbconfig.DBBase):
     __tablename__ = 'post'
     postid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
@@ -17,6 +19,7 @@ class Post(dbconfig.DBBase):
     length=Column(Integer)
     like=Column(Integer,default=0)
     replycount=Column(Integer,default=0)
+    excount=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     def toJson(post):
         data= {'postid':post.postid,
@@ -24,6 +27,7 @@ class Post(dbconfig.DBBase):
                 'gid':post.group_id,
                 'like':post.like,
                 'replycount':post.replycount,
+                'excount':post.excount,
                 'time':post.time
                 }
         data['content']=post.content

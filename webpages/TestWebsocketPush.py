@@ -1,9 +1,10 @@
 #coding:utf-8
-import WebSiteBasePage
 import web
-import QueuePush
-import website_config
+
+import WebSiteBasePage
 from MainPage import pusher
+
+
 class TestWebsocketPush(WebSiteBasePage.AutoPage):
     def GET(self):
         return self.buildpage()

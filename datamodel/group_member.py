@@ -1,7 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
+
+
 class GroupMember(dbconfig.DBBase):
     __tablename__ = 'group_member'
     gid=Column(BigInteger,nullable=False)

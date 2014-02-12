@@ -1,6 +1,8 @@
 from sqlalchemy import and_
+
 from datamodel.connection_info import ConnectionInfo
 from datamodel.user import User
+
 
 __author__ = 'amen'
 import random

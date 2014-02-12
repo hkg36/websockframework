@@ -1,7 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
+
+
 class FriendList(dbconfig.DBBase):
     __tablename__ = 'friendlist'
     uid=Column(BigInteger,nullable=False)

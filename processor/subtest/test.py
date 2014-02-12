@@ -1,7 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 import hashlib
+
 import BackEndEnvData
+
+
 def run(data):
     data=data.encode('utf8')
     global reply_info

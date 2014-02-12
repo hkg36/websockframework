@@ -1,9 +1,11 @@
 __author__ = 'amen'
-from kombu import Connection
-from kombu.messaging import Consumer,Producer,Exchange
-from kombu import Exchange, Queue
 import time
 import random
+
+from kombu import Connection
+from kombu.messaging import Producer
+from kombu import Exchange
+
 
 connection = Connection(hostname="192.173.1.213",virtual_host='/websocketserver')
 channel = connection.channel()

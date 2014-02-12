@@ -1,7 +1,9 @@
 #coding:utf-8
 from kombu import Exchange, Producer
+
 from datamodel.ios import IOSDevice
 from datamodel.user import User
+
 
 __author__ = 'amen'
 import QueueWork
@@ -9,11 +11,9 @@ import getopt
 import importlib
 import sys
 from datamodel.connection_info import ConnectionInfo
-from datamodel.group import GroupWatchUpdate
-from datamodel.friendlist import FriendList
 import dbconfig
 import json
-import zlib
+
 
 def RequestWork(params,body,reply_queue):
     post=json.loads(body)

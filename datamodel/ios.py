@@ -1,8 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
-import time
+
+
 class IOSDevice(dbconfig.DBBase):
     __tablename__ = 'iosdevice'
     uid=Column(BigInteger,primary_key=True,nullable=False)

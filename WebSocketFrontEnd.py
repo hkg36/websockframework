@@ -1,21 +1,22 @@
 #coding:utf-8
+import os
+import time
+import sys
+import uuid
+import zlib
+import getopt
+import importlib
+
 import tornado
 import tornado.websocket
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
-import os
-import time
-import sys
-
 from stormed.connection import Connection
 from stormed.channel import Consumer
 from stormed.message import Message
 from stormed.frame import status
-import uuid
-import zlib
-import getopt
-import importlib
+
 
 connection_list={}
 class RabbitMQServer(tornado.websocket.WebSocketHandler):

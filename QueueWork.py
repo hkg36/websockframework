@@ -1,13 +1,14 @@
 #coding:utf-8
 __author__ = 'amen'
+import traceback
+import codecs
+
 from kombu import Connection
 from kombu.messaging import Consumer,Producer
-from kombu import Exchange, Queue
-import traceback
-import json
-import zlib
+from kombu import Queue
 import kombu.serialization
-import codecs
+
+
 def word_decode(t, coding):
     return codecs.decode(t,coding,'ignore')
 kombu.serialization._decode=word_decode

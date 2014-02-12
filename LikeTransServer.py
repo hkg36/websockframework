@@ -1,16 +1,14 @@
 #coding:utf-8
-import QueueWork
 import getopt
 import importlib
 import sys
+import json
+
+import QueueWork
 from datamodel.connection_info import ConnectionInfo
-from datamodel.group import GroupWatchUpdate
-from datamodel.friendlist import FriendList
-from datamodel.group_member import GroupMember
 from datamodel.post import Post
 import dbconfig
-import json
-import zlib
+
 
 def RequestWork(params,body,reply_queue):
     postlike=json.loads(body)

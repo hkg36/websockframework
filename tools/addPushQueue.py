@@ -4,8 +4,8 @@ from tools.helper import AutoFitJson
 __author__ = 'amen'
 import BackEndEnvData
 import json
-import json
-from datamodel.tools.json_encode import new_alchemy_encoder
+
+
 def AddPostPublish(newpost):
     json_post=json.dumps(newpost,cls=AutoFitJson,ensure_ascii=False)
     BackEndEnvData.queue_producer.publish(body=json_post,delivery_mode=2,

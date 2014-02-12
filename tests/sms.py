@@ -2,7 +2,9 @@
 import urllib
 import pycurl
 from StringIO import StringIO
+
 from lxml import etree
+
 
 msg = urllib.quote(u'您的莱信验证码为:5678，请在5分钟内输入完成验证。【莱福思】'.encode('utf-8'))
 curl=pycurl.Curl()

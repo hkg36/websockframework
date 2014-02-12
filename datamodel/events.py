@@ -1,8 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
-import time
+
+
 class Events(dbconfig.DBBase):
     __tablename__ = 'events'
     eid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)

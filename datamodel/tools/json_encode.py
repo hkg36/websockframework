@@ -2,9 +2,12 @@
 print json.dumps(e, cls=new_alchemy_encoder(), check_circular=False)
 """
 import json
-from sqlalchemy.ext.declarative import DeclarativeMeta
 import datetime
 import time
+
+from sqlalchemy.ext.declarative import DeclarativeMeta
+
+
 def new_alchemy_encoder():
     _visited_objs = []
     class AlchemyEncoder(json.JSONEncoder):

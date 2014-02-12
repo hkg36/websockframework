@@ -2,7 +2,6 @@
 from datamodel.post import PostExData
 from tools.helper import Res
 from tools.session import CheckSession
-import BackEndEnvData
 import dbconfig
 @CheckSession()
 def run(postid):

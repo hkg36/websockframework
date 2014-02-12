@@ -1,7 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
+
+
 class PostReply(dbconfig.DBBase):
     __tablename__ = 'post_reply'
     replyid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)

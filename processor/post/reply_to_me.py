@@ -1,13 +1,13 @@
 #coding:utf-8
 from sqlalchemy import and_
+
 from datamodel.post import Post
 from datamodel.post_reply import PostReply
-from tools.addPushQueue import AddPostPublish
 from tools.helper import Res
 from tools.session import CheckSession
 
+
 __author__ = 'amen'
-import BackEndEnvData
 import dbconfig
 
 @CheckSession(level=0)

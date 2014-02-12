@@ -1,7 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
+
+
 class PostLike(dbconfig.DBBase):
     __tablename__ = 'post_like'
     postid=Column(BigInteger,nullable=False)

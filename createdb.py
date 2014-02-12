@@ -1,6 +1,8 @@
+import importlib
+import os
+
 from dbconfig import *
-import importlib,os
-import datamodel.user
+
 for filename in os.listdir(r'datamodel'):
     if filename.endswith('.py') and filename!='__init__.py':
         print filename

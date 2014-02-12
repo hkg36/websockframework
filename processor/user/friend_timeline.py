@@ -1,15 +1,17 @@
 #coding:utf-8
 from sqlalchemy import and_
+
 from datamodel.friendlist import FriendList
 from datamodel.post import Post
 from tools.helper import Res
 from tools.session import CheckSession
 
+
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
-import json
-import time
+
+
 @CheckSession()
 def run(before=None,count=None):
     with dbconfig.Session() as session:

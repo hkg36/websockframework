@@ -7,13 +7,11 @@ import getopt
 import importlib
 import sys
 from datamodel.connection_info import ConnectionInfo
-from datamodel.group import GroupWatchUpdate
 from datamodel.friendlist import FriendList
 from datamodel.phone_book import PhoneBook
 from datamodel.user import User
 import dbconfig
 import json
-import zlib
 from tools.helper import AutoFitJson
 
 def RequestWork(params,body,reply_queue):

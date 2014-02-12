@@ -1,10 +1,11 @@
 #coding:utf-8
-import sys
 
-from kombu import Connection,Exchange
-from kombu.messaging import Consumer,Producer
-from kombu import Exchange, Queue
 import json
+
+from kombu import Connection
+from kombu.messaging import Producer
+from kombu import Exchange
+
 
 class QueuePush(object):
     def __init__(self,Queue_Server,Queue_Port,Queue_User,Queue_PassWord,Queue_Path):

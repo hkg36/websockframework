@@ -5,7 +5,6 @@ __author__ = 'amen'
 import WebSiteBasePage
 import qiniu.rs
 import web
-import json
 import dbconfig
 import datamodel.post
 import website_config
@@ -117,6 +116,8 @@ class PostExDone(WebSiteBasePage.AutoPage):
                 newpostex.video=fileurl
                 newpostex.length=imgdata['length']
             newpostex=session.merge(newpostex)
+            session.query(datamodel.post.Post).filter(datamodel.post.Post.postid==imgdata['postid']).\
+                update({datamodel.post.Post.excount:datamodel.post.Post.excount+1})
             session.commit()
 
             return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'did':newpostex.did}},cls=AutoFitJson)

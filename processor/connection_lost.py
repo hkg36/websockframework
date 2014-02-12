@@ -1,5 +1,3 @@
-from operator import and_
-
 try:
     import ujson as json
 except Exception,e:

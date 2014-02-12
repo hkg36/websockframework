@@ -5,7 +5,6 @@ __author__ = 'amen'
 import WebSiteBasePage
 import qiniu.rs
 import web
-import json
 import dbconfig
 import datamodel.message
 import website_config

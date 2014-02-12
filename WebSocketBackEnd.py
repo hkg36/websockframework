@@ -10,7 +10,7 @@ import getopt
 import sys
 import QueueWork
 import traceback
-import datetime,time
+
 
 def LoadProcFunctionList(module_root='processor'):
     pathlist={}

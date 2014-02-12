@@ -1,15 +1,18 @@
 #coding:utf-8
-from kombu import Connection
-from kombu.messaging import Consumer,Producer
-from kombu import Exchange, Queue
 import importlib
-import getopt,sys
+import getopt
+import sys
 import traceback
 import json
 import urllib
 import pycurl
 from StringIO import StringIO
+
+from kombu import Connection
+from kombu.messaging import Consumer,Producer
+from kombu import Exchange, Queue
 from lxml import etree
+
 
 def RequestWork(params,body):
     jsonobj=json.loads(body)

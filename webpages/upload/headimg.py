@@ -1,12 +1,15 @@
 #coding:utf-8
 __author__ = 'amen'
-import WebSiteBasePage
+import json
+
 import qiniu.rs
 import web
-import json
+
+import WebSiteBasePage
 import dbconfig
 import datamodel.user
 import website_config
+
 
 class HeadImg(WebSiteBasePage.AutoPage):
     def GET(self):

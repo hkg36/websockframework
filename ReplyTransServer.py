@@ -1,19 +1,16 @@
 #coding:utf-8
-from sqlalchemy import and_
-import QueueWork
 import getopt
 import importlib
 import sys
+import json
+
+import QueueWork
 from datamodel.connection_info import ConnectionInfo
-from datamodel.group import GroupWatchUpdate
-from datamodel.friendlist import FriendList
-from datamodel.group_member import GroupMember
 from datamodel.post import Post
 from datamodel.post_like import PostLike
 from datamodel.post_reply import PostReply
 import dbconfig
-import json
-import zlib
+
 
 def RequestWork(params,body,reply_queue):
     reply=json.loads(body)

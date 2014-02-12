@@ -1,8 +1,10 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+
 import dbconfig
-import time
+
+
 class Message(dbconfig.DBBase):
     __tablename__ = 'message'
     msgid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
