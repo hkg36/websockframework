@@ -36,7 +36,11 @@ def RequestWork(params,body,reply_queue):
                 user=session.query(User).filter(User.uid==post['fromid']).first()
                 allword=None
                 if post.get('content',None):
-                    allword=u"%s:%s"%(user.nick,post['content'])
+                    content=post['content']
+                    if content.startswith('sticker_12636'):
+                        allword=u"%s发了一个表情"%(user.nick)
+                    else:
+                        allword=u"%s:%s"%(user.nick,post['content'])
                 elif post.get('picture',None):
                     allword=u"%s发了一张图片"%(user.nick)
                 elif post.get('video',None):
