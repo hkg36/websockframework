@@ -37,7 +37,7 @@ def RequestWork(params,body,reply_queue):
                 allword=None
                 if post.get('content',None):
                     content=post['content']
-                    if content.startswith('sticker_12636'):
+                    if content.startswith('sticker_126'):
                         allword=u"%s发了一个表情"%(user.nick)
                     else:
                         allword=u"%s:%s"%(user.nick,post['content'])
