@@ -19,6 +19,7 @@ class User(dbconfig.DBBase):
     background_image = Column(String(1024))
     height = Column(Integer, default=0)
     position = Column(String(256))
+    tags=Column(String(512))
 
     actor=Column(Integer,default=0)
     actor_level=Column(Integer,default=1)
@@ -45,6 +46,8 @@ class User(dbconfig.DBBase):
                 "create_time":self.create_time}
         if self.active_time:
             data["active_time"]=self.active_time
+        if self.tags:
+            data["tags"]=self.tags.split('|')
         if showphone:
             data['phone']=self.phone
         return data

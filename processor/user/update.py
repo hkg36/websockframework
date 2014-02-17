@@ -9,7 +9,8 @@ import dbconfig
 
 
 @CheckSession()
-def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height=None,position=None):
+def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height=None,position=None,
+        tags=None):
     with dbconfig.Session() as session:
         if nick:
             user=session.query(User).filter(User.nick==nick).first()
@@ -33,7 +34,8 @@ def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height
             user.height=height
         if position:
             user.position=position
-
+        if tags and isinstance(tags,list):
+            user.tags='|'.join(tags)
         session.merge(user)
         session.commit()
     return Res()
