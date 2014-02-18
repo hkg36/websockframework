@@ -26,6 +26,13 @@ def LoadEvent(event):
                 'type':event_type,
                 'gid':event['param1'],
                 'fromuid':event['param2']}
+    elif event_type=='recommend':
+        return  {'eid':event['eid'],
+                'create_time':event['create_time'],
+                'type':event_type,
+                'uid':event['param1'],
+                'recommend_uid':event['param2']
+        }
 
 def CombineGeo(long,lat):
     lat_int=int((lat+90)*10e6)

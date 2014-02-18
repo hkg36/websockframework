@@ -24,7 +24,7 @@ def CheckSession(level=0):
                 cinfo=session.query(ConnectionInfo).filter(and_(ConnectionInfo.connection_id==BackEndEnvData.connection_id,
                                                           ConnectionInfo.queue_id==BackEndEnvData.reply_queue)).first()
                 if cinfo is None:
-                    return {"errno":1,"error":"session not found","result":{}}
+                    return {"errno":1,"error":"session.start not called","result":{}}
                 BackEndEnvData.uid=cinfo.uid
                 if level>0:
                     uinfo=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
