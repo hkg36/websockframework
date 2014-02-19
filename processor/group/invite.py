@@ -1,5 +1,6 @@
 #coding:utf-8
 from datamodel.events import Events
+from datamodel.group import Group
 from tools.addPushQueue import AddEventNotify
 from tools.helper import Res
 from tools.session import CheckSession
@@ -12,6 +13,9 @@ def run(gid,uid):
     if isinstance(uid,list)==False:
         uid=[uid]
     with dbconfig.Session() as session:
+        group=session.query(Group).filter(Group.gid==gid).first()
+        if group is None or (group.everyone_caninvite==0 and group.creator!=BackEndEnvData.uid):
+            return Res(errno=2,error="not everyone can invaite and you are not creator")
         events=[]
         for u in uid:
             event=Events()

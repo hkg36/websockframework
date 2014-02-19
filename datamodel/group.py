@@ -14,6 +14,9 @@ class Group(dbconfig.DBBase):
     group_postion=Column(String(256))
     type=Column(Integer)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    everyone_caninvite=Column(Integer,default=1)
+    only_member_speak=Column(Integer,default=0)
+    only_member_watch=Column(Integer,default=0)
     def toJson(self):
         return {'gid':self.gid,
                 "creator":self.creator,
@@ -21,7 +24,10 @@ class Group(dbconfig.DBBase):
                 "board":self.group_board,
                 "type":self.type,
                 "position":self.group_postion,
-                "time":self.time}
+                "time":self.time,
+                'everyone_caninvite':self.everyone_caninvite,
+                'only_member_speak':self.only_member_speak,
+                'only_member_watch':self.only_member_watch}
 
 class GroupWatchUpdate(dbconfig.DBBase):
     __tablename__ = 'group_watch'

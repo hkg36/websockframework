@@ -7,7 +7,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(gid,name=None,board=None,type=0,position=None):
+def run(gid,name=None,board=None,type=0,position=None,everyone_caninvite=None,only_member_speak=None,only_member_watch=None):
     with dbconfig.Session() as session:
         ginfo=session.query(Group).filter(Group.gid==gid).first()
         if ginfo is None:
@@ -22,6 +22,12 @@ def run(gid,name=None,board=None,type=0,position=None):
             ginfo.type = type
         if position:
             ginfo.group_postion=position
+        if everyone_caninvite is not None:
+            ginfo.everyone_caninvite=everyone_caninvite
+        if only_member_speak is not None:
+            ginfo.only_member_speak=only_member_speak
+        if only_member_watch is not None:
+            ginfo.only_member_watch=only_member_watch
         session.merge(ginfo)
         session.commit()
 
