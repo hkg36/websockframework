@@ -8,7 +8,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(uid,recommend_id,recommend_word=None,city=None,sex=None,sex_want=None,contact=None):
+def run(uid,recommend_id,recommend_word=None,city=None,sex=None,sex_want=None,contact=None,age=None,tags=None):
     if uid!=BackEndEnvData.uid and recommend_id!=BackEndEnvData.uid:
         return Res(errno=2,error="can not modify")
     with dbconfig.Session() as session:
@@ -23,6 +23,10 @@ def run(uid,recommend_id,recommend_word=None,city=None,sex=None,sex_want=None,co
             ru.sex_want=sex_want
         if contact:
             ru.contact=contact
+        if age:
+            ru.age=age
+        if tags and isinstance(tags,list):
+            ru.tags='|'.join(tags)
         session.merge(ru)
         session.commit()
     return Res()

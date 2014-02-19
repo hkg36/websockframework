@@ -9,7 +9,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(uid,recommend_word,city,sex,sex_want,contact):
+def run(uid,recommend_word,city,sex,sex_want,contact,age,tags):
     with dbconfig.Session() as session:
         user=session.query(User).filter(User.uid==uid)
         if user is None:
@@ -22,6 +22,9 @@ def run(uid,recommend_word,city,sex,sex_want,contact):
         ru.sex=sex
         ru.sex_want=sex_want
         ru.contact=contact
+        ru.age=age
+        if isinstance(tags,list):
+            ru.tags='|'.join(tags)
 
         session.merge(ru)
         session.commit()

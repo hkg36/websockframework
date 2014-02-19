@@ -17,7 +17,9 @@ class RecommendUser(dbconfig.DBBase):
     like_count=Column(Integer,default=0)
     buy_count=Column(Integer,default=0)
     media_count=Column(Integer,default=0)
+    age=Column(String(32))
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    tags=Column(String(512))
 
     __table_args__=(PrimaryKeyConstraint("uid","recommend_uid"),)
 
@@ -32,8 +34,12 @@ class RecommendUser(dbconfig.DBBase):
               "like_count":self.like_count,
               "buy_count":self.buy_count,
               "media_count":self.media_count,
-              "create_time":self.create_time
+              "create_time":self.create_time,
+              "age":self.age,
+
               }
+        if self.tags:
+            data["tags"]=self.tags.split('|')
         if show_all:
             data["contact"]=self.contact
         return data
