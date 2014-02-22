@@ -19,7 +19,7 @@ def run(gid,pos=0,count=50):
         group=session.query(Group).filter(Group.gid==gid).first()
         if group is None:
             return Res(errno=3,error="group not exist")
-        if group.only_member_watch:
+        if group.only_member_watch and group.creator!=BackEndEnvData.uid:
             member=session.query(GroupMember).filter(and_(GroupMember.gid==gid,GroupMember.uid==BackEndEnvData.uid)).first()
             if member is None:
                 return Res(errno=2,error="only member can watch")

@@ -77,6 +77,7 @@ function start_connect(){
     ws.onclose=function(){
         $("#state").html("connect losted")
         setTimeout("start_connect()",1000)
+        $("#host").append('<div class="push_style">连接断开</div>')
     }
 }
 function  randomChar(l)  {
