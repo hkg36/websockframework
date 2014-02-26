@@ -16,6 +16,8 @@ def run(active_code):
     actinfo=dbconfig.memclient.get(("active_code:%s"%active_code).encode('utf-8'))
     if actinfo is None:
         return Res({},3,"not active code")
+    if actinfo['uid']==BackEndEnvData.uid:
+        return Res({},3,"do not self active")
     with dbconfig.Session() as session:
         user=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
         user.active_by=actinfo['uid']

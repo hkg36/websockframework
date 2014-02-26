@@ -11,6 +11,8 @@ import time
 TIMEOUT=20*60
 @CheckSession()
 def run(level=1):
+    if level==0:
+        return Res(errno=2,error="can not set level to 0")
     with dbconfig.Session() as session:
         user_info=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
         if user_info.actor==0:
