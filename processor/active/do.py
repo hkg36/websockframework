@@ -52,4 +52,4 @@ def run(active_code):
         AddEventNotify(event1)
         AddEventNotify(event2)
 
-        return Res({'active_level':user.actor_level,'active_by':user.active_by})
+        return Res({'active_level':user.active_level,'active_by':user.active_by})
