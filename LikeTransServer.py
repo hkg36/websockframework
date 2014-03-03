@@ -8,6 +8,7 @@ import QueueWork
 from datamodel.connection_info import ConnectionInfo
 from datamodel.post import Post
 import dbconfig
+from tools.helper import AutoFitJson
 
 
 def RequestWork(params,body,reply_queue):
@@ -23,7 +24,7 @@ def RequestWork(params,body,reply_queue):
                                 "data":{
                                     "like":postlike
                                 }
-                            })
+                            },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
         QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')

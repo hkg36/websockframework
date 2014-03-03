@@ -1,4 +1,5 @@
 #coding:utf-8
+from kombu import Exchange, Producer
 import getopt
 import importlib
 import sys
@@ -9,7 +10,10 @@ from datamodel.connection_info import ConnectionInfo
 from datamodel.friendlist import FriendList
 from datamodel.group import Group
 from datamodel.group_member import GroupMember
+from datamodel.ios import IOSDevice
+from datamodel.user import User
 import dbconfig
+from tools.helper import AutoFitJson
 
 
 def RequestWork(params,body,reply_queue):
@@ -32,16 +36,38 @@ def RequestWork(params,body,reply_queue):
             for fd in fds:
                 uids.add(fd.uid)
         allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
-    to_push=json.dumps({"push":True,
-                                "type":"newpost",
-                                "data":{
-                                    "post":post
-                                }
-                            },ensure_ascii=False)
-    for conn in allconn:
-        QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
-                                  routing_key=conn.queue_id,
-                                  compression='gzip')
+        to_push=json.dumps({"push":True,
+                                    "type":"newpost",
+                                    "data":{
+                                        "post":post
+                                    }
+                                },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+        online_uids=set()
+        for conn in allconn:
+            online_uids.add(conn.uid)
+            QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
+                                      routing_key=conn.queue_id,
+                                      compression='gzip')
+        offline_uids=list(uids-online_uids)
+        print "offline_uids",offline_uids
+        if len(offline_uids)>0:
+            iosdevices=session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).all()
+            print 'ios device:',len(iosdevices)
+            fromuser=session.query(User).filter(User.uid==uid).first()
+            push_word=u"%s在%s说:%s"%(fromuser.nick,group.group_name,post['content'])
+            print push_word
+            for iosdev in iosdevices:
+                if iosdev.is_debug:
+                    publish_debug_exchange.publish("body",headers={"message":push_word,
+                      "uhid":iosdev.device_token})
+                else:
+                    publish_release_exchange.publish("body",headers={"message":push_word,
+                      "uhid":iosdev.device_token})
+
+exchange=None
+publish_debug_exchange = None
+publish_release_exchange = None
+
 if __name__ == '__main__':
     config_model='configs.frontend'
     opts, args=getopt.getopt(sys.argv[1:],'c:',
@@ -57,4 +83,7 @@ if __name__ == '__main__':
     QueueWork.WorkFunction=RequestWork
     QueueWork.init(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
                     configs.Queue_User,configs.Queue_PassWord,'sys.post_to_notify')
+    exchange=Exchange("sys.apn",type='topic',channel=QueueWork.channel,durable=True,delivery_mode=2)
+    publish_debug_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.debug')
+    publish_release_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.release')
     QueueWork.run()

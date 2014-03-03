@@ -40,7 +40,7 @@ def RequestWork(params,body,reply_queue):
                                 "data":{
                                     "users":userlist
                                 }
-                            },cls=AutoFitJson)
+                            },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
     QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')

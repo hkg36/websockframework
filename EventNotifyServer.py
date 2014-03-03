@@ -1,5 +1,5 @@
 #coding:utf-8
-from tools.helper import LoadEvent
+from tools.helper import LoadEvent, AutoFitJson
 
 __author__ = 'amen'
 import QueueWork
@@ -25,7 +25,7 @@ def RequestWork(params,body,reply_queue):
                                 "data":{
                                     "event":eo
                                 }
-                            })
+                            },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
     QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')

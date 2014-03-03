@@ -3,6 +3,7 @@ from kombu import Exchange, Producer
 
 from datamodel.ios import IOSDevice
 from datamodel.user import User
+from tools.helper import AutoFitJson
 
 
 __author__ = 'amen'
@@ -26,7 +27,7 @@ def RequestWork(params,body,reply_queue):
                                         "data":{
                                             "message":post
                                         }
-                                    },ensure_ascii=False)
+                                    },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
             QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                           routing_key=conn.queue_id,
                                           compression='gzip')

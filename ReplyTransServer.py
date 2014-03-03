@@ -10,6 +10,7 @@ from datamodel.post import Post
 from datamodel.post_like import PostLike
 from datamodel.post_reply import PostReply
 import dbconfig
+from tools.helper import AutoFitJson
 
 
 def RequestWork(params,body,reply_queue):
@@ -35,7 +36,7 @@ def RequestWork(params,body,reply_queue):
                                     "gid":post.group_id,
                                     "reply":reply
                                 }
-                            })
+                            },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
         for conn in conns:
             QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                       routing_key=conn.queue_id,
