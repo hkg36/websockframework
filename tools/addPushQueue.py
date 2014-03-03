@@ -37,6 +37,6 @@ def AddLikeNotify(postlike):
                                         routing_key='sys.newlike',
                                         compression='gzip')
 def AddSMS(phone,code):
-    json_msg=json.dumps({'phone':str(phone),"content":u"您的莱信验证码为:%s，请在5分钟内输入完成验证。【莱福思】"%str(code)},ensure_ascii=False)
+    json_msg=json.dumps({'phone':str(phone),"content":u"您的来信验证码为:%s，请在5分钟内输入完成验证。【莱福思】"%str(code)},ensure_ascii=False)
     BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                           exchange='sys.sms',routing_key='sms.code',compression='gzip')

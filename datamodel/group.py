@@ -17,6 +17,9 @@ class Group(dbconfig.DBBase):
     everyone_caninvite=Column(Integer,default=1)
     only_member_speak=Column(Integer,default=0)
     only_member_watch=Column(Integer,default=0)
+    geokey=Column(BigInteger,index=True,nullable=False)
+    lat=Column(Float,nullable=False)
+    long=Column(Float,nullable=False)
     def toJson(self):
         return {'gid':self.gid,
                 "creator":self.creator,
@@ -27,7 +30,9 @@ class Group(dbconfig.DBBase):
                 "time":self.time,
                 'everyone_caninvite':self.everyone_caninvite,
                 'only_member_speak':self.only_member_speak,
-                'only_member_watch':self.only_member_watch}
+                'only_member_watch':self.only_member_watch,
+                'lat':self.lat,
+                'long':self.long}
 
 class GroupWatchUpdate(dbconfig.DBBase):
     __tablename__ = 'group_watch'

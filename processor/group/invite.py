@@ -17,10 +17,12 @@ def run(gid,uid):
     with dbconfig.Session() as session:
 
         group=session.query(Group).filter(Group.gid==gid).first()
-        if group is None or (group.everyone_caninvite==0 and group.creator!=BackEndEnvData.uid):
+        if group is None:
+            return Res(errno=2,error="group not exists")
+        if  group.everyone_caninvite==0 and group.creator!=BackEndEnvData.uid:
             return Res(errno=2,error="not everyone can invaite and you are not creator")
         if group.creator!=uid:
-            gm=session.query(GroupMember).filter(and_(GroupMember.gid==gid,GroupMember.uid==uid)).first()
+            gm=session.query(GroupMember).filter(and_(GroupMember.gid==gid,GroupMember.uid==BackEndEnvData.uid)).first()
             if gm is None:
                 return Res(errno=2,error="you are not member")
 

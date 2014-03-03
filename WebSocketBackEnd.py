@@ -57,7 +57,7 @@ def RequestWork(params,body,reply_queue):
                 if 'cdata' in request and isinstance(result,dict):
                     result['cdata']=request['cdata']
                 if isinstance(result,(dict,list)):
-                    return params,json.dumps(result,ensure_ascii=False,cls=AutoFitJson)
+                    return params,json.dumps(result,ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
                 elif isinstance(result,basestring):
                     return params,result
             except BaseException,e:

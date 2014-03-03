@@ -18,6 +18,6 @@ def run(gid,uid):
         group=session.query(Group).filter(Group.gid==gid).first()
         if group is None or group.creator!=BackEndEnvData.uid:
             return Res(errno=2,error='group not exist or you not right')
-        session.query(GroupMember).query(and_(GroupMember.gid==gid,GroupMember.uid.in_(uid))).delete()
+        session.query(GroupMember).filter(and_(GroupMember.gid==gid,GroupMember.uid.in_(uid))).delete('fetch')
         session.commit()
     return Res()
