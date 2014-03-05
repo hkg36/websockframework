@@ -55,5 +55,10 @@ class AutoFitJson(json.JSONEncoder):
         if isinstance(obj,datetime.datetime):
             return time.mktime(obj.timetuple())
         return json.JSONEncoder.default(self, obj)
+
+def script_path():
+    import inspect, os
+    caller_file = inspect.stack()[1][1]         # caller's filename
+    return os.path.abspath(os.path.dirname(caller_file))# path
 if __name__ == '__main__':
     print CombineGeo(147.9873,32.5678)

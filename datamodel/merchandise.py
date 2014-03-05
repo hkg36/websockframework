@@ -33,3 +33,40 @@ class StorePayState(dbconfig.DBBase):
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     paytime=Column(TIMESTAMP)
     refundtime=Column(TIMESTAMP)
+
+class StorePayLog(dbconfig.DBBase):
+    __tablename__ = 'store_paylog'
+    payid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
+    orderid=Column(String(64),nullable=False)
+    mid=Column(BigInteger,nullable=False)
+    uid=Column(BigInteger,nullable=False)
+    paystate=Column(Integer,default=0)
+    productcatalog=Column(Integer,default=1)
+    productname=Column(String(50),nullable=False)
+    productdesc=Column(String(200),nullable=False)
+    amount=Column(Integer,default=2)
+    create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+
+    def __init__(self,Merchandise,PayState):
+        super(StorePayLog,self).__init__()
+        self.orderid=PayState.orderid
+        self.mid=PayState.mid
+        self.uid=PayState.uid
+        self.paystate=PayState.paystate
+        self.productcatalog=Merchandise.productcatalog
+        self.productname=Merchandise.productname
+        self.productdesc=Merchandise.productdesc
+        self.amount=Merchandise.amount
+
+    def toJson(self):
+        data={
+            'payid':self.payid,
+            'mid':self.mid,
+            'uid':self.uid,
+            'paystate':self.paystate,
+            'productcatalog':self.productcatalog,
+            'productname':self.productname,
+            'productdesc':self.productdesc,
+            'amount':self.amount,
+            'create_time':self.create_time
+        }
