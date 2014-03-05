@@ -13,6 +13,13 @@ from webpages.MainPage import pusher
 __author__ = 'amen'
 class Paybackend(WebSiteBasePage.AutoPage):
     def GET(self):
+        if self.Check():
+            return u"交易成功 可以返回了"
+        else:
+            return u"fail"
+    def POST(self):
+        self.Check()
+    def Check(self):
         params=web.input()
         data=params['data']
         encryptkey=params['encryptkey']
@@ -24,6 +31,7 @@ class Paybackend(WebSiteBasePage.AutoPage):
             paystate=session.query(StorePayState).filter(StorePayState.orderid==result['orderid']).first()
             paystate.paystate=1
             paystate.paytime=datetime.datetime.now()
+            paystate.yborderid=result['yborderid']
             session.merge(paystate)
 
             sm=session.query(StoreMerchandise).filter(StoreMerchandise.mid==paystate.mid).first()
@@ -36,4 +44,3 @@ class Paybackend(WebSiteBasePage.AutoPage):
                 pusher.rawPush(routing_key='sys.paylog',headers={},body=json_post)
             except Exception,e:
                 return json.dumps({'errno':5,'error':str(e)})
-        return u"交易成功 可以返回了"

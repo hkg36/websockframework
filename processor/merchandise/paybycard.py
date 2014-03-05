@@ -1,17 +1,16 @@
-#coding:utf-8
-from datamodel.merchandise import StoreMerchandise,StorePayState
+import random
+import time
+from datamodel.merchandise import StoreMerchandise, StorePayState
 from datamodel.user import User
+from paylib.SmsWap import MerchantAPI
 from tools.helper import Res
 from tools.session import CheckSession
-import time
-import random
-from paylib.SmsWap import MerchantAPI
 
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(mid,hardwareid):
+def run(cardid,mid,hardwareid):
     with dbconfig.Session() as session:
         sm=session.query(StoreMerchandise).filter(StoreMerchandise.mid==mid).first()
         if sm is None:
@@ -30,9 +29,11 @@ def run(mid,hardwareid):
         session.merge(paystate)
         session.commit()
         mer=MerchantAPI()
-        gourl=mer.wap_credit(od,transtime,156,sm.amount,str(sm.productcatalog),
-                                 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)",
+        res=mer.BindPaysignAsync(cardid,od,transtime,156,sm.amount,str(sm.productcatalog),
                                  sm.productname,sm.productdesc,BackEndEnvData.client_ip,
                                  usr.phone,4,"IMEI:"+hardwareid,"http://service.xianchangjia.com/payresult/Paybackend",
-                                 "http://service.xianchangjia.com/payresult/Paybackend","1|2")
-        return Res({'gourl':gourl,'orderid':od})
+                                 "http://service.xianchangjia.com/payresult/Paybackend")
+        if res.get('error_code',None) is None:
+            return Res({'orderid':od})
+        else:
+            return Res({'src_error':res},errno=3,error="pay fail")

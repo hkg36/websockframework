@@ -248,7 +248,7 @@ class MerchantAPI(object):
     '''
     网页收银台
     '''
-    def testwap_credit(self,orderid,transtime,currency,amount,productcatalog,userua,productname,productdesc,userip,identityid,identitytype,other,callbackurl,fcallbackurl,paytypes):
+    def wap_credit(self,orderid,transtime,currency,amount,productcatalog,userua,productname,productdesc,userip,identityid,identitytype,other,callbackurl,fcallbackurl,paytypes):
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"transtime":transtime,"currency":currency,"amount":amount,"productcatalog":productcatalog,"userua":userua,"productname":productname,"productdesc":productdesc,"userip":userip,"identityid":identityid,"identitytype":identitytype,"other":other,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl,"paytypes":paytypes}
         #print json.dumps(mesdata)
         values=self.requestprocess(mesdata)
@@ -257,7 +257,7 @@ class MerchantAPI(object):
         REQUEST = url + "?" + urllib.urlencode(values)
         return REQUEST
 
-    def testBindList(self,identityid,identitytype):
+    def BindList(self,identityid,identitytype):
         mesdata={'merchantaccount':Gl.merchantaccount,'identityid':identityid,'identitytype':identitytype}
         values=self.requestprocess(mesdata)
         url='http://'+ Gl.URL+'/testpayapi/api/bankcard/bind/list'
@@ -267,11 +267,13 @@ class MerchantAPI(object):
     '''
     绑卡支付异步接口
     '''
-    def testBindPaysignAsync(self,bindid,orderid,transtime,currency,amount,productcatalog,productname,productdesc,userip,identityid,identitytype,terminaltype,terminalid,callbackurl,fcallbackurl):
-        mesdata={"merchantaccount":Gl.merchantaccount,"bindid":bindid,"orderid":orderid,"transtime":transtime,"currency":currency,"amount":amount,"productcatalog":productcatalog,"productname":productname,"productdesc":productdesc,"userip":userip,"identityid":identityid,"identitytype":identitytype,"terminaltype":terminaltype,"terminalid":terminalid,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl}
+    def BindPaysignAsync(self,bindid,orderid,transtime,currency,amount,productcatalog,productname,productdesc,userip,identityid,identitytype,other,callbackurl,fcallbackurl):
+        mesdata={"merchantaccount":Gl.merchantaccount,"bindid":bindid,"orderid":orderid,"transtime":transtime,"currency":currency,
+                 "amount":amount,"productcatalog":productcatalog,"productname":productname,"productdesc":productdesc,"userip":userip,
+                 "identityid":identityid,"identitytype":identitytype,"other":other,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl}
 
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/testpayapi/api/bankcard/bind/pay/request'
+        url='http://'+ Gl.URL+'/testpayapi/api/bankcard/bind/pay/async'
 
 
         #print url
@@ -387,8 +389,8 @@ if __name__=='__main__':
     mer=MerchantAPI()
     transtime=int(time.time())
     od=str(random.randint(10, 100000))
-    mer.testwap_credit(Gl.merchantaccount,"wangyezhifu"+od,transtime,156,2,"1","nihao","商品","","192.168.5.251","ee",6,"","www.baidu.com","www.baidu.com","1|2")
-    mer.testBindPaysignAsync(Gl.merchantaccount, "51804", "bangkazhifu"+od, transtime, 156, 2, "1", "商品", "", "172.0.0.1", "dd", 6, 0, "123", "www.baidu.com", "www.baidu.com")
+    mer.wap_credit(Gl.merchantaccount,"wangyezhifu"+od,transtime,156,2,"1","nihao","商品","","192.168.5.251","ee",6,"","www.baidu.com","www.baidu.com","1|2")
+    mer.BindPaysignAsync(Gl.merchantaccount, "51804", "bangkazhifu"+od, transtime, 156, 2, "1", "商品", "", "172.0.0.1", "dd", 6, 0, "123", "www.baidu.com", "www.baidu.com")
     mer.testvalidatecode(Gl.merchantaccount, "jiejikazhifu26622")
     mer.testpayvalidatecode(Gl.merchantaccount, "jiejikazhifu26622","123123")
     mer.testUnbindCardsign(Gl.merchantaccount,"940","ee",6)

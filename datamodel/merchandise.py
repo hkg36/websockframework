@@ -33,6 +33,8 @@ class StorePayState(dbconfig.DBBase):
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     paytime=Column(TIMESTAMP)
     refundtime=Column(TIMESTAMP)
+    yborderid=Column(String(64))
+    remain=Column(Integer)
 
 class StorePayLog(dbconfig.DBBase):
     __tablename__ = 'store_paylog'
