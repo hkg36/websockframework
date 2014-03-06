@@ -32,15 +32,17 @@ class Paybackend(WebSiteBasePage.AutoPage):
             paystate.paystate=1
             paystate.paytime=datetime.datetime.now()
             paystate.yborderid=result['yborderid']
+            paystate.remain=result['amount']
             session.merge(paystate)
 
             sm=session.query(StoreMerchandise).filter(StoreMerchandise.mid==paystate.mid).first()
             log=StorePayLog(sm,paystate)
-            session.merge(log)
+            log=session.merge(log)
             session.commit()
 
             try:
                 json_post=json.dumps(log.toJson(),cls=AutoFitJson,ensure_ascii=False)
                 pusher.rawPush(routing_key='sys.paylog',headers={},body=json_post)
+                return True
             except Exception,e:
-                return json.dumps({'errno':5,'error':str(e)})
+                return False

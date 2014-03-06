@@ -3,6 +3,7 @@ import time
 from datamodel.merchandise import StoreMerchandise, StorePayState
 from datamodel.user import User
 from paylib.SmsWap import MerchantAPI
+from processor.merchandise.count_price import get_price
 from tools.helper import Res
 from tools.session import CheckSession
 
@@ -10,7 +11,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(cardid,mid,hardwareid):
+def run(cardid,mid,people_count,hardwareid):
     with dbconfig.Session() as session:
         sm=session.query(StoreMerchandise).filter(StoreMerchandise.mid==mid).first()
         if sm is None:
@@ -18,6 +19,7 @@ def run(cardid,mid,hardwareid):
         usr=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
         if usr is None:
             return Res(errno=2,error="this bug can not happen")
+        price=get_price(sm,people_count=people_count)
 
         transtime=int(time.time())
         od=u"%d-%d"%(transtime,random.randint(100, 999))
@@ -26,10 +28,11 @@ def run(cardid,mid,hardwareid):
         paystate.paystate=0
         paystate.mid=mid
         paystate.uid=BackEndEnvData.uid
+        paystate.remain=price
         session.merge(paystate)
         session.commit()
         mer=MerchantAPI()
-        res=mer.BindPaysignAsync(cardid,od,transtime,156,sm.amount,str(sm.productcatalog),
+        res=mer.BindPaysignAsync(cardid,od,transtime,156,price,str(sm.productcatalog),
                                  sm.productname,sm.productdesc,BackEndEnvData.client_ip,
                                  usr.phone,4,"IMEI:"+hardwareid,"http://service.xianchangjia.com/payresult/Paybackend",
                                  "http://service.xianchangjia.com/payresult/Paybackend")

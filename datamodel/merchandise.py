@@ -12,6 +12,7 @@ class StoreMerchandise(dbconfig.DBBase):
     productname=Column(String(50),nullable=False)
     productdesc=Column(String(200),nullable=False)
     amount=Column(Integer,default=2)
+    ex_people_amount=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
     def toJson(self):
@@ -20,7 +21,8 @@ class StoreMerchandise(dbconfig.DBBase):
             'productname':self.productname,
             'productdesc':self.productdesc,
             'amount':self.amount,
-            'time':self.time
+            'time':self.time,
+            'ex_people_amount':self.ex_people_amount
         }
         return data
 
@@ -35,6 +37,7 @@ class StorePayState(dbconfig.DBBase):
     refundtime=Column(TIMESTAMP)
     yborderid=Column(String(64))
     remain=Column(Integer)
+    ex_people=Column(Integer)
 
 class StorePayLog(dbconfig.DBBase):
     __tablename__ = 'store_paylog'
@@ -47,6 +50,7 @@ class StorePayLog(dbconfig.DBBase):
     productname=Column(String(50),nullable=False)
     productdesc=Column(String(200),nullable=False)
     amount=Column(Integer,default=2)
+    ex_people=Column(Integer)
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
     def __init__(self,Merchandise,PayState):
@@ -58,7 +62,8 @@ class StorePayLog(dbconfig.DBBase):
         self.productcatalog=Merchandise.productcatalog
         self.productname=Merchandise.productname
         self.productdesc=Merchandise.productdesc
-        self.amount=Merchandise.amount
+        self.amount=PayState.amount
+        self.ex_people=PayState.ex_people
 
     def toJson(self):
         data={
@@ -70,5 +75,7 @@ class StorePayLog(dbconfig.DBBase):
             'productname':self.productname,
             'productdesc':self.productdesc,
             'amount':self.amount,
-            'create_time':self.create_time
+            'create_time':self.create_time,
+            'ex_people':self.ex_people
         }
+        return data

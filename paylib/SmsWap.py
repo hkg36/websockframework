@@ -49,7 +49,6 @@ class MerchantAPI(object):
         字典类型的参数
         '''
         REQUEST = url + "?" + urllib.urlencode(values)
-        print(REQUEST)
         ret = urllib2.urlopen(REQUEST).read()  
         return ret
       
