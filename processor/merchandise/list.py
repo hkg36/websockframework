@@ -8,9 +8,9 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run():
+def run(gid):
     with dbconfig.Session() as session:
-        sm=session.query(StoreMerchandise).all()
+        sm=session.query(StoreMerchandise).filter(StoreMerchandise.group_id==gid).all()
         smlist=[]
         for one in sm:
             smlist.append(one.toJson())

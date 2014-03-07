@@ -37,6 +37,9 @@ def run(cardid,mid,people_count,hardwareid):
                                  usr.phone,4,"IMEI:"+hardwareid,"http://service.xianchangjia.com/payresult/Paybackend",
                                  "http://service.xianchangjia.com/payresult/Paybackend")
         if res.get('error_code',None) is None:
-            return Res({'orderid':od})
+            if res['accept']==1:
+                return Res({'orderid':od})
+            else:
+                return Res(errno=3,error="pay not accept")
         else:
             return Res({'src_error':res},errno=3,error="pay fail")
