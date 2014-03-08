@@ -31,32 +31,17 @@ def RequestWork(params,body,reply_queue):
             QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                           routing_key=conn.queue_id,
                                           compression='gzip')
-        """else:
+        else:
             iosdev=session.query(IOSDevice).filter(IOSDevice.uid==toid).first()
             if iosdev:
-                user=session.query(User).filter(User.uid==post['fromid']).first()
-                allword=None
-                if post.get('content',None):
-                    content=post['content']
-                    if content.startswith('sticker_126'):
-                        allword=u"%s发了一个表情"%(user.nick)
-                    else:
-                        allword=u"%s:%s"%(user.nick,post['content'])
-                elif post.get('picture',None):
-                    allword=u"%s发了一张图片"%(user.nick)
-                elif post.get('video',None):
-                    allword=u"%s发了一段视频"%(user.nick)
-                elif post.get('voice',None):
-                    allword=u"%s发了一段音频"%(user.nick)
-                elif post.get('lat',None):
-                    allword=u"%s发了一个位置"%(user.nick)
+                allword=u"你的订单[%s] %.2f元,已支付成功,详情可查看订单历史"%(post['productname'],float(post['amount'])/100)
                 if allword:
                     if iosdev.is_debug:
                         publish_debug_exchange.publish("body",headers={"message":allword,
                           "uhid":iosdev.device_token})
                     else:
                         publish_release_exchange.publish("body",headers={"message":allword,
-                          "uhid":iosdev.device_token})"""
+                          "uhid":iosdev.device_token})
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None

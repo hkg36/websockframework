@@ -15,6 +15,7 @@ class StoreMerchandise(dbconfig.DBBase):
     ex_people_amount=Column(Integer,default=0)
     show_info=Column(String(4096))
     group_id=Column(Integer,index=True)
+    no_list=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
     def toJson(self):
