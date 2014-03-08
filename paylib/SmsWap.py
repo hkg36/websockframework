@@ -342,7 +342,7 @@ class MerchantAPI(object):
         self.checksign(rdata)
 
     
-    def testQueryPay(self,orderid,yborderid):
+    def QueryPay(self,orderid,yborderid):
         '''
         商户自用交易记录查询
         RSA签名方式
@@ -394,7 +394,7 @@ if __name__=='__main__':
     mer.testpayvalidatecode(Gl.merchantaccount, "jiejikazhifu26622","123123")
     mer.testUnbindCardsign(Gl.merchantaccount,"940","ee",6)
     mer.testQueryOrderSign(Gl.merchantaccount,"33hhkssseef3u"+od)
-    mer.testQueryPay(Gl.merchantaccount,"33hhkssseef3u17442","411308194795724586")
+    mer.QueryPay(Gl.merchantaccount,"33hhkssseef3u17442","411308194795724586")
     mer.testQueryRefund(Gl.merchantaccount,"tt9393232341025545687")
     mer.testDirectRefund(Gl.merchantaccount,"tt9393232341025"+od,"411308194832127621",2,156,"退款")     
 

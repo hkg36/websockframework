@@ -29,6 +29,7 @@ def run(cardid,mid,people_count,hardwareid):
         paystate.mid=mid
         paystate.uid=BackEndEnvData.uid
         paystate.remain=price
+        paystate.ex_people=people_count
         session.merge(paystate)
         session.commit()
         mer=MerchantAPI()

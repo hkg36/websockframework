@@ -75,6 +75,7 @@ class StorePayState(dbconfig.DBBase):
               'remain':self.remain,
               'ex_people':self.ex_people}
         return data
+Index('storepay_time_index',StorePayState.create_time.desc())
 
 class StorePayLog(dbconfig.DBBase):
     __tablename__ = 'store_paylog'
