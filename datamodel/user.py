@@ -51,3 +51,35 @@ class User(dbconfig.DBBase):
         if showphone:
             data['phone']=self.phone
         return data
+class UserExMedia(dbconfig.DBBase):
+    __tablename__ = 'user_ex_media'
+    did=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
+    uid=Column(BigInteger,index=True,nullable=False)
+    picture=Column(String(1024))
+    video=Column(String(1024))
+    voice=Column(String(1024))
+    width=Column(Integer)
+    height=Column(Integer)
+    length=Column(Integer)
+    time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    text=Column(String(256))
+
+    def toJson(self):
+        data={'did':self.did,
+              'uid':self.uid,
+              'text':self.text,
+              'time':self.time}
+        if self.picture:
+            data['type']='pic'
+            data['picture']=self.picture
+            data['width']=self.width
+            data['height']=self.height
+        elif self.video:
+            data['type']='vdo'
+            data['video']=self.video
+            data['length']=self.length
+        elif self.voice:
+            data['type']="vic"
+            data['voice']=self.voice
+            data['length']=self.length
+        return data
