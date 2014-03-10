@@ -63,6 +63,7 @@ class StorePayState(dbconfig.DBBase):
     yborderid=Column(String(64))
     remain=Column(Integer)
     ex_people=Column(Integer)
+    recommend_uid=Column(BigInteger)
 
     def toJson(self):
         data={'orderid':self.orderid,
@@ -73,7 +74,8 @@ class StorePayState(dbconfig.DBBase):
               'paytime':self.paytime,
               'refundtime':self.refundtime,
               'remain':self.remain,
-              'ex_people':self.ex_people}
+              'ex_people':self.ex_people,
+              'recommend_uid':self.recommend_uid}
         return data
 Index('storepay_time_index',StorePayState.create_time.desc())
 

@@ -12,7 +12,7 @@ import datetime
 import time
 mer=MerchantAPI()
 while True:
-    time_max=datetime.datetime.now()-datetime.timedelta(seconds=10)
+    time_max=datetime.datetime.now()-datetime.timedelta(minutes=5)
     time_min=time_max-datetime.timedelta(hours=1)
     with dbconfig.Session() as session:
         all_pay=session.query(StorePayState).filter(and_(StorePayState.paystate==0,StorePayState.create_time<time_max,StorePayState.create_time>time_min)).all()
@@ -40,4 +40,4 @@ while True:
                 except Exception,e:
                     pass
         session.commit()
-    time.sleep(10)
+    time.sleep(30)

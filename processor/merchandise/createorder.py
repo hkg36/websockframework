@@ -12,7 +12,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(mid,people_count,hardwareid):
+def run(mid,people_count,hardwareid,recommend_uid=None):
     with dbconfig.Session() as session:
         sm=session.query(StoreMerchandise).filter(StoreMerchandise.mid==mid).first()
         if sm is None:
@@ -32,6 +32,8 @@ def run(mid,people_count,hardwareid):
         paystate.uid=BackEndEnvData.uid
         paystate.ex_people=people_count
         paystate.remain=price
+        if recommend_uid is not None:
+            paystate.recommend_uid=recommend_uid
         session.merge(paystate)
         session.commit()
         mer=MerchantAPI()
