@@ -3,7 +3,8 @@ import web
 
 from WebSiteBasePage import LoadPageList
 
+web.config.debug = False
 path_list=LoadPageList()
 webapp=web.application(path_list, locals())
-web.config.debug = False
+
 application = webapp.wsgifunc()

@@ -1,5 +1,6 @@
 #coding:utf-8
 from kombu import Exchange, Producer
+from sqlalchemy import and_, or_
 
 from datamodel.ios import IOSDevice
 from datamodel.user import User
@@ -18,30 +19,32 @@ import json
 
 def RequestWork(params,body,reply_queue):
     post=json.loads(body)
-    toid=post['uid']
+    toids={post['uid'],post['recommend_uid']}
     with dbconfig.Session() as session:
-        conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
-        if conn:
+        conns=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(toids))).all()
+        if len(conns)>0:
             to_push=json.dumps({"push":True,
                                         "type":"paylog",
                                         "data":{
                                             "log":post
                                         }
                                     },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
-            QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
-                                          routing_key=conn.queue_id,
-                                          compression='gzip')
-        else:
-            iosdev=session.query(IOSDevice).filter(IOSDevice.uid==toid).first()
-            if iosdev:
-                allword=u"你的订单[%s] %.2f元,已支付成功,详情可查看订单历史"%(post['productname'],float(post['amount'])/100)
-                if allword:
-                    if iosdev.is_debug:
-                        publish_debug_exchange.publish("body",headers={"message":allword,
-                          "uhid":iosdev.device_token})
-                    else:
-                        publish_release_exchange.publish("body",headers={"message":allword,
-                          "uhid":iosdev.device_token})
+            for conn in conns:
+                toids.remove(conn.uid)
+                QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
+                                              routing_key=conn.queue_id,
+                                              compression='gzip')
+
+        iosdevs=session.query(IOSDevice).filter(IOSDevice.uid.in_(list(toids))).all()
+        if len(iosdevs)>0:
+            allword=u"订单[%s] %.2f元,已支付成功,详情可查看订单历史"%(post['productname'],float(post['amount'])/100)
+            for iosdev in iosdevs:
+                if iosdev.is_debug:
+                    publish_debug_exchange.publish("body",headers={"message":allword,
+                      "uhid":iosdev.device_token})
+                else:
+                    publish_release_exchange.publish("body",headers={"message":allword,
+                      "uhid":iosdev.device_token})
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None

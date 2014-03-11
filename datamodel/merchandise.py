@@ -63,7 +63,7 @@ class StorePayState(dbconfig.DBBase):
     yborderid=Column(String(64))
     remain=Column(Integer)
     ex_people=Column(Integer)
-    recommend_uid=Column(BigInteger)
+    recommend_uid=Column(BigInteger,index=True)
 
     def toJson(self):
         data={'orderid':self.orderid,
@@ -92,6 +92,7 @@ class StorePayLog(dbconfig.DBBase):
     amount=Column(Integer,default=2)
     ex_people=Column(Integer)
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    recommend_uid=Column(BigInteger)
 
     def __init__(self,Merchandise,PayState):
         super(StorePayLog,self).__init__()
@@ -104,6 +105,7 @@ class StorePayLog(dbconfig.DBBase):
         self.productdesc=Merchandise.productdesc
         self.amount=PayState.remain
         self.ex_people=PayState.ex_people
+        self.recommend_uid=PayState.recommend_uid
 
     def toJson(self):
         data={
@@ -117,6 +119,7 @@ class StorePayLog(dbconfig.DBBase):
             'productdesc':self.productdesc,
             'amount':self.amount,
             'create_time':self.create_time,
-            'ex_people':self.ex_people
+            'ex_people':self.ex_people,
+            'recommend_uid':self.recommend_uid
         }
         return data
