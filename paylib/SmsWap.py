@@ -242,6 +242,7 @@ class MerchantAPI(object):
         #print '解密后的data='+rdata
         rdata=json.loads(rdata)
         self.checksign(rdata)
+        print json.dumps(rdata,ensure_ascii=False)
         return rdata
     
     '''
@@ -251,7 +252,7 @@ class MerchantAPI(object):
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"transtime":transtime,"currency":currency,"amount":amount,"productcatalog":productcatalog,"userua":userua,"productname":productname,"productdesc":productdesc,"userip":userip,"identityid":identityid,"identitytype":identitytype,"other":other,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl,"paytypes":paytypes}
         #print json.dumps(mesdata)
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/testpayapi/mobile/pay/request'
+        url='http://'+ Gl.URLPay+'/mobile/pay/request'
 
         REQUEST = url + "?" + urllib.urlencode(values)
         return REQUEST
@@ -259,7 +260,7 @@ class MerchantAPI(object):
     def BindList(self,identityid,identitytype):
         mesdata={'merchantaccount':Gl.merchantaccount,'identityid':identityid,'identitytype':identitytype}
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/testpayapi/api/bankcard/bind/list'
+        url='http://'+ Gl.URLPay+'/api/bankcard/bind/list'
         result=self.doGet(url, values)
         result=self.result_decrypt(result)
         return result['cardlist']
@@ -272,7 +273,7 @@ class MerchantAPI(object):
                  "identityid":identityid,"identitytype":identitytype,"other":other,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl}
 
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/testpayapi/api/bankcard/bind/pay/async'
+        url='http://'+ Gl.URLPay+'/api/bankcard/bind/pay/async'
 
 
         #print url
@@ -283,34 +284,32 @@ class MerchantAPI(object):
     '''
     发送验证码
     '''
-    def testvalidatecode(self,merchantaccount,orderid):
-        mesdata={"merchantaccount":merchantaccount,"orderid":orderid}
+    def testvalidatecode(self,orderid):
+        mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid}
 
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/testpayapi/api/validatecode/send'
+        url='http://'+ Gl.URLPay+'/api/validatecode/send'
 
 
         #print url
         result=self.doPost(url, values)
-        rdata=json.loads(self.result_decrypt(result))
-        self.checksign(rdata)
+        rdata=self.result_decrypt(result)
 
     '''
     发起支付请求
     '''
-    def testpayvalidatecode(self,merchantaccount,orderid,validatecode):
-        mesdata={"merchantaccount":merchantaccount,"orderid":orderid,"validatecode":validatecode}
+    def testpayvalidatecode(self,orderid,validatecode):
+        mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"validatecode":validatecode}
 
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/testpayapi/api/async/bankcard/pay/confirm/validatecode'
+        url='http://'+ Gl.URLPay+'/api/async/bankcard/pay/confirm/validatecode'
 
 
         #print url
         result=self.doPost(url, values)
-        rdata=json.loads(self.result_decrypt(result))
-        self.checksign(rdata)
+        rdata=self.result_decrypt(result)
 
-    def testUnbindCardsign(self,merchantaccount,bindid,identityid,identitytype):
+    def testUnbindCardsign(self,bindid,identityid,identitytype):
         '''
         解绑接口
         RSA签名方式
@@ -319,27 +318,25 @@ class MerchantAPI(object):
         mesdata={"merchantaccount": Gl.merchantaccount,'bindid':'940',"identityid":"ee","identitytype":6}
         values=self.requestprocess(mesdata)
         #print values
-        url='http://'+ Gl.URL+'/testpayapi/api/bankcard/unbind'
+        url='http://'+ Gl.URLPay+'/api/bankcard/unbind'
         result=self.doPost(url, values)
-        rdata=json.loads(self.result_decrypt(result))
-        self.checksign(rdata)
+        rdata=self.result_decrypt(result)
 
 
 
-    def testQueryOrderSign(self,merchantaccount,orderid):
+    def testQueryOrderSign(self,orderid):
         '''
         支付结果查询
         RSA签名方式
         '''
 
-        mesdata={"merchantaccount":merchantaccount,"orderid":orderid}
+        mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid}
 
         values=self.requestprocess(mesdata)
         #print(json.dumps(values))
-        url='http://'+ Gl.URL+'/testpayapi/api/query/order'
+        url='http://'+ Gl.URLPay+'/api/query/order'
         result=self.doGet(url, values)
-        rdata=json.loads(self.result_decrypt(result))
-        self.checksign(rdata)
+        rdata=self.result_decrypt(result)
 
     
     def QueryPay(self,orderid,yborderid):
@@ -356,45 +353,43 @@ class MerchantAPI(object):
         rdata=self.result_decrypt(result)
         return rdata
     
-    def testQueryRefund(self,merchantaccount,orderid):
+    def testQueryRefund(self,orderid):
         '''
         商户自用退款记录查询
         RSA签名方式
         '''  
 
         
-        mesdata={"merchantaccount":merchantaccount,"orderid":orderid}
+        mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid}
         values=self.requestprocess(mesdata)
         url='http://'+ Gl.URL+'/merchant/query_server/refund_single'
         result=self.doGet(url, values)
-        rdata=json.loads(self.result_decrypt(result))
-        self.checksign(rdata)
+        rdata=self.result_decrypt(result)
     
     
-    def testDirectRefund(self,merchantaccount,orderid,origyborderid,amount,currency,cause):
+    def testDirectRefund(self,orderid,origyborderid,amount,currency,cause):
         '''
         商户自用接口退款
         RSA签名方式
         '''  
           
-        mesdata={"merchantaccount":merchantaccount,"orderid":orderid,"origyborderid":origyborderid,"amount":amount,"currency":currency,"cause":cause}
+        mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"origyborderid":origyborderid,"amount":amount,"currency":currency,"cause":cause}
         values=self.requestprocess(mesdata)
         url='http://'+ Gl.URL+'/merchant/query_server/direct_refund'
         result=self.doPost(url, values)
-        rdata=json.loads(self.result_decrypt(result))
-        self.checksign(rdata)
+        rdata=self.result_decrypt(result)
         
 if __name__=='__main__':
     mer=MerchantAPI()
     transtime=int(time.time())
     od=str(random.randint(10, 100000))
-    mer.wap_credit(Gl.merchantaccount,"wangyezhifu"+od,transtime,156,2,"1","nihao","商品","","192.168.5.251","ee",6,"","www.baidu.com","www.baidu.com","1|2")
-    mer.BindPaysignAsync(Gl.merchantaccount, "51804", "bangkazhifu"+od, transtime, 156, 2, "1", "商品", "", "172.0.0.1", "dd", 6, 0, "123", "www.baidu.com", "www.baidu.com")
-    mer.testvalidatecode(Gl.merchantaccount, "jiejikazhifu26622")
-    mer.testpayvalidatecode(Gl.merchantaccount, "jiejikazhifu26622","123123")
-    mer.testUnbindCardsign(Gl.merchantaccount,"940","ee",6)
-    mer.testQueryOrderSign(Gl.merchantaccount,"33hhkssseef3u"+od)
-    mer.QueryPay(Gl.merchantaccount,"33hhkssseef3u17442","411308194795724586")
-    mer.testQueryRefund(Gl.merchantaccount,"tt9393232341025545687")
-    mer.testDirectRefund(Gl.merchantaccount,"tt9393232341025"+od,"411308194832127621",2,156,"退款")     
+    mer.wap_credit("wangyezhifu"+od,transtime,156,2,"1","nihao","商品","","192.168.5.251","ee",6,"","www.baidu.com","www.baidu.com","1|2")
+    mer.BindPaysignAsync( "51804", "bangkazhifu"+od, transtime, 156, 2, "1", "商品", "", "172.0.0.1", "dd", 6, "123", "www.baidu.com", "www.baidu.com")
+    mer.testvalidatecode( "jiejikazhifu26622")
+    mer.testpayvalidatecode( "jiejikazhifu26622","123123")
+    mer.testUnbindCardsign("940","ee",6)
+    mer.testQueryOrderSign("33hhkssseef3u"+od)
+    mer.QueryPay("33hhkssseef3u17442","411308194795724586")
+    mer.testQueryRefund("tt9393232341025545687")
+    mer.testDirectRefund("tt9393232341025"+od,"411308194832127621",2,156,"退款")
 

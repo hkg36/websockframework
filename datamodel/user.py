@@ -1,9 +1,9 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
-
+from mongoengine import *
 import dbconfig
-
+import datetime
 
 class User(dbconfig.DBBase):
     __tablename__ = 'user'
@@ -19,13 +19,14 @@ class User(dbconfig.DBBase):
     background_image = Column(String(1024))
     height = Column(Integer, default=0)
     position = Column(String(256))
-    tags=Column(String(512))
 
     actor=Column(Integer,default=0)
     actor_level=Column(Integer,default=1)
     active_by=Column(BigInteger,default=0)
     active_level=Column(Integer,default=0)
     active_time=Column(TIMESTAMP)
+
+    is_stew=Column(SmallInteger,default=0)
 
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     def toJson(self,showphone=False):
@@ -43,11 +44,11 @@ class User(dbconfig.DBBase):
                 "actor_level":self.actor_level,
                 "active_by":self.active_by,
                 "active_level":self.active_level,
-                "create_time":self.create_time}
+                "create_time":self.create_time,
+                'is_stew':self.is_stew,
+                }
         if self.active_time:
             data["active_time"]=self.active_time
-        if self.tags:
-            data["tags"]=self.tags.split('|')
         if showphone:
             data['phone']=self.phone
         return data
@@ -82,4 +83,22 @@ class UserExMedia(dbconfig.DBBase):
             data['type']="vic"
             data['voice']=self.voice
             data['length']=self.length
+        return data
+
+class UserExData(Document):
+    uid=IntField(required=True,primary_key=True)
+    tags=ListField(StringField(max_length=20))
+    position=PointField()
+    update_time=DateTimeField()
+
+    meta = {
+        'indexes': ['tags']
+    }
+
+    def toJson(self,showpos=False):
+        data={"uid":self.uid,"tags":self.tags}
+        if showpos:
+            data["lat"]=self.position['coordinates'][1]
+            data["long"]=self.position['coordinates'][0]
+            data['time']=self.update_time
         return data

@@ -1,4 +1,5 @@
 #coding:utf-8
+from sqlalchemy import text
 from datamodel.connection_info import ConnectionInfo
 from datamodel.user import User
 
@@ -14,14 +15,8 @@ def run(sessionid):
     with dbconfig.Session() as session:
         user_data=session.query(User).filter(User.uid==data['uid']).first()
         if user_data:
-            session.query(ConnectionInfo).filter(ConnectionInfo.connection_id==BackEndEnvData.connection_id).delete()
-            session.commit()
-            cinfo=session.query(ConnectionInfo).filter(ConnectionInfo.uid==user_data.uid).first()
-            if cinfo is None:
-                cinfo=ConnectionInfo()
-                cinfo.uid=user_data.uid
-            cinfo.connection_id=BackEndEnvData.connection_id
-            cinfo.queue_id=BackEndEnvData.reply_queue
-            session.merge(cinfo)
+            session.execute(
+                text('insert into connection_info(uid,queue_id,connection_id) values(:uid,:queue_id,:connection_id) ON DUPLICATE KEY UPDATE queue_id=:queue_id,connection_id=:connection_id'),
+                {"uid":user_data.uid,"queue_id":BackEndEnvData.reply_queue,"connection_id":BackEndEnvData.connection_id})
             session.commit()
         return {"errno":0,"error":"no error","result":user_data.toJson()}

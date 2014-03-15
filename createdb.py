@@ -1,6 +1,9 @@
 import importlib
 import os
-
+import mongoengine
+def emptyfun(*args,**kwargs):
+    pass
+mongoengine.connect=emptyfun
 from dbconfig import *
 
 for filename in os.listdir(r'datamodel'):

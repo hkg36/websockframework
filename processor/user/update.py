@@ -1,5 +1,5 @@
 #coding:utf-8
-from datamodel.user import User
+from datamodel.user import User, UserExData
 from tools.helper import Res
 from tools.session import CheckSession
 
@@ -34,8 +34,6 @@ def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height
             user.height=height
         if position:
             user.position=position
-        if tags and isinstance(tags,list):
-            user.tags='|'.join(tags)
         session.merge(user)
         session.commit()
     return Res()

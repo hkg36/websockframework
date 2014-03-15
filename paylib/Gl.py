@@ -19,3 +19,4 @@ publickey = RSA.importKey(open(os.path.join(path,'rsa_public_key144.pem'),'r').r
 privatekey=RSA.importKey(open(os.path.join(path,'pkcs8_rsa_private_key144.pem'),'r').read())
 merchantaccount='YB01000000144'
 URL='mobiletest.yeepay.com'
+URLPay='mobiletest.yeepay.com/testpayapi'
