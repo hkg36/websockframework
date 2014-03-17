@@ -97,7 +97,7 @@ class UserExData(Document):
 
     def toJson(self,showpos=False):
         data={"uid":self.uid,"tags":self.tags}
-        if showpos:
+        if showpos and self.position:
             data["lat"]=self.position['coordinates'][1]
             data["long"]=self.position['coordinates'][0]
             data['time']=self.update_time

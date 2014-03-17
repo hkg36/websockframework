@@ -15,6 +15,10 @@ def run(alltag,lat=None,long=None):
         findparams=findparams and Q(position__geo_within_sphere=[(long,lat),SEARCH_R])
     ulist=[]
     for user in UserExData.objects(findparams).order_by('-update_time').limit(300):
-        ulist.append({"uid":user.uid,"tags":user.tags,"lat":user.position['coordinates'][1],
-                "long":user.position['coordinates'][0],'time':user.update_time})
+        onedata={"uid":user.uid,"tags":user.tags}
+        if user.position:
+            onedata["lat"]=user.position['coordinates'][1]
+            onedata["long"]=user.position['coordinates'][0]
+            onedata['time']=user.update_time
+        ulist.append(onedata)
     return Res({'users':ulist})

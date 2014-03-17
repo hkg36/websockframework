@@ -11,6 +11,7 @@ import dbconfig
 def run(tags):
     if isinstance(tags,list)==False:
         return Res(errno=2,error="value type error")
+    tags=list(set(tags))
     exdata=UserExData.objects(uid=BackEndEnvData.uid).first()
     if exdata is None:
         exdata=UserExData(uid=BackEndEnvData.uid)

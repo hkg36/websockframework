@@ -47,6 +47,7 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
     def on_pong(self,data):
         self.last_act_time=time.time()
 
+start_notified=False
 class RabbitMQ_Queue(object):
     def _start_new_connect(self):
         self.conn=Connection(self.Queue_Server,username=self.Queue_User,password=self.Queue_PassWord
@@ -72,9 +73,17 @@ class RabbitMQ_Queue(object):
             self.channel.queue_declare('task', durable=True,
                              callback=self.on_queue_creation)
             self.channel.queue_declare(self.back_queue,auto_delete=True,callback=self.on_queue_back_created,durable=False)
+
     def on_queue_creation(self,qinfo):
         print "queue %s created"%qinfo.queue
         self.task_queue=qinfo.queue
+
+        global start_notified
+        if start_notified==False:
+            start_notified=True
+            msg=Message(body='{"func":"front_end_restart","parm":{}}',delivery_mode=2,reply_to=self.back_queue)
+            msg.headers={'type':"1"}
+            self.publish(msg)
     def on_queue_back_created(self,qinfo):
         print "back queue %s created"%qinfo.queue
         self.back_queue=qinfo.queue
