@@ -10,7 +10,7 @@ qiniu.conf.ACCESS_KEY = "x5yGWWp6fBGMwlJyEU0GVzilkNIa7Mc87ibrKpdU"
 qiniu.conf.SECRET_KEY = "r_8i1p4LCaiI0isFxuF2paAKhoQotGeqngCD4B1O"
 qiniuSpace="kidswant"
 
-beforetime=datetime.datetime(year=2014,month=1,day=10)
+beforetime=datetime.datetime(year=2014,month=2,day=10)
 todel_file=[]
 
 rs = qiniu.rsf.Client()

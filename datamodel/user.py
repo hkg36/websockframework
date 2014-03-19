@@ -86,7 +86,7 @@ class UserExMedia(dbconfig.DBBase):
         return data
 
 class UserExData(Document):
-    uid=IntField(required=True,primary_key=True)
+    uid=LongField(required=True,primary_key=True)
     tags=ListField(StringField(max_length=20))
     position=PointField()
     update_time=DateTimeField()

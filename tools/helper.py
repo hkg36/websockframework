@@ -6,6 +6,7 @@ except Exception,e:
 import time
 import datetime
 import json
+import mongoengine.connection
 
 
 def Res(res={},errno=0,error='no error'):
@@ -60,5 +61,15 @@ def script_path():
     import inspect, os
     caller_file = inspect.stack()[1][1]         # caller's filename
     return os.path.abspath(os.path.dirname(caller_file))# path
+def mongo_autoincrement(tablename):
+    conn=mongoengine.connection.get_connection()
+    site=conn['Site']
+    autoi=site.autoincrement_sequence
+    res=autoi.find_and_modify(
+        query={"_id": tablename},
+        update={"$inc" : {"seq":1}},
+        upsert=True,
+        new=True)
+    return res['seq']
 if __name__ == '__main__':
     print CombineGeo(147.9873,32.5678)
