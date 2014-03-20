@@ -242,7 +242,6 @@ class MerchantAPI(object):
         #print '解密后的data='+rdata
         rdata=json.loads(rdata)
         self.checksign(rdata)
-        print json.dumps(rdata,ensure_ascii=False)
         return rdata
     
     '''
@@ -250,7 +249,6 @@ class MerchantAPI(object):
     '''
     def wap_credit(self,orderid,transtime,currency,amount,productcatalog,userua,productname,productdesc,userip,identityid,identitytype,other,callbackurl,fcallbackurl,paytypes):
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"transtime":transtime,"currency":currency,"amount":amount,"productcatalog":productcatalog,"userua":userua,"productname":productname,"productdesc":productdesc,"userip":userip,"identityid":identityid,"identitytype":identitytype,"other":other,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl,"paytypes":paytypes}
-        #print json.dumps(mesdata)
         values=self.requestprocess(mesdata)
         url='http://'+ Gl.URLPay+'/mobile/pay/request'
 

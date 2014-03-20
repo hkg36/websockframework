@@ -14,7 +14,8 @@ __author__ = 'amen'
 class Paybackend(WebSiteBasePage.AutoPage):
     def GET(self):
         if self.Check():
-            return u"交易成功 可以返回了"
+            tpl=WebSiteBasePage.jinja2_env.get_template('paysuccess.html')
+            return tpl.render()
         else:
             return u"fail"
     def POST(self):
