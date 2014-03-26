@@ -11,7 +11,10 @@ def run():
     with dbconfig.Session() as session:
         usr=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
         mer=MerchantAPI()
-        cardlist=mer.BindList(usr.phone,4)
+        try:
+            cardlist=mer.BindList(usr.phone,4)
+        except Exception,e:
+            return Res({'cards':[]})
         cards=[]
         for c in cardlist:
             cards.append({'card_name':c['card_name'],

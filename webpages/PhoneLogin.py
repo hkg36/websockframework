@@ -1,6 +1,6 @@
 #coding:utf8
 from tools.session import GenSession
-from tools.urls import GetClientWSSite
+from tools.urls import GetClientWSSite, GetClientWSSSite
 
 __author__ = 'amen'
 import web
@@ -35,7 +35,7 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                     TIMEOUTTIME=3600*24*5
                     time_out=time.time()+TIMEOUTTIME
                     dbconfig.redisdb.set(str('session:%s'%session_id),json.dumps({'uid':user_info.uid}),ex=datetime.timedelta(days=180))
-                    return json.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite()})
+                    return json.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite(),'wss':GetClientWSSSite()})
             else:
                 return json.dumps({'error':'code error'})
         tpl=WebSiteBasePage.jinja2_env.get_template('PhoneLogin.html')

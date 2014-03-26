@@ -250,7 +250,7 @@ class MerchantAPI(object):
     def wap_credit(self,orderid,transtime,currency,amount,productcatalog,userua,productname,productdesc,userip,identityid,identitytype,other,callbackurl,fcallbackurl,paytypes):
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"transtime":transtime,"currency":currency,"amount":amount,"productcatalog":productcatalog,"userua":userua,"productname":productname,"productdesc":productdesc,"userip":userip,"identityid":identityid,"identitytype":identitytype,"other":other,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl,"paytypes":paytypes}
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URLPay+'/mobile/pay/request'
+        url= Gl.URLPay+'/mobile/pay/request'
 
         REQUEST = url + "?" + urllib.urlencode(values)
         return REQUEST
@@ -258,7 +258,7 @@ class MerchantAPI(object):
     def BindList(self,identityid,identitytype):
         mesdata={'merchantaccount':Gl.merchantaccount,'identityid':identityid,'identitytype':identitytype}
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URLPay+'/api/bankcard/bind/list'
+        url= Gl.URLPay+'/api/bankcard/bind/list'
         result=self.doGet(url, values)
         result=self.result_decrypt(result)
         return result['cardlist']
@@ -271,7 +271,7 @@ class MerchantAPI(object):
                  "identityid":identityid,"identitytype":identitytype,"other":other,"callbackurl":callbackurl,"fcallbackurl":fcallbackurl}
 
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URLPay+'/api/bankcard/bind/pay/async'
+        url= Gl.URLPay+'/api/bankcard/bind/pay/async'
 
 
         #print url
@@ -286,7 +286,7 @@ class MerchantAPI(object):
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid}
 
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URLPay+'/api/validatecode/send'
+        url= Gl.URLPay+'/api/validatecode/send'
 
 
         #print url
@@ -300,14 +300,14 @@ class MerchantAPI(object):
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"validatecode":validatecode}
 
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URLPay+'/api/async/bankcard/pay/confirm/validatecode'
+        url= Gl.URLPay+'/api/async/bankcard/pay/confirm/validatecode'
 
 
         #print url
         result=self.doPost(url, values)
         rdata=self.result_decrypt(result)
 
-    def testUnbindCardsign(self,bindid,identityid,identitytype):
+    def UnbindCardsign(self,bindid,identityid,identitytype):
         '''
         解绑接口
         RSA签名方式
@@ -316,11 +316,10 @@ class MerchantAPI(object):
         mesdata={"merchantaccount": Gl.merchantaccount,'bindid':'940',"identityid":"ee","identitytype":6}
         values=self.requestprocess(mesdata)
         #print values
-        url='http://'+ Gl.URLPay+'/api/bankcard/unbind'
+        url= Gl.URLPay+'/api/bankcard/unbind'
         result=self.doPost(url, values)
         rdata=self.result_decrypt(result)
-
-
+        return rdata
 
     def testQueryOrderSign(self,orderid):
         '''
@@ -331,8 +330,7 @@ class MerchantAPI(object):
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid}
 
         values=self.requestprocess(mesdata)
-        #print(json.dumps(values))
-        url='http://'+ Gl.URLPay+'/api/query/order'
+        url= Gl.URLPay+'/api/query/order'
         result=self.doGet(url, values)
         rdata=self.result_decrypt(result)
 
@@ -346,7 +344,7 @@ class MerchantAPI(object):
         
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"yborderid":yborderid}
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/merchant/query_server/pay_single'
+        url= Gl.URL+'/merchant/query_server/pay_single'
         result=self.doGet(url, values)
         rdata=self.result_decrypt(result)
         return rdata
@@ -360,7 +358,7 @@ class MerchantAPI(object):
         
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid}
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/merchant/query_server/refund_single'
+        url= Gl.URL+'/merchant/query_server/refund_single'
         result=self.doGet(url, values)
         rdata=self.result_decrypt(result)
     
@@ -373,7 +371,7 @@ class MerchantAPI(object):
           
         mesdata={"merchantaccount":Gl.merchantaccount,"orderid":orderid,"origyborderid":origyborderid,"amount":amount,"currency":currency,"cause":cause}
         values=self.requestprocess(mesdata)
-        url='http://'+ Gl.URL+'/merchant/query_server/direct_refund'
+        url= Gl.URL+'/merchant/query_server/direct_refund'
         result=self.doPost(url, values)
         rdata=self.result_decrypt(result)
         

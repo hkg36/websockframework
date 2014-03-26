@@ -54,7 +54,7 @@ sessionid<input type="text" id="sessionid"><input type="button" value="开始" o
 <script type="text/javascript">
 var ws;
 function start_connect(){
-    ws = new WebSocket("ws://"+location.hostname+":8000/ws");
+    ws = new WebSocket("wss://"+location.hostname+":8001/ws");
     ws.onopen = function() {
      $("#state").html("connected");
     };

@@ -1,5 +1,6 @@
 #coding:utf-8
 import os
+import ssl
 import time
 import sys
 import uuid
@@ -133,7 +134,7 @@ def main():
     application = tornado.web.Application([
                                               (r'/ws',RabbitMQServer)
                                               ], **settings)
-    http_server = tornado.httpserver.HTTPServer(application,xheaders=True)
+
 
     config_model='configs.frontend'
     global mqserver
@@ -149,7 +150,15 @@ def main():
         exit(0)
     mqserver=RabbitMQ_Queue(configs.Queue_Server,configs.Queue_User,
                             configs.Queue_PassWord,configs.Queue_Path,configs.front_name,configs.Queue_Port)
+
+    http_server = tornado.httpserver.HTTPServer(application,xheaders=True)
     http_server.listen(configs.bind_port,configs.bind_addr)
+    https_server = tornado.httpserver.HTTPServer(application,xheaders=True,
+                  ssl_options = {
+    "certfile": os.path.join("configs/ssl.crt"),
+    "keyfile": os.path.join("configs/domain.key")
+    })
+    https_server.listen(configs.bind_port+1,configs.bind_addr)
     tornado.ioloop.IOLoop.instance().add_timeout(time.time()+CHECK_TIMEOUT,RunPingFuncion)
     tornado.ioloop.IOLoop.instance().start()
 
