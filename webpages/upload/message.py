@@ -12,6 +12,12 @@ from webpages.MainPage import pusher
 import urllib
 import json
 
+def messag_token(uid):
+    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+    policy.callbackUrl='http://%s/upload/MessageDone'%website_config.hostname
+    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                        '"toid":"$(x:toid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%uid
+    return policy.token()
 class Message(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
@@ -22,11 +28,7 @@ class Message(WebSiteBasePage.AutoPage):
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         data=json.loads(data)
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/upload/MessageDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
-                            '"toid":"$(x:toid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%data['uid']
-        uptoken = policy.token()
+        uptoken = messag_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})

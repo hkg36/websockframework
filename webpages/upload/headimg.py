@@ -13,6 +13,12 @@ import dbconfig
 import datamodel.user
 import website_config
 
+def headimg_token(uid):
+    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+    policy.callbackUrl='http://%s/upload/HeadImgDone'%website_config.hostname
+    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
+                        '"uid":%d}'%uid
+    return policy.token()
 
 class HeadImg(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -24,11 +30,7 @@ class HeadImg(WebSiteBasePage.AutoPage):
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         data=json.loads(data)
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/upload/HeadImgDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
-                            '"uid":%d}'%data['uid']
-        uptoken = policy.token()
+        uptoken =headimg_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})
@@ -51,6 +53,12 @@ class HeadImgDone(WebSiteBasePage.AutoPage):
             session.commit()
         return json.dumps({"errno":0,"error":"Success","url":fileurl})
 
+def backgroundimg_token(uid):
+    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+    policy.callbackUrl='http://%s/upload/BackgroundImgDone'%website_config.hostname
+    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
+                        '"uid":%d}'%uid
+    return policy.token()
 class BackgroundImg(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
@@ -61,11 +69,7 @@ class BackgroundImg(WebSiteBasePage.AutoPage):
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         data=json.loads(data)
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/upload/BackgroundImgDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
-                            '"uid":%d}'%data['uid']
-        uptoken = policy.token()
+        uptoken = backgroundimg_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})
@@ -87,6 +91,12 @@ class BackgroundImgDone(WebSiteBasePage.AutoPage):
             session.commit()
         return json.dumps({"errno":0,"error":"Success","url":fileurl})
 
+def userexmedia_token(uid):
+    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+    policy.callbackUrl='http://%s/upload/UserExMediaDone'%website_config.hostname
+    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                        '"length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)","text":"$(x:text)"}'%uid
+    return policy.token()
 class UserExMedia(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
@@ -97,11 +107,7 @@ class UserExMedia(WebSiteBasePage.AutoPage):
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         data=json.loads(data)
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/upload/UserExMediaDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
-                            '"length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)","text":"$(x:text)"}'%int(data['uid'])
-        uptoken = policy.token()
+        uptoken = userexmedia_token(int(data['uid']))
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})

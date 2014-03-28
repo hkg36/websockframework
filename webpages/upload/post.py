@@ -12,6 +12,12 @@ from webpages.MainPage import pusher
 import urllib
 import json
 
+def post_token(uid):
+    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+    policy.callbackUrl='http://%s/upload/PostDone'%website_config.hostname
+    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                        '"gid":"$(x:gid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%uid
+    return policy.token()
 class Post(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
@@ -22,11 +28,7 @@ class Post(WebSiteBasePage.AutoPage):
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         data=json.loads(data)
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/upload/PostDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
-                            '"gid":"$(x:gid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%data['uid']
-        uptoken = policy.token()
+        uptoken = post_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})
@@ -68,6 +70,12 @@ class PostDone(WebSiteBasePage.AutoPage):
 
             return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'postid':newpost.postid}},cls=AutoFitJson)
 
+def postex_token(postid):
+    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+    policy.callbackUrl='http://%s/upload/PostExDone'%website_config.hostname
+    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                        '"length":"$(x:length)","postid":%d,"filetype":"$(x:filetype)"}'%postid
+    return policy.token()
 class PostEx(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
@@ -85,11 +93,7 @@ class PostEx(WebSiteBasePage.AutoPage):
             oldpost=session.query(datamodel.post.Post).filter(datamodel.post.Post.postid==postid).first()
             if oldpost is None or oldpost.uid!=data['uid']:
                 return "post not exists or not yours"
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/upload/PostExDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
-                            '"length":"$(x:length)","postid":%d,"filetype":"$(x:filetype)"}'%int(postid)
-        uptoken = policy.token()
+        uptoken = postex_token(int(postid))
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})

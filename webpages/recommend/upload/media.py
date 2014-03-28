@@ -14,6 +14,12 @@ from webpages.MainPage import pusher
 import urllib
 import json
 
+def media_token(uid,recommend_uid):
+    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+    policy.callbackUrl='http://%s/recommend/upload/MediaDone'%website_config.hostname
+    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                        '"length":"$(x:length)","uid":%d,"recommend_uid":%d,"filetype":"$(x:filetype)"}'%(uid,recommend_uid)
+    return policy.token()
 class Media(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
@@ -27,16 +33,12 @@ class Media(WebSiteBasePage.AutoPage):
             return {"errno":1,"error":"session not found","result":{}}
         data=json.loads(data)
         if data['uid']!=uid and data['uid']!=recommend_uid:
-            return "user is error"
+            return "user is error()"
         with dbconfig.Session() as session:
             ru=session.query(RecommendUser).filter(and_(RecommendUser.uid==uid,RecommendUser.recommend_uid==recommend_uid)).first()
             if ru is None:
                 return "RecommendUser not exists"
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/recommend/upload/MediaDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
-                            '"length":"$(x:length)","uid":%d,"recommend_uid":%d,"filetype":"$(x:filetype)"}'%(uid,recommend_uid)
-        uptoken = policy.token()
+        uptoken = media_token(uid,recommend_uid)
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})
