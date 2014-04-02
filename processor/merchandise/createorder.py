@@ -7,6 +7,7 @@ from tools.session import CheckSession
 import time
 import random
 from paylib.SmsWap import MerchantAPI
+import website_config
 
 __author__ = 'amen'
 import BackEndEnvData
@@ -40,6 +41,6 @@ def run(mid,people_count,hardwareid,recommend_uid=None):
         gourl=mer.wap_credit(od,transtime,156,price,str(sm.productcatalog),
                                  "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)",
                                  sm.productname,sm.productdesc,BackEndEnvData.client_ip,
-                                 usr.phone,4,"IMEI:"+hardwareid,"http://service.xianchangjia.com/payresult/Paybackend",
-                                 "http://service.xianchangjia.com/payresult/Paybackend","1|2")
+                                 usr.phone,4,"IMEI:"+hardwareid,"http://%s/payresult/Paybackend"%website_config.hostname,
+                                 "http://%s/payresult/Paybackend"%website_config.hostname,"1|2")
         return Res({'gourl':gourl,'orderid':od})

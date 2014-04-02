@@ -6,6 +6,7 @@ from paylib.SmsWap import MerchantAPI
 from processor.merchandise.count_price import get_price
 from tools.helper import Res
 from tools.session import CheckSession
+import website_config
 
 __author__ = 'amen'
 import BackEndEnvData
@@ -37,8 +38,8 @@ def run(cardid,mid,people_count,hardwareid,recommend_uid=None):
         mer=MerchantAPI()
         res=mer.BindPaysignAsync(cardid,od,transtime,156,price,str(sm.productcatalog),
                                  sm.productname,sm.productdesc,BackEndEnvData.client_ip,
-                                 usr.phone,4,"IMEI:"+hardwareid,"http://service.xianchangjia.com/payresult/Paybackend",
-                                 "http://service.xianchangjia.com/payresult/Paybackend")
+                                 usr.phone,4,"IMEI:"+hardwareid,"http://%s/payresult/Paybackend"%website_config.hostname,
+                                 "http://%s/payresult/Paybackend"%website_config.hostname)
         if res.get('error_code',None) is None:
             if res['accept']==1:
                 return Res({'orderid':od})
