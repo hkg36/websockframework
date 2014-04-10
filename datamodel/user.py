@@ -90,13 +90,14 @@ class UserExData(Document):
     tags=ListField(StringField(max_length=20))
     position=PointField()
     update_time=DateTimeField()
+    like_me_count=LongField(default=0)
 
     meta = {
         'indexes': ['tags']
     }
 
     def toJson(self,showpos=False):
-        data={"uid":self.uid,"tags":self.tags}
+        data={"uid":self.uid,"tags":self.tags,"like_me_count":self.like_me_count}
         if showpos and self.position:
             data["lat"]=self.position['coordinates'][1]
             data["long"]=self.position['coordinates'][0]
