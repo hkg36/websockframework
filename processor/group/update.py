@@ -8,7 +8,7 @@ import BackEndEnvData
 import dbconfig
 @CheckSession()
 def run(gid,name=None,board=None,type=0,position=None,everyone_caninvite=None,only_member_speak=None,only_member_watch=None,
-        lat=None,long=None):
+        lat=None,long=None,member_control=None):
     with dbconfig.Session() as session:
         ginfo=session.query(Group).filter(Group.gid==gid).first()
         if ginfo is None:
@@ -33,6 +33,8 @@ def run(gid,name=None,board=None,type=0,position=None,everyone_caninvite=None,on
             ginfo.lat=lat
             ginfo.long=long
             ginfo.geokey=CombineGeo(long=long,lat=lat)
+        if member_control is not None:
+            ginfo.member_control=member_control
         session.merge(ginfo)
         session.commit()
 

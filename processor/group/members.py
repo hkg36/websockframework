@@ -11,5 +11,5 @@ def run(gid):
         members=session.query(GroupMember).filter(GroupMember.gid==gid).order_by(GroupMember.time.desc()).all()
         memberlist=[]
         for m in members:
-            memberlist.append({'uid':m.uid,"type":m.type,"time":m.time})
+            memberlist.append(m.toJson())
         return Res({'members':memberlist})

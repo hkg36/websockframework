@@ -20,6 +20,7 @@ class Group(dbconfig.DBBase):
     geokey=Column(BigInteger,index=True,nullable=False)
     lat=Column(Float,nullable=False)
     long=Column(Float,nullable=False)
+    member_control=Column(SmallInteger,default=0)
     def toJson(self):
         return {'gid':self.gid,
                 "creator":self.creator,
@@ -32,7 +33,8 @@ class Group(dbconfig.DBBase):
                 'only_member_speak':self.only_member_speak,
                 'only_member_watch':self.only_member_watch,
                 'lat':self.lat,
-                'long':self.long}
+                'long':self.long,
+                'member_control':self.member_control}
 
 class GroupWatchUpdate(dbconfig.DBBase):
     __tablename__ = 'group_watch'
