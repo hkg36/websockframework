@@ -9,11 +9,11 @@ import random
 import dbconfig
 import BackEndEnvData
 
-def GenSession():
+def GenSession(size=15):
     str = ''
     chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
     length = len(chars) - 1
-    for i in xrange(15):
+    for i in xrange(size):
         str+=chars[random.randint(0, length)]
     return str
 
@@ -35,3 +35,5 @@ def CheckSession(level=0):
             return result
         return warp
     return shell
+if __name__ == '__main__':
+    print GenSession(32)

@@ -11,5 +11,5 @@ import dbconfig
 def run(uid):
     if uid==BackEndEnvData.uid:
         return Res(errno=2,error="like self")
-    UserExData.objects(uid=uid).update_one(inc__like_me_count=1)
+    UserExData.objects(uid=uid).update_one(upsert=True, inc__like_me_count=1)
     return Res()

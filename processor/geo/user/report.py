@@ -11,11 +11,5 @@ import datetime
 
 @CheckSession()
 def run(long,lat):
-    with dbconfig.Session() as session:
-        exdata=UserExData.objects(uid=BackEndEnvData.uid).first()
-        if exdata is None:
-            exdata=UserExData(uid=BackEndEnvData.uid)
-        exdata.position=[long,lat]
-        exdata.update_time=datetime.datetime.now()
-        exdata.save()
+    UserExData.objects(uid=BackEndEnvData.uid).update_one(upsert=True,set__position=[long,lat],set__update_time=datetime.datetime.now())
     return Res()
