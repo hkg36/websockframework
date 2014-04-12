@@ -55,7 +55,6 @@ class tenpay(object):
 
         response = urllib2.urlopen(request)
         resdata=response.read()
-        print resdata
         res_tree=etree.fromstring(resdata)
         token=res_tree.xpath("//root/token_id/text()",smart_strings=False)[0]
 
@@ -64,6 +63,15 @@ class tenpay(object):
         signed=query_args.get("sign",None)
         tosign=self.GetSign(query_args)
         return tosign==signed
+    def _result_to_dict(self,res_tree):
+        tree_dict={}
+        for node in res_tree:
+            if node.text:
+                tree_dict[node.tag]=node.text
+        if self.VerifySign(tree_dict):
+            return tree_dict
+        else:
+            raise Exception('sign check error')
     def NormalOrderQuery(self,billno,transaction_id=None):
         query_args={'sign_type':"MD5","input_charset":"UTF-8","partner":tenpay_config.partner,"out_trade_no":billno}
         if transaction_id:
@@ -74,18 +82,11 @@ class tenpay(object):
         request = urllib2.Request("https://gw.tenpay.com/gateway/normalorderquery.xml" , data)
         response = urllib2.urlopen(request)
         res_tree=etree.fromstring(response.read())
-        tree_dict={}
-        for node in res_tree:
-            if node.text:
-                tree_dict[node.tag]=node.text
-        if self.VerifySign(tree_dict):
-            return tree_dict
-        else:
-            raise Exception('sign check error')
+        return self._result_to_dict(res_tree)
 
 if __name__ == '__main__':
     tp=tenpay()
     billno="%d-%d"%(time.time(),random.randint(100,999))
-    token_id= tp.init(billno,u"测试商品",1)
-    print "https://wap.tenpay.com/cgi-bin/wappayv2.0/wappay_gate.cgi?token_id=%s"%token_id
-    #print tp.NormalOrderQuery('1397192901-694')
+    #token_id= tp.init(billno,u"测试商品",1)
+    #print "https://wap.tenpay.com/cgi-bin/wappayv2.0/wappay_gate.cgi?token_id=%s"%token_id
+    print tp.NormalOrderQuery('1397192901-694')
