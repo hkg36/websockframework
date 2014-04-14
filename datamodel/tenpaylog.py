@@ -15,6 +15,7 @@ class TenpayState(Document):
     refundtime=DateTimeField()
     transaction_id=StringField()
     remain=IntField(default=0)
+    final_remain=IntField()
     ex_people=IntField()
     recm_uid=LongField(default=0)
 
@@ -31,9 +32,12 @@ class TenpayState(Document):
               'create_time':self.create_time,
               'paytime':self.paytime,
               'refundtime':self.refundtime,
-              'remain':self.remain,
               'ex_people':self.ex_people,
               'recommend_uid':self.recm_uid}
+        if self.final_remain:
+            data['remain']=self.final_remain
+        else:
+            data['remain']=self.remain
         return data
 
 class TenpayLog(Document):

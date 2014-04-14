@@ -62,6 +62,7 @@ class StorePayState(dbconfig.DBBase):
     refundtime=Column(TIMESTAMP)
     yborderid=Column(String(64))
     remain=Column(Integer)
+    final_remain=Column(Integer)
     ex_people=Column(Integer)
     recommend_uid=Column(BigInteger,index=True)
 
@@ -73,9 +74,12 @@ class StorePayState(dbconfig.DBBase):
               'create_time':self.create_time,
               'paytime':self.paytime,
               'refundtime':self.refundtime,
-              'remain':self.remain,
               'ex_people':self.ex_people,
               'recommend_uid':self.recommend_uid}
+        if self.final_remain:
+            data['remain']=self.final_remain
+        else:
+            data['remain']=self.remain
         return data
 Index('storepay_time_index',StorePayState.create_time.desc())
 
