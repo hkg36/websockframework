@@ -56,6 +56,10 @@ class tenpay(object):
         response = urllib2.urlopen(request)
         resdata=response.read()
         res_tree=etree.fromstring(resdata)
+        error_info=res_tree.xpath('//root/err_info/text()',smart_strings=False)
+        if len(error_info)>0:
+            print error_info[0]
+            raise Exception(error_info[0])
         token=res_tree.xpath("//root/token_id/text()",smart_strings=False)[0]
 
         return token
@@ -87,6 +91,6 @@ class tenpay(object):
 if __name__ == '__main__':
     tp=tenpay()
     billno="%d-%d"%(time.time(),random.randint(100,999))
-    #token_id= tp.init(billno,u"测试商品",1)
-    #print "https://wap.tenpay.com/cgi-bin/wappayv2.0/wappay_gate.cgi?token_id=%s"%token_id
-    print tp.NormalOrderQuery('1397192901-694')
+    token_id= tp.init(billno,u"测试商品",1)
+    print "https://wap.tenpay.com/cgi-bin/wappayv2.0/wappay_gate.cgi?token_id=%s"%token_id
+    #print tp.NormalOrderQuery('1397192901-694')

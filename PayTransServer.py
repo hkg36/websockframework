@@ -15,7 +15,7 @@ import sys
 from datamodel.connection_info import ConnectionInfo
 import dbconfig
 import json
-
+import tools.weixin as weixin
 
 def RequestWork(params,body,reply_queue):
     post=json.loads(body)
@@ -45,6 +45,27 @@ def RequestWork(params,body,reply_queue):
                 else:
                     publish_release_exchange.publish("body",headers={"message":allword,
                       "uhid":iosdev.device_token})
+
+        user_info=session.query(User).filter(User.uid==post['uid']).first()
+        if user_info is None:
+            print 'user not found'
+            return
+
+        msgbody={
+            "touser":'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
+            "msgtype":"text",
+            "text":
+            {
+                 "content":u"%s(%s) 预订了 %s (支付%.2f元)"%(user_info.phone,user_info.nick,
+                                                       post['desc'] if 'desc' in post else post['productdesc']
+                                                       ,float(post['amount'])/100)
+            }
+        }
+        to_weixin_user=['o8Td4ji85hT5Z9ClI-cT64q9q1ns','o8Td4jjhPJIsxqZVjuv8xzyLY-hU']
+        token=weixin.GetAccessToken()
+        for u in to_weixin_user:
+            msgbody["touser"]=u
+            data=weixin.SendMessage(token,msgbody)
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None
