@@ -58,8 +58,7 @@ class TenpayLog(Document):
     time_end=StringField()
     purchase_alias=StringField()
 
-    def __init__(self,paystate):
-        super(TenpayLog,self).__init__()
+    def set_paystate(self,paystate):
         self.orderid=paystate.orderid
         self.mid=paystate.mid
         self.uid=paystate.uid

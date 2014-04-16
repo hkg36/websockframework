@@ -7,6 +7,7 @@ from kombu import Connection
 from kombu.messaging import Consumer,Producer
 from kombu import Queue
 import kombu.serialization
+import json
 
 
 def word_decode(t, coding):
@@ -72,4 +73,6 @@ def RequestCallBack(body, message):
                                   routing_key=properties['reply_to'],
                                   correlation_id=properties.get('correlation_id'),
                                   compression='gzip')
+    else:
+        print json.dumps(replyheader),replybody
     message.ack()

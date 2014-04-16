@@ -1,4 +1,5 @@
 #coding:utf-8
+import time
 from kombu import Exchange, Producer
 from sqlalchemy import and_, or_
 
@@ -18,8 +19,10 @@ import json
 import tools.weixin as weixin
 
 def RequestWork(params,body,reply_queue):
+    print body
     post=json.loads(body)
     toids={post['uid'],post['recommend_uid']}
+    product_name=post['desc'] if 'desc' in post else post['productdesc']
     with dbconfig.Session() as session:
         conns=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(toids))).all()
         if len(conns)>0:
@@ -34,10 +37,9 @@ def RequestWork(params,body,reply_queue):
                 QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                               routing_key=conn.queue_id,
                                               compression='gzip')
-
         iosdevs=session.query(IOSDevice).filter(IOSDevice.uid.in_(list(toids))).all()
         if len(iosdevs)>0:
-            allword=u"订单[%s] %.2f元,已支付成功,详情可查看订单历史"%(post['productname'],float(post['amount'])/100)
+            allword=u"订单[%s] %.2f元,已支付成功,详情可查看订单历史"%(product_name,float(post['amount'])/100)
             for iosdev in iosdevs:
                 if iosdev.is_debug:
                     publish_debug_exchange.publish("body",headers={"message":allword,
@@ -45,20 +47,17 @@ def RequestWork(params,body,reply_queue):
                 else:
                     publish_release_exchange.publish("body",headers={"message":allword,
                       "uhid":iosdev.device_token})
-
         user_info=session.query(User).filter(User.uid==post['uid']).first()
         if user_info is None:
             print 'user not found'
             return
-
         msgbody={
             "touser":'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
             "msgtype":"text",
             "text":
             {
-                 "content":u"%s(%s) 预订了 %s (支付%.2f元)"%(user_info.phone,user_info.nick,
-                                                       post['desc'] if 'desc' in post else post['productdesc']
-                                                       ,float(post['amount'])/100)
+                 "content":u"%s(%s) 预订了 %s (%s 支付%.2f元)"%(user_info.phone,user_info.nick,product_name,
+                                                          time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
             }
         }
         to_weixin_user=['o8Td4ji85hT5Z9ClI-cT64q9q1ns','o8Td4jjhPJIsxqZVjuv8xzyLY-hU']

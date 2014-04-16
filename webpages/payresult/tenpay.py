@@ -34,7 +34,8 @@ class TenpayNotifyCallBack(WebSiteBasePage.AutoPage):
             ps.remain=all['total_fee']
             ps.save()
 
-            pl=datamodel.tenpaylog.TenpayLog(ps)
+            pl=datamodel.tenpaylog.TenpayLog()
+            pl.set_paystate(ps)
             pl.pay_info=all.get('pay_info')
             pl.bank_type=all.get('bank_type')
             pl.bank_billno=all.get('bank_billno')

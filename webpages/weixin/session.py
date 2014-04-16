@@ -17,3 +17,6 @@ __author__ = 'amen'
 class now_access_token(WebSiteBasePage.AutoPage):
     def GET(self):
         return tools.weixin.GetAccessToken()
+class test(WebSiteBasePage.AutoPage):
+    def GET(self):
+        return web.ctx.get('ip')
