@@ -21,7 +21,7 @@ class WeixinAccessToken(DBBase):
     __tablename__ = 'weixin_access_token'
     appid=Column(String(32),primary_key=True,nullable=False)
     access_token=Column(String(256),nullable=False)
-    expires=Column(Integer,nullable=False)
+    time=Column(Integer,nullable=False)
 DBBase.metadata.create_all(db)
 Session = sessionmaker(bind=db,autocommit=False,autoflush=False,class_=AutoSession)
 
@@ -29,7 +29,7 @@ def GetAccessToken():
     return __get_weixin_token(APPID,APPSECRET)
 def __get_weixin_token(appid,appsecret):
     with Session() as session:
-        weixin_token=session.query(WeixinAccessToken).filter(and_(WeixinAccessToken.appid==appid,WeixinAccessToken.expires>time.time())).first()
+        weixin_token=session.query(WeixinAccessToken).filter(and_(WeixinAccessToken.appid==appid,WeixinAccessToken.time>(time.time()-30*60))).first()
         if weixin_token:
             return weixin_token.access_token
         resbody=urllib2.urlopen('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s'%(appid,appsecret)).read()
@@ -37,7 +37,7 @@ def __get_weixin_token(appid,appsecret):
         weixin_token=WeixinAccessToken()
         weixin_token.appid=appid
         weixin_token.access_token=data['access_token']
-        weixin_token.expires=time.time()+data['expires_in']-100
+        weixin_token.time=time.time()
         session.merge(weixin_token)
         session.commit()
         return weixin_token.access_token
