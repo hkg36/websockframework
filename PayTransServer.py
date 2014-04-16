@@ -19,7 +19,7 @@ import json
 import tools.weixin as weixin
 
 def RequestWork(params,body,reply_queue):
-    print body
+    #print body
     post=json.loads(body)
     toids={post['uid'],post['recommend_uid']}
     product_name=post['desc'] if 'desc' in post else post['productdesc']
@@ -49,7 +49,7 @@ def RequestWork(params,body,reply_queue):
                       "uhid":iosdev.device_token})
         user_info=session.query(User).filter(User.uid==post['uid']).first()
         if user_info is None:
-            print 'user not found'
+            #print 'user not found'
             return
         msgbody={
             "touser":'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
@@ -60,11 +60,14 @@ def RequestWork(params,body,reply_queue):
                                                           time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
             }
         }
-        to_weixin_user=['o8Td4ji85hT5Z9ClI-cT64q9q1ns','o8Td4jjhPJIsxqZVjuv8xzyLY-hU']
+        to_weixin_user=['o8Td4ji85hT5Z9ClI-cT64q9q1ns',
+                        'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
+                        'o8Td4jrfHI_jPTzq0okL6BULRQtY']
         token=weixin.GetAccessToken()
         for u in to_weixin_user:
             msgbody["touser"]=u
             data=weixin.SendMessage(token,msgbody)
+            #print data
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None

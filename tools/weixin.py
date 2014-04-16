@@ -13,7 +13,7 @@ from dbconfig import AutoSession
 register_openers()
 
 APPID='wx2cffd0c7bb254e6a'
-APPSECRET='9fdb0268119cb3501366e2d6028a9403'
+APPSECRET='7347dd97348c1cad2e9e5d409145fcf8'
 
 DBBase=declarative_base(name="WinxinBase")
 db=create_engine("sqlite:///data/weixinbase.sqlite")
