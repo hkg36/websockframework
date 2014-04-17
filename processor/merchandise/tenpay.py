@@ -28,7 +28,7 @@ def run(mid,people_count,hardwareid=None,recommend_uid=None):
         od=u"%d-%d"%(transtime,random.randint(100, 999))
 
         tp=paylib.tenpaylib.tenpay()
-        token_id= tp.init(od,sm.productdesc,1)
+        token_id= tp.init(od,sm.productdesc,price)
         gourl="https://wap.tenpay.com/cgi-bin/wappayv2.0/wappay_gate.cgi?token_id=%s"%token_id
 
         paystate=TenpayState()
