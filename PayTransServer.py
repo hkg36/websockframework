@@ -4,6 +4,7 @@ from kombu import Exchange, Producer
 from sqlalchemy import and_, or_
 
 from datamodel.ios import IOSDevice
+from datamodel.merchandise import StoreWeixinNotify
 from datamodel.user import User
 from tools.helper import AutoFitJson
 
@@ -51,6 +52,12 @@ def RequestWork(params,body,reply_queue):
         if user_info is None:
             #print 'user not found'
             return
+        to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==post['mid'])).all()
+        to_weixin_user=[]
+        for noti_one in to_notifys:
+            to_weixin_user.append(noti_one.openid)
+        if len(to_weixin_user)==0:
+            return
         msgbody={
             "touser":'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
             "msgtype":"text",
@@ -60,9 +67,11 @@ def RequestWork(params,body,reply_queue):
                                                           time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
             }
         }
-        to_weixin_user=['o8Td4ji85hT5Z9ClI-cT64q9q1ns',
+        """to_weixin_user=['o8Td4ji85hT5Z9ClI-cT64q9q1ns',
                         'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
-                        'o8Td4jrfHI_jPTzq0okL6BULRQtY']
+                        'o8Td4jrfHI_jPTzq0okL6BULRQtY',
+                        'o8Td4jtb77tcNS4vHBIvR6KFh2Wg',
+                        'o8Td4jqgQgocVfGbSNzRBn_i7kcw']"""
         token=weixin.GetAccessToken()
         for u in to_weixin_user:
             msgbody["touser"]=u

@@ -35,6 +35,12 @@ class StoreMerchandise(dbconfig.DBBase):
             'group_id':self.group_id
         }
         return data
+class StoreWeixinNotify(dbconfig.DBBase):
+    __tablename__ = 'store_weixinnotify'
+    id=Column(Integer,autoincrement=True,primary_key=True,nullable=False)
+    mid=Column(BigInteger,index=True)
+    openid = Column(String(64),nullable=False)
+    time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 class StoreGroup(dbconfig.DBBase):
     __tablename__ = 'store_group'
     gid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)

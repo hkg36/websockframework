@@ -16,7 +16,8 @@ import tools.weixin
 __author__ = 'amen'
 class now_access_token(WebSiteBasePage.AutoPage):
     def GET(self):
-        return tools.weixin.GetAccessToken()
+        params=web.input()
+        return tools.weixin.get_weixin_token(params['appid'],params['appsecret'])
 class test(WebSiteBasePage.AutoPage):
     def GET(self):
         return web.ctx.get('ip')

@@ -26,8 +26,8 @@ DBBase.metadata.create_all(db)
 Session = sessionmaker(bind=db,autocommit=False,autoflush=False,class_=AutoSession)
 
 def GetAccessToken():
-    return __get_weixin_token(APPID,APPSECRET)
-def __get_weixin_token(appid,appsecret):
+    return get_weixin_token(APPID,APPSECRET)
+def get_weixin_token(appid,appsecret):
     with Session() as session:
         weixin_token=session.query(WeixinAccessToken).filter(and_(WeixinAccessToken.appid==appid,WeixinAccessToken.time>(time.time()-30*60))).first()
         if weixin_token:
