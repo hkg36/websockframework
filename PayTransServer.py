@@ -53,9 +53,9 @@ def RequestWork(params,body,reply_queue):
             #print 'user not found'
             return
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==post['mid'])).all()
-        to_weixin_user=[]
+        to_weixin_user=set()
         for noti_one in to_notifys:
-            to_weixin_user.append(noti_one.openid)
+            to_weixin_user.add(noti_one.openid)
         if len(to_weixin_user)==0:
             return
         msgbody={

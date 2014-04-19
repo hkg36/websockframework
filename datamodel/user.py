@@ -84,6 +84,12 @@ class UserExMedia(dbconfig.DBBase):
             data['voice']=self.voice
             data['length']=self.length
         return data
+class UserLikeLog(dbconfig.DBBase):
+    __tablename__ = 'user_like_log'
+    uid=Column(BigInteger,nullable=False)
+    by_uid=Column(BigInteger,nullable=False)
+    time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    __table_args__=(PrimaryKeyConstraint("uid","by_uid"),)
 
 class UserExData(Document):
     uid=LongField(required=True,primary_key=True)
