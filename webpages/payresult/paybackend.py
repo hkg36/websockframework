@@ -30,7 +30,9 @@ class Paybackend(WebSiteBasePage.AutoPage):
                             'encryptkey':encryptkey})
         with dbconfig.Session() as session:
             paystate=session.query(StorePayState).filter(StorePayState.orderid==result['orderid']).first()
-            paystate.paystate=1
+            if paystate.paystate==1:
+                return True
+            paystate.paystate=1 if result['status']==1 else -1
             paystate.paytime=datetime.datetime.now()
             paystate.yborderid=result['yborderid']
             paystate.remain=result['amount']

@@ -363,7 +363,7 @@ class MerchantAPI(object):
         rdata=self.result_decrypt(result)
     
     
-    def testDirectRefund(self,orderid,origyborderid,amount,currency,cause):
+    def DirectRefund(self,orderid,origyborderid,amount,currency,cause):
         '''
         商户自用接口退款
         RSA签名方式
@@ -388,5 +388,5 @@ if __name__=='__main__':
     mer.testQueryOrderSign("33hhkssseef3u"+od)
     mer.QueryPay("33hhkssseef3u17442","411308194795724586")
     mer.testQueryRefund("tt9393232341025545687")
-    mer.testDirectRefund("tt9393232341025"+od,"411308194832127621",2,156,"退款")
+    mer.DirectRefund("tt9393232341025"+od,"411308194832127621",2,156,"退款")
 

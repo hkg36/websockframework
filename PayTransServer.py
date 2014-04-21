@@ -48,6 +48,9 @@ def RequestWork(params,body,reply_queue):
                 else:
                     publish_release_exchange.publish("body",headers={"message":allword,
                       "uhid":iosdev.device_token})
+
+        if post['paystate']!=1:
+            return
         user_info=session.query(User).filter(User.uid==post['uid']).first()
         if user_info is None:
             #print 'user not found'
@@ -63,7 +66,7 @@ def RequestWork(params,body,reply_queue):
             "msgtype":"text",
             "text":
             {
-                 "content":u"%s(%s) 预订了 %s (%s 支付%.2f元)"%(user_info.phone,user_info.nick,product_name,
+                 "content":u"%s(%s) 预订了 %s (%s 支付%.2f元) 可以领取价值1288的红酒一瓶！！"%(user_info.phone,user_info.nick,product_name,
                                                           time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
             }
         }
