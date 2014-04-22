@@ -10,4 +10,5 @@ class IOSDevice(dbconfig.DBBase):
     uid=Column(BigInteger,primary_key=True,nullable=False)
     device_token=Column(String(256),nullable=False)
     is_debug=Column(SmallInteger,nullable=False,default=0)
+    badge=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))

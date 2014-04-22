@@ -14,5 +14,5 @@ publish_exchange = Producer(channel,exchange,routing_key='msg.debug')
 
 while True:
     publish_exchange.publish("body",headers={"message":"you id code:%d"%random.randint(100,100000),
-			      "uhid":"d8009e6c8e074d1bbcb592f321367feaef5674a82fc4cf3b78b066b7c8ad59bd"})
+			      "uhid":"d8009e6c8e074d1bbcb592f321367feaef5674a82fc4cf3b78b066b7c8ad59bd","badge":5})
     time.sleep(5)

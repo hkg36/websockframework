@@ -53,10 +53,14 @@ def RequestWork(params,body,reply_queue):
                 if allword:
                     if iosdev.is_debug:
                         publish_debug_exchange.publish("body",headers={"message":allword,
-                          "uhid":iosdev.device_token})
+                          "uhid":iosdev.device_token,"badge":iosdev.badge+1})
                     else:
                         publish_release_exchange.publish("body",headers={"message":allword,
-                          "uhid":iosdev.device_token})
+                          "uhid":iosdev.device_token,"badge":iosdev.badge+1})
+
+                    iosdev.badge=iosdev.badge+1
+                    iosdev=session.merge(iosdev)
+                    session.commit()
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None

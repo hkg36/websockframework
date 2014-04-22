@@ -40,14 +40,23 @@ def RequestWork(params,body,reply_queue):
                                               compression='gzip')
         iosdevs=session.query(IOSDevice).filter(IOSDevice.uid.in_(list(toids))).all()
         if len(iosdevs)>0:
-            allword=u"订单[%s] %.2f元,已支付成功,详情可查看订单历史"%(product_name,float(post['amount'])/100)
-            for iosdev in iosdevs:
-                if iosdev.is_debug:
-                    publish_debug_exchange.publish("body",headers={"message":allword,
-                      "uhid":iosdev.device_token})
+            try:
+                if post['paystate']==1:
+                    allword=u"订单[%s] %.2f元,已支付成功,详情可查看订单历史"%(product_name,float(post['amount'])/100)
                 else:
-                    publish_release_exchange.publish("body",headers={"message":allword,
-                      "uhid":iosdev.device_token})
+                    allword=u"订单[%s] %.2f元,支付失败,详情可查看订单历史"%(product_name,float(post['amount'])/100)
+                for iosdev in iosdevs:
+                    if iosdev.is_debug:
+                        publish_debug_exchange.publish("body",headers={"message":allword,
+                          "uhid":iosdev.device_token,"badge":iosdev.badge+1})
+                    else:
+                        publish_release_exchange.publish("body",headers={"message":allword,
+                          "uhid":iosdev.device_token,"badge":iosdev.badge+1})
+                    iosdev.badge=iosdev.badge+1
+                    iosdev=session.merge(iosdev)
+                session.commit()
+            except Exception,e:
+                pass
 
         if post['paystate']!=1:
             return
