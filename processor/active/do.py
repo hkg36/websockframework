@@ -20,6 +20,7 @@ def run(active_code):
         return Res({},3,"do not self active")
     with dbconfig.Session() as session:
         user=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
+        user.actor=1
         user.active_by=actinfo['uid']
         user.active_level=actinfo['level']
         user.active_time=datetime.datetime.now()
