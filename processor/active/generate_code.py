@@ -8,7 +8,7 @@ import BackEndEnvData
 import dbconfig
 import time
 
-TIMEOUT=20*60
+TIMEOUT=45*60
 @CheckSession()
 def run(level=1):
     if level==0:
@@ -20,5 +20,5 @@ def run(level=1):
         if user_info.actor_level<level:
             return Res({},2,'not enough level')
         act_code=GenSession()
-        dbconfig.memclient.set("active_code:%s"%act_code,{'uid':BackEndEnvData.uid,'level':level},time=TIMEOUT)
+        dbconfig.memclient.set("active_code:%s"%act_code,{'uid':BackEndEnvData.uid,'level':int(level)},time=TIMEOUT)
         return Res({'active_code':act_code,'level':level,'timeout':time.time()+TIMEOUT})

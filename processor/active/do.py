@@ -21,6 +21,8 @@ def run(active_code):
     with dbconfig.Session() as session:
         user=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
         user.actor=1
+        if user.actor_level<actinfo['level']-1:
+            user.actor_level=actinfo['level']-1
         user.active_by=actinfo['uid']
         user.active_level=actinfo['level']
         user.active_time=datetime.datetime.now()
