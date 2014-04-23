@@ -14,3 +14,4 @@ while True:
         for token,deltime in srv.feedback():
             dbsession.query(IOSDevice).filter(IOSDevice.device_token==token).delete(False)
         dbsession.commit()
+    time.sleep(60*5)

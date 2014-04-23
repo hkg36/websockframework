@@ -19,6 +19,6 @@ def run(level=1):
             return Res({},2,'not a actor')
         if user_info.actor_level<level:
             return Res({},2,'not enough level')
-        act_code=GenSession()
+        act_code=GenSession(8)
         dbconfig.memclient.set("active_code:%s"%act_code,{'uid':BackEndEnvData.uid,'level':int(level)},time=TIMEOUT)
         return Res({'active_code':act_code,'level':level,'timeout':time.time()+TIMEOUT})
