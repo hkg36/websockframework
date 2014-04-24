@@ -12,8 +12,7 @@ from dbconfig import AutoSession
 
 register_openers()
 
-APPID='wx2cffd0c7bb254e6a'
-APPSECRET='7347dd97348c1cad2e9e5d409145fcf8'
+apps={'wx2cffd0c7bb254e6a':'7347dd97348c1cad2e9e5d409145fcf8'}
 
 DBBase=declarative_base(name="WinxinBase")
 db=create_engine("sqlite:///data/weixinbase.sqlite")
@@ -26,8 +25,11 @@ DBBase.metadata.create_all(db)
 Session = sessionmaker(bind=db,autocommit=False,autoflush=False,class_=AutoSession)
 
 def GetAccessToken():
-    return get_weixin_token(APPID,APPSECRET)
-def get_weixin_token(appid,appsecret):
+    return get_weixin_token('wx2cffd0c7bb254e6a')
+def get_weixin_token(appid):
+    if appid not in apps:
+        raise Exception('appid is error')
+    appsecret=apps[appid]
     with Session() as session:
         weixin_token=session.query(WeixinAccessToken).filter(and_(WeixinAccessToken.appid==appid,WeixinAccessToken.time>time.time())).first()
         if weixin_token:

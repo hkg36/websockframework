@@ -24,13 +24,19 @@ def RequestWork(params,body,reply_queue):
     to_weixin_user=set(post.get('weixin_users',[]))
     if len(to_weixin_user)==0:
         return
-    msgbody={
-        "msgtype":"text",
-        "text":
-        {
-             "content":post['content']
+    msgbody=None
+    if 'body' in post:
+        msgbody=post["body"]
+    elif 'content' in post:
+        msgbody={
+            "msgtype":"text",
+            "text":
+            {
+                 "content":post['content']
+            }
         }
-    }
+    else:
+        return
     token=weixin.GetAccessToken()
     for u in to_weixin_user:
         msgbody["touser"]=u

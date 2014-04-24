@@ -15,6 +15,12 @@ publish_exchange = Producer(channel,routing_key='sys.sendweixin')
 
 publish_exchange.publish(json.dumps({
     'weixin_users':['o8Td4joS0bB4fMekczcIoH1id7Qc'],
-    'content':u"测试"
+    'body':{
+        "msgtype":"text",
+        "text":
+        {
+             "content":"完整测试"
+        }
+    }
 }))
 

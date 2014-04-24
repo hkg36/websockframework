@@ -1,5 +1,3 @@
-__author__ = 'amen'
-
 #coding:utf-8
 import json
 import WebSiteBasePage
@@ -17,7 +15,7 @@ __author__ = 'amen'
 class now_access_token(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input()
-        return tools.weixin.get_weixin_token(params['appid'],params['appsecret'])
+        return tools.weixin.get_weixin_token(params['appid'])
 class test(WebSiteBasePage.AutoPage):
     def GET(self):
         return web.ctx.get('ip')
