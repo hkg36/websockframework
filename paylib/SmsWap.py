@@ -313,7 +313,7 @@ class MerchantAPI(object):
         RSA签名方式
         '''
 
-        mesdata={"merchantaccount": Gl.merchantaccount,'bindid':'940',"identityid":"ee","identitytype":6}
+        mesdata={"merchantaccount": Gl.merchantaccount,'bindid':bindid,"identityid":identityid,"identitytype":identitytype}
         values=self.requestprocess(mesdata)
         #print values
         url= Gl.URLPay+'/api/bankcard/unbind'

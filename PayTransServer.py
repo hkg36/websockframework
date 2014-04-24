@@ -70,28 +70,16 @@ def RequestWork(params,body,reply_queue):
             to_weixin_user.add(noti_one.openid)
         if len(to_weixin_user)==0:
             return
-        msgbody={
-            "touser":'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
-            "msgtype":"text",
-            "text":
-            {
-                 "content":u"%s(%s) 预订了 %s (%s 支付%.2f元) 可以领取价值1288的红酒一瓶！！"%(user_info.phone,user_info.nick,product_name,
+        send_weixin.publish(json.dumps({
+            'weixin_users':list(to_weixin_user),
+            'content':u"%s(%s) 预订了 %s (%s 支付%.2f元) 可以领取价值1288的红酒一瓶！！"%(user_info.phone,user_info.nick,product_name,
                                                           time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
-            }
-        }
-        """to_weixin_user=['o8Td4ji85hT5Z9ClI-cT64q9q1ns',
-                        'o8Td4jjhPJIsxqZVjuv8xzyLY-hU',
-                        'o8Td4jrfHI_jPTzq0okL6BULRQtY',
-                        'o8Td4jtb77tcNS4vHBIvR6KFh2Wg',
-                        'o8Td4jqgQgocVfGbSNzRBn_i7kcw']"""
-        token=weixin.GetAccessToken()
-        for u in to_weixin_user:
-            msgbody["touser"]=u
-            data=weixin.SendMessage(token,msgbody)
-            #print data
+        }))
+
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None
+send_weixin=None
 if __name__ == '__main__':
     config_model='configs.frontend'
     opts, args=getopt.getopt(sys.argv[1:],'c:',
@@ -110,4 +98,5 @@ if __name__ == '__main__':
     exchange=Exchange("sys.apn",type='topic',channel=QueueWork.channel,durable=True,delivery_mode=2)
     publish_debug_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.debug')
     publish_release_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.release')
+    send_weixin = Producer(QueueWork.channel,routing_key='sys.sendweixin')
     QueueWork.run()

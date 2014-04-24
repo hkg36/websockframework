@@ -48,19 +48,15 @@ def RequestCallBack(body, message):
     headers=message.headers
     replyheader=None
     replybody=None
-    if headers:
-        try:
-            res=WorkFunction(headers,body,properties.get('reply_to'))
-            if res is None:
-                message.ack()
-                return
-            replyheader,replybody=res
-        except Exception,e:
-            replybody = traceback.format_exc()
-            replyheader={'error':str(e)}
-    else:
-        replyheader={'error':'no head'}
-        replybody='unknow'
+    try:
+        res=WorkFunction(headers,body,properties.get('reply_to'))
+        if res is None:
+            message.ack()
+            return
+        replyheader,replybody=res
+    except Exception,e:
+        replybody = traceback.format_exc()
+        replyheader={'error':str(e)}
     if 'reply_to' in properties:
         if replyheader.get('zip'):
             producer.publish(body=replybody,delivery_mode=2,headers=replyheader,
