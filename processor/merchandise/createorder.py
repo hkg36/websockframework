@@ -1,5 +1,7 @@
 #coding:utf-8
-from datamodel.merchandise import StoreMerchandise,StorePayState
+import json
+from sqlalchemy import or_
+from datamodel.merchandise import StoreMerchandise,StorePayState, StoreWeixinNotify
 from datamodel.user import User
 from processor.merchandise.count_price import get_price
 from tools.helper import Res
@@ -37,6 +39,21 @@ def run(mid,people_count,hardwareid,recommend_uid=None):
             paystate.recommend_uid=recommend_uid
         session.merge(paystate)
         session.commit()
+
+        to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==mid)).all()
+        to_weixin_user=set()
+        for noti_one in to_notifys:
+            to_weixin_user.add(noti_one.openid)
+        if to_weixin_user:
+            json_msg=json.dumps({
+                'weixin_users':list(to_weixin_user),
+                'content':u"%s(%s) 正在预订 %s (%s)"%(usr.phone,usr.nick,sm.productdesc,
+                                                              time.strftime("%m-%d %H:%M",time.localtime()))
+                })
+            BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
+                                            routing_key='sys.sendweixin',
+                                            compression='gzip')
+
         mer=MerchantAPI()
         gourl=mer.wap_credit(od,transtime,156,price,str(sm.productcatalog),
                                  "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)",

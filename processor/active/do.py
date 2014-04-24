@@ -23,9 +23,10 @@ def run(active_code):
         user.actor=1
         if user.actor_level<actinfo['level']-1:
             user.actor_level=actinfo['level']-1
-        user.active_by=actinfo['uid']
-        user.active_level=actinfo['level']
-        user.active_time=datetime.datetime.now()
+        if user.active_level<actinfo['level']:
+            user.active_by=actinfo['uid']
+            user.active_level=actinfo['level']
+            user.active_time=datetime.datetime.now()
         user=session.merge(user)
         session.commit()
         #添加好友

@@ -1,5 +1,7 @@
 #coding:utf-8
-from datamodel.merchandise import StoreMerchandise
+import json
+from sqlalchemy import or_
+from datamodel.merchandise import StoreMerchandise, StoreWeixinNotify
 from datamodel.tenpaylog import *
 from datamodel.user import User
 from processor.merchandise.count_price import get_price
@@ -26,6 +28,20 @@ def run(mid,people_count,hardwareid=None,recommend_uid=None):
         price=get_price(sm,people_count=people_count)
         transtime=int(time.time())
         od=u"%d-%d"%(transtime,random.randint(100, 999))
+
+        to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==mid)).all()
+        to_weixin_user=set()
+        for noti_one in to_notifys:
+            to_weixin_user.add(noti_one.openid)
+        if to_weixin_user:
+            json_msg=json.dumps({
+                'weixin_users':list(to_weixin_user),
+                'content':u"%s(%s) 正在预订 %s (%s)"%(usr.phone,usr.nick,sm.productdesc,
+                                                              time.strftime("%m-%d %H:%M",time.localtime()))
+                })
+            BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
+                                            routing_key='sys.sendweixin',
+                                            compression='gzip')
 
         tp=paylib.tenpaylib.tenpay()
         token_id= tp.init(od,sm.productdesc,price)
