@@ -4,7 +4,7 @@ from kombu import Exchange, Producer
 from sqlalchemy import and_, or_
 
 from datamodel.ios import IOSDevice
-from datamodel.merchandise import StoreWeixinNotify
+from datamodel.merchandise import StoreWeixinNotify, StoreSmsNotify
 from datamodel.user import User
 from tools.helper import AutoFitJson
 
@@ -64,6 +64,14 @@ def RequestWork(params,body,reply_queue):
         if user_info is None:
             #print 'user not found'
             return
+
+        msg_content=u"%s(%s) 预订了 %s (%s 支付%.2f元)"%(user_info.phone,user_info.nick,product_name,
+                                                          time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
+
+        to_sendsms=session.query(StoreSmsNotify,User).join(User,User.uid==StoreSmsNotify.uid).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==post['mid'])).all()
+        for ssn,usr in to_sendsms:
+            QueueWork.producer.publish(json.dumps({'content':msg_content,'phone':usr.phone}),routing_key='sms.code',exchange='sys.sms')
+
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==post['mid'])).all()
         to_weixin_user=set()
         for noti_one in to_notifys:
@@ -72,14 +80,14 @@ def RequestWork(params,body,reply_queue):
             return
         send_weixin.publish(json.dumps({
             'weixin_users':list(to_weixin_user),
-            'content':u"%s(%s) 预订了 %s (%s 支付%.2f元) 可以领取价值1288的红酒一瓶！！"%(user_info.phone,user_info.nick,product_name,
-                                                          time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
+            'content':msg_content
         }))
 
 exchange=None
 publish_debug_exchange = None
 publish_release_exchange = None
 send_weixin=None
+
 if __name__ == '__main__':
     config_model='configs.frontend'
     opts, args=getopt.getopt(sys.argv[1:],'c:',
@@ -99,4 +107,5 @@ if __name__ == '__main__':
     publish_debug_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.debug')
     publish_release_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.release')
     send_weixin = Producer(QueueWork.channel,routing_key='sys.sendweixin')
+
     QueueWork.run()

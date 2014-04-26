@@ -1,7 +1,7 @@
 #coding:utf-8
 import json
 from sqlalchemy import or_
-from datamodel.merchandise import StoreMerchandise, StoreWeixinNotify
+from datamodel.merchandise import StoreMerchandise, StoreWeixinNotify, StoreSmsNotify
 from datamodel.tenpaylog import *
 from datamodel.user import User
 from processor.merchandise.count_price import get_price
@@ -29,6 +29,12 @@ def run(mid,people_count,hardwareid=None,recommend_uid=None):
         transtime=int(time.time())
         od=u"%d-%d"%(transtime,random.randint(100, 999))
 
+        msg_content=u"%s(%s) 正在预订 %s (%s)"%(usr.phone,usr.nick,sm.productdesc,
+                                                              time.strftime("%m-%d %H:%M",time.localtime()))
+        to_sendsms=session.query(StoreSmsNotify,User).join(User,User.uid==StoreSmsNotify.uid).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==mid)).all()
+        for ssn,usr in to_sendsms:
+            BackEndEnvData.queue_producer.publish(json.dumps({'content':msg_content,'phone':usr.phone}),routing_key='sms.code',exchange='sys.sms')
+
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==mid)).all()
         to_weixin_user=set()
         for noti_one in to_notifys:
@@ -36,8 +42,7 @@ def run(mid,people_count,hardwareid=None,recommend_uid=None):
         if to_weixin_user:
             json_msg=json.dumps({
                 'weixin_users':list(to_weixin_user),
-                'content':u"%s(%s) 正在预订 %s (%s)"%(usr.phone,usr.nick,sm.productdesc,
-                                                              time.strftime("%m-%d %H:%M",time.localtime()))
+                'content':msg_content
                 })
             BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                             routing_key='sys.sendweixin',

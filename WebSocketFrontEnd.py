@@ -112,7 +112,6 @@ class RabbitMQ_Queue(object):
         time.sleep(5)
         self._start_new_connect()
     def on_queue_error(self,err):
-        print str(err)
         time.sleep(5)
         self._start_new_connect()
     def publish(self,msg):

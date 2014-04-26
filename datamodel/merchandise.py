@@ -41,6 +41,12 @@ class StoreWeixinNotify(dbconfig.DBBase):
     mid=Column(BigInteger,index=True)
     openid = Column(String(64),nullable=False)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+class StoreSmsNotify(dbconfig.DBBase):
+    __tablename__ = 'store_smsnotify'
+    id=Column(Integer,autoincrement=True,primary_key=True,nullable=False)
+    mid=Column(BigInteger,index=True)
+    uid = Column(BigInteger,nullable=False)
+    time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 class StoreGroup(dbconfig.DBBase):
     __tablename__ = 'store_group'
     gid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
