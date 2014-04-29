@@ -33,7 +33,11 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         global private_code
-        data=json.loads(message)
+        try:
+            data=json.loads(message)
+        except Exception,e:
+            print str(e)
+            return
         if "check" in data:
             check=data['check']
             allstr=self.ccode+private_code
@@ -89,12 +93,18 @@ class RabbitMQ_Queue(object):
         print "queue binded"
 
     def consume_callback(self,msg):
+        compressed=msg.headers.get('compression')=='application/x-gzip'
+        if compressed:
+            retbody=zlib.decompress(msg.body)
+        else:
+            retbody=msg.body
         global phone_pre
-        js_data=json.loads(msg.body)
+        js_data=json.loads(retbody)
         if js_data['phone'][0:3] in phone_pre:
+        #if True:
             global connection_client
             if connection_client:
-                connection_client.write_message(msg.body)
+                connection_client.write_message(retbody)
     def on_queue_disconnect(self):
         time.sleep(5)
         self._start_new_connect()
