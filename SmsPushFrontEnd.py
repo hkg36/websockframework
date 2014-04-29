@@ -18,17 +18,36 @@ from stormed.connection import Connection
 from stormed.channel import Consumer
 from stormed.message import Message
 from stormed.frame import status
+from tools.session import GenSession
+import hashlib
 
 
 connection_client=None
+
+private_code='JdYQIaDBRrdVKzIWgh8oGc9nURaFCCYI9U3y9LUnt0eD85a8sGQcY8Sq0k4S92cnYgrnObD4nELHPDY3n6Ni74o2bnlMFNjKmjjakCC8Q3qOTCri9YS9CtyKm6p9Umex7Dl6RKAvtygpNj35Y4MUowMOvulR5amRjeMw7ZVQV56PML5cJTJVpk9pnH6QtfrRzqQTijST'
+
 class RabbitMQServer(tornado.websocket.WebSocketHandler):
     def open(self):
-        global connection_client
-        if connection_client:
-            connection_client.close()
-        connection_client=self
+        self.ccode=GenSession(20)
+        self.write_message(json.dumps({"ccode":self.ccode}))
+
     def on_message(self, message):
-        pass
+        global private_code
+        data=json.loads(message)
+        if "check" in data:
+            check=data['check']
+            allstr=self.ccode+private_code
+            if isinstance(allstr,unicode):
+                allstr=allstr.encode('utf-8')
+            if check==hashlib.sha256(allstr).hexdigest():
+                global connection_client
+                if connection_client!=self:
+                    if connection_client:
+                        connection_client.close()
+                    connection_client=self
+                print "pass"
+            else:
+                self.close()
     def on_close(self):
         global connection_client
         if connection_client:
@@ -72,7 +91,6 @@ class RabbitMQ_Queue(object):
     def consume_callback(self,msg):
         global phone_pre
         js_data=json.loads(msg.body)
-        print js_data['phone'][0:3]
         if js_data['phone'][0:3] in phone_pre:
             global connection_client
             if connection_client:
