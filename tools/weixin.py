@@ -19,7 +19,7 @@ db=create_engine("sqlite:///data/weixinbase.sqlite")
 class WeixinAccessToken(DBBase):
     __tablename__ = 'weixin_access_token'
     appid=Column(String(32),primary_key=True,nullable=False)
-    access_token=Column(String(256),nullable=False)
+    access_token=Column(String(512),nullable=False)
     time=Column(Integer,nullable=False)
 DBBase.metadata.create_all(db)
 Session = sessionmaker(bind=db,autocommit=False,autoflush=False,class_=AutoSession)

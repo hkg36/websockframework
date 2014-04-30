@@ -12,7 +12,8 @@ from datamodel.phone_book import PhoneBook
 from datamodel.user import User
 import dbconfig
 import json
-from tools.helper import AutoFitJson
+from tools.helper import AutoFitJson, DefJsonEncoder
+
 
 def RequestWork(params,body,reply_queue):
     post=json.loads(body)
@@ -35,12 +36,12 @@ def RequestWork(params,body,reply_queue):
         for u in users:
             userlist.append(u.toJson(showphone=True))
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==uid).first()
-    to_push=json.dumps({"push":True,
+    to_push=DefJsonEncoder.encode({"push":True,
                                 "type":"fromphonebook",
                                 "data":{
                                     "users":userlist
                                 }
-                            },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+                            })
     QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')

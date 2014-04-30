@@ -1,5 +1,5 @@
 #coding:utf-8
-from tools.helper import LoadEvent, AutoFitJson
+from tools.helper import LoadEvent, AutoFitJson, DefJsonEncoder
 
 __author__ = 'amen'
 import QueueWork
@@ -20,12 +20,12 @@ def RequestWork(params,body,reply_queue):
     with dbconfig.Session() as session:
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
 
-    to_push=json.dumps({"push":True,
+    to_push=DefJsonEncoder.encode({"push":True,
                                 "type":"event",
                                 "data":{
                                     "event":eo
                                 }
-                            },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+                            })
     QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')

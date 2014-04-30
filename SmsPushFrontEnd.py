@@ -100,8 +100,8 @@ class RabbitMQ_Queue(object):
             retbody=msg.body
         global phone_pre
         js_data=json.loads(retbody)
-        if js_data['phone'][0:3] in phone_pre:
-        #if True:
+        #if js_data['phone'][0:3] in phone_pre:
+        if True:
             global connection_client
             if connection_client:
                 connection_client.write_message(retbody)

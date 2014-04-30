@@ -8,7 +8,7 @@ import QueueWork
 from datamodel.connection_info import ConnectionInfo
 from datamodel.post import Post
 import dbconfig
-from tools.helper import AutoFitJson
+from tools.helper import AutoFitJson, DefJsonEncoder
 
 
 def RequestWork(params,body,reply_queue):
@@ -19,12 +19,12 @@ def RequestWork(params,body,reply_queue):
         if post.uid==postlike['uid']:
             return
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==post.uid).first()
-        to_push=json.dumps({"push":True,
+        to_push=DefJsonEncoder.encode({"push":True,
                                 "type":"newlike",
                                 "data":{
                                     "like":postlike
                                 }
-                            },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+                            })
         QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
                                   compression='gzip')

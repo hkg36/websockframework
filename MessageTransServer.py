@@ -3,7 +3,7 @@ from kombu import Exchange, Producer
 
 from datamodel.ios import IOSDevice
 from datamodel.user import User
-from tools.helper import AutoFitJson
+from tools.helper import AutoFitJson, DefJsonEncoder
 
 
 __author__ = 'amen'
@@ -22,12 +22,12 @@ def RequestWork(params,body,reply_queue):
     with dbconfig.Session() as session:
         conn=session.query(ConnectionInfo).filter(ConnectionInfo.uid==toid).first()
         if conn:
-            to_push=json.dumps({"push":True,
+            to_push=DefJsonEncoder.encode({"push":True,
                                         "type":"newmsg",
                                         "data":{
                                             "message":post
                                         }
-                                    },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+                                    })
             QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                           routing_key=conn.queue_id,
                                           compression='gzip')

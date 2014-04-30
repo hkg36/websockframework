@@ -1,5 +1,5 @@
 #coding:utf-8
-from tools.helper import AutoFitJson
+from tools.helper import AutoFitJson, DefJsonEncoder
 
 __author__ = 'amen'
 import os
@@ -57,7 +57,7 @@ def RequestWork(params,body,reply_queue):
                 if 'cdata' in request and isinstance(result,dict):
                     result['cdata']=request['cdata']
                 if isinstance(result,(dict,list)):
-                    return params,json.dumps(result,ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+                    return params,DefJsonEncoder.encode(result)
                 elif isinstance(result,basestring):
                     return params,result
             except BaseException,e:

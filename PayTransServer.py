@@ -6,7 +6,7 @@ from sqlalchemy import and_, or_
 from datamodel.ios import IOSDevice
 from datamodel.merchandise import StoreWeixinNotify, StoreSmsNotify
 from datamodel.user import User
-from tools.helper import AutoFitJson
+from tools.helper import AutoFitJson, DefJsonEncoder
 
 
 __author__ = 'amen'
@@ -27,12 +27,12 @@ def RequestWork(params,body,reply_queue):
     with dbconfig.Session() as session:
         conns=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(toids))).all()
         if len(conns)>0:
-            to_push=json.dumps({"push":True,
+            to_push=DefJsonEncoder.encode({"push":True,
                                         "type":"paylog",
                                         "data":{
                                             "log":post
                                         }
-                                    },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+                                    })
             for conn in conns:
                 toids.remove(conn.uid)
                 QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},

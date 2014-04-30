@@ -13,7 +13,7 @@ from datamodel.group_member import GroupMember
 from datamodel.ios import IOSDevice
 from datamodel.user import User
 import dbconfig
-from tools.helper import AutoFitJson
+from tools.helper import AutoFitJson, DefJsonEncoder
 
 
 def RequestWork(params,body,reply_queue):
@@ -36,12 +36,12 @@ def RequestWork(params,body,reply_queue):
             for fd in fds:
                 uids.add(fd.uid)
         allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
-        to_push=json.dumps({"push":True,
+        to_push=DefJsonEncoder.encode({"push":True,
                                     "type":"newpost",
                                     "data":{
                                         "post":post
                                     }
-                                },ensure_ascii=False,cls=AutoFitJson,separators=(',', ':'))
+                                })
         online_uids=set()
         for conn in allconn:
             online_uids.add(conn.uid)
