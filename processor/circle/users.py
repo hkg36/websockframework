@@ -9,7 +9,7 @@ import dbconfig
 @CheckSession()
 def run(cid):
     with dbconfig.Session() as session:
-        ucall=session.query(UserCircle).filter(UserCircle.cid==cid).all()
+        ucall=session.query(UserCircle).filter(UserCircle.cid==cid).order_by(UserCircle.time.desc()).all()
         ucl=[]
         for uc in ucall:
             ucl.append({"uid":uc.uid,"subid":uc.subid,'time':uc.time})

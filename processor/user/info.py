@@ -22,7 +22,7 @@ def run(uid):
         circles={}
         for uc,cdef in users_circle:
             ll=circles.get(uc.uid,[])
-            ll.append({'cid':uc.cid,'subid':uc.subid,'title':cdef.title,'level':cdef.level,'time':uc.time})
+            ll.append({'cid':uc.cid,'subid':uc.subid,'title':cdef.title,'level':cdef.level,'time':uc.time,"by_uid":uc.by_uid})
             circles[uc.uid]=ll
 
         users=session.query(User).filter(User.uid.in_(uid)).all()

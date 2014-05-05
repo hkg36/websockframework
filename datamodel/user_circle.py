@@ -18,5 +18,6 @@ class UserCircle(dbconfig.DBBase):
     cid=Column(Integer,nullable=False)
     subid=Column(Integer,nullable=False,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    by_uid=Column(BigInteger)
 
     __table_args__ = (PrimaryKeyConstraint('uid','cid'),)
