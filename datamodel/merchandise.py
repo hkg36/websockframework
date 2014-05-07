@@ -45,7 +45,7 @@ class StoreSmsNotify(dbconfig.DBBase):
     __tablename__ = 'store_smsnotify'
     id=Column(Integer,autoincrement=True,primary_key=True,nullable=False)
     mid=Column(BigInteger,index=True)
-    uid = Column(BigInteger,nullable=False)
+    phone = Column(String(32),nullable=False)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 class StoreGroup(dbconfig.DBBase):
     __tablename__ = 'store_group'

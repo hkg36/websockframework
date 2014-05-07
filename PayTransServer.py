@@ -68,9 +68,9 @@ def RequestWork(params,body,reply_queue):
         msg_content=u"%s(%s) 预订了 %s (%s 支付%.2f元)"%(user_info.phone,user_info.nick,product_name,
                                                           time.strftime("%m-%d %H:%M",time.localtime(post['create_time'])),float(post['amount'])/100)
 
-        to_sendsms=session.query(StoreSmsNotify,User).join(User,User.uid==StoreSmsNotify.uid).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==post['mid'])).all()
-        for ssn,usr in to_sendsms:
-            QueueWork.producer.publish(json.dumps({'content':msg_content,'phone':usr.phone}),routing_key='sms.code',exchange='sys.sms')
+        to_sendsms=session.query(StoreSmsNotify).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==post['mid'])).all()
+        for ssn in to_sendsms:
+            QueueWork.producer.publish(json.dumps({'content':msg_content,'phone':ssn.phone}),routing_key='sms.code',exchange='sys.sms')
 
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==post['mid'])).all()
         to_weixin_user=set()

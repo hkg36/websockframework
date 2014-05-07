@@ -31,9 +31,9 @@ def run(mid,people_count,hardwareid=None,recommend_uid=None):
 
         msg_content=u"%s(%s) 正在预订 %s (%s)"%(usr.phone,usr.nick,sm.productdesc,
                                                               time.strftime("%m-%d %H:%M",time.localtime()))
-        to_sendsms=session.query(StoreSmsNotify,User).join(User,User.uid==StoreSmsNotify.uid).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==mid)).all()
-        for ssn,usr in to_sendsms:
-            BackEndEnvData.queue_producer.publish(json.dumps({'content':msg_content,'phone':usr.phone}),routing_key='sms.code',exchange='sys.sms')
+        to_sendsms=session.query(StoreSmsNotify).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==mid)).all()
+        for ssn in to_sendsms:
+            BackEndEnvData.queue_producer.publish(json.dumps({'content':msg_content,'phone':ssn.phone}),routing_key='sms.code',exchange='sys.sms')
 
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==mid)).all()
         to_weixin_user=set()
