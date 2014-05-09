@@ -7,6 +7,8 @@ import uuid
 import zlib
 import getopt
 import importlib
+import msgpack
+import json
 
 import tornado
 import tornado.websocket
@@ -17,7 +19,6 @@ from stormed.connection import Connection
 from stormed.channel import Consumer
 from stormed.message import Message
 from stormed.frame import status
-
 
 connection_list={}
 class RabbitMQServer(tornado.websocket.WebSocketHandler):
@@ -46,6 +47,46 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
         msg.headers={"connid":self.connid,'cip':self.cip}
         mqserver.publish(msg)
     def on_pong(self,data):
+        self.last_act_time=time.time()
+    def SendData(self,data,compressed):
+        if compressed and not self.usezlib:
+            data=zlib.decompress(data)
+        elif not compressed and self.usezlib:
+            data=zlib.compress(data)
+        self.write_message(data,binary=self.usezlib)
+        self.last_act_time=time.time()
+class MessagePackServer(tornado.websocket.WebSocketHandler):
+    last_act_time=0
+    def open(self):
+        self.connid=uuid.uuid4().get_hex()
+        print self.connid+' connected(msgpack)'
+        connection_list[self.connid]=self
+        self.last_act_time=time.time()
+        self.cip=self.request.remote_ip
+    def on_message(self, message):
+        message=json.dumps(msgpack.unpackb(message))
+        msg=Message(body=message,delivery_mode=2,reply_to=mqserver.back_queue)
+        msg.headers={"connid":self.connid,'cip':self.cip}
+        mqserver.publish(msg)
+        self.last_act_time=time.time()
+    def on_close(self):
+        print "%s closed(msgpack)"%self.connid
+        connection_list.pop(self.connid,'')
+        msg=Message(body='{"func":"connection_lost","parm":{}}',delivery_mode=2)
+        msg.headers={"connid":self.connid,'cip':self.cip}
+        mqserver.publish(msg)
+    def on_pong(self,data):
+        self.last_act_time=time.time()
+    def SendData(self,data,compressed):
+        if compressed:
+            data=zlib.decompress(data)
+        try:
+            data=json.loads(data)
+        except Exception,e:
+            self.write_message(data)
+            return
+        data=msgpack.packb(data)
+        self.write_message(data,binary=True)
         self.last_act_time=time.time()
 
 start_notified=False
@@ -93,21 +134,17 @@ class RabbitMQ_Queue(object):
     def consume_callback(self,msg):
         connid=msg.headers.get("connid",None)
         if connid:
-            conn=connection_list.get(connid,None)
-            if conn:
-                if int(msg.headers.get("close_connect",0)):
-                    connection_list.pop(conn.connid,'')
-                    conn.close()
-                    conn.on_close()
-                    return
-                retbody=msg.body
-                compressed=msg.headers.get('compression')=='application/x-gzip'
-                if compressed and not conn.usezlib:
-                    retbody=zlib.decompress(retbody)
-                elif not compressed and conn.usezlib:
-                    retbody=zlib.compress(retbody)
-                conn.write_message(retbody,binary=conn.usezlib)
-                conn.last_act_time=time.time()
+            connids=connid.split("$")
+            for oneid in connids:
+                conn=connection_list.get(oneid,None)
+                if conn:
+                    if int(msg.headers.get("close_connect",0)):
+                        connection_list.pop(conn.connid,'')
+                        conn.close()
+                        conn.on_close()
+                        return
+                    compressed=msg.headers.get('compression')=='application/x-gzip'
+                    conn.SendData(msg.body,compressed)
     def on_queue_disconnect(self):
         time.sleep(5)
         self._start_new_connect()
@@ -131,7 +168,8 @@ def main():
         'static_path': os.path.join(os.path.dirname(__file__), 'static')
     }
     application = tornado.web.Application([
-                                              (r'/ws',RabbitMQServer)
+                                              (r'/ws',RabbitMQServer),
+                                              (r'/msgpack',MessagePackServer)
                                               ], **settings)
 
 

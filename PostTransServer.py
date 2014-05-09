@@ -43,19 +43,26 @@ def RequestWork(params,body,reply_queue):
                                     }
                                 })
         online_uids=set()
+        queue_group={}
         for conn in allconn:
             online_uids.add(conn.uid)
-            QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
-                                      routing_key=conn.queue_id,
-                                      compression='gzip')
+            connids=queue_group.get(conn.queue_id,None)
+            if connids is None:
+                connids=[]
+                queue_group[conn.queue_id]=connids
+            connids.append(conn.connection_id)
+        for conn_id in queue_group:
+            QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":"$".join(queue_group[conn_id])},
+                                          routing_key=conn_id,
+                                          compression='gzip')
         offline_uids=list(uids-online_uids)
-        print "offline_uids",offline_uids
+        #print "offline_uids",offline_uids
         if len(offline_uids)>0:
             iosdevices=session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).all()
-            print 'ios device:',len(iosdevices)
+            #print 'ios device:',len(iosdevices)
             fromuser=session.query(User).filter(User.uid==uid).first()
             push_word=u"%s在%s说:%s"%(fromuser.nick,group.group_name,post['content'])
-            print push_word
+            #print push_word
             for iosdev in iosdevices:
                 if iosdev.is_debug:
                     publish_debug_exchange.publish("body",headers={"message":push_word,

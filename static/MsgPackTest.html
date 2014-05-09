@@ -51,10 +51,11 @@ sessionid<input type="text" id="sessionid"><input type="button" value="开始" o
 
 <script type="text/javascript" src="script/json2.js"></script>
 <script type="text/javascript" src="script/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="script/msgpack.js"></script>
 <script type="text/javascript">
 var ws;
 function start_connect(){
-    ws = new WebSocket("wss://"+location.hostname+":8001/ws");
+    ws = new WebSocket("wss://"+location.hostname+":8001/msgpack");
     ws.onopen = function() {
      $("#state").html("connected");
     };
@@ -63,7 +64,8 @@ function start_connect(){
 
         var jdata
         try{
-            jdata=JSON.parse(rawdata)
+            jdata=MessagePack.unpack(rawdata)
+            //jdata=JSON.parse(rawdata)
         }
         catch (err)
         {
@@ -104,12 +106,13 @@ function sendWord()
     var cdata=randomChar(10)
     data['cdata']=cdata
 
-    var string_data=JSON.stringify(data)
+    //var string_data=JSON.stringify(data)
+    var string_data=MessagePack.pack(data)
     ws.send(string_data)
 }
     function clickstart()
     {
-        ws.send(JSON.stringify(
+        var packdata=MessagePack.pack(
                 {
                     func:"session.start",
                     parm:{
@@ -117,7 +120,8 @@ function sendWord()
                     },
                     cdata:randomChar(10)
                 }
-        ))
+        )
+        ws.send(packdata)
     }
     function clearlog()
     {
