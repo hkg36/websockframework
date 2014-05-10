@@ -31,10 +31,10 @@ def RequestWork(params,body,reply_queue):
         for gwu in gwus:
             uids.add(gwu.uid)
 
-        if group.only_member_watch==0:
+        """if group.only_member_watch==0:
             fds=session.query(FriendList).filter(FriendList.friendid==uid).all()
             for fd in fds:
-                uids.add(fd.uid)
+                uids.add(fd.uid)"""
         allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
         to_push=DefJsonEncoder.encode({"push":True,
                                     "type":"newpost",
@@ -70,8 +70,7 @@ def RequestWork(params,body,reply_queue):
                 else:
                     publish_release_exchange.publish("body",headers={"message":push_word,
                       "uhid":iosdev.device_token,"badge":iosdev.badge+1})
-                iosdev.badge=iosdev.badge+1
-                iosdev=session.merge(iosdev)
+            session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).update({IOSDevice.badge:IOSDevice.badge+1},False)
             session.commit()
 
 exchange=None

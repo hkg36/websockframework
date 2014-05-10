@@ -58,7 +58,7 @@ class tenpay(object):
         res_tree=etree.fromstring(resdata)
         error_info=res_tree.xpath('//root/err_info/text()',smart_strings=False)
         if len(error_info)>0:
-            print error_info[0]
+            #print error_info[0]
             raise Exception(error_info[0])
         token=res_tree.xpath("//root/token_id/text()",smart_strings=False)[0]
 
