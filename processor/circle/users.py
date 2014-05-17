@@ -12,5 +12,5 @@ def run(cid):
         ucall=session.query(UserCircle).filter(UserCircle.cid==cid).order_by(UserCircle.time.desc()).all()
         ucl=[]
         for uc in ucall:
-            ucl.append({"uid":uc.uid,"subid":uc.subid,'time':uc.time})
+            ucl.append({"uid":uc.uid,"roleid":uc.roleid,'time':uc.time})
         return Res({"users":ucl})

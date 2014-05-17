@@ -1,4 +1,4 @@
-from datamodel.user_circle import CircleDef
+from datamodel.user_circle import CircleDef,CircleRole
 from tools.helper import Res
 
 __author__ = 'amen'
@@ -7,8 +7,9 @@ import dbconfig
 
 def run(cid):
     with dbconfig.Session() as session:
-        circles=session.query(CircleDef).filter(CircleDef.cid==cid).all()
+        circle=session.query(CircleDef).filter(CircleDef.cid==cid).first()
+        roles=session.query(CircleRole).filter(CircleRole.cid==cid).all()
         cl=[]
-        for c in circles:
-            cl.append({"cid":c.cid,"subid":c.subid,"title":c.title,"level":c.level})
-        return Res({"circle":cl})
+        for c in roles:
+            cl.append(c.toJson())
+        return Res({"circle":circle.toJson(),'roles':cl})

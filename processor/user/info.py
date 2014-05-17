@@ -1,7 +1,7 @@
 #coding:utf-8
 from sqlalchemy import and_
 from datamodel.user import User,UserExData
-from datamodel.user_circle import UserCircle, CircleDef
+from datamodel.user_circle import UserCircle, CircleDef, CircleRole
 from tools.helper import Res
 from tools.session import CheckSession
 import dbconfig
@@ -16,13 +16,18 @@ def run(uid):
         userexinfo={}
         for exinfo in userexdatalist:
             userexinfo[exinfo.uid]=exinfo.toJson()
-        users_circle=session.query(UserCircle,CircleDef)\
-            .join(CircleDef,and_(CircleDef.cid==UserCircle.cid,CircleDef.subid==UserCircle.subid))\
+        users_circle=session.query(UserCircle,CircleRole,CircleDef)\
+            .join(CircleRole,and_(CircleRole.cid==UserCircle.cid,CircleRole.roleid==UserCircle.roleid))\
+            .join(CircleDef,CircleDef.cid==UserCircle.cid)\
             .filter(UserCircle.uid.in_(uid)).all()
         circles={}
-        for uc,cdef in users_circle:
+        for uc,cr,cd in users_circle:
             ll=circles.get(uc.uid,[])
-            ll.append({'cid':uc.cid,'subid':uc.subid,'title':cdef.title,'level':cdef.level,'time':uc.time,"by_uid":uc.by_uid})
+            linedata=uc.toJson()
+            del linedata['uid']
+            linedata.update(cr.toJson())
+            linedata.update(cd.toJson())
+            ll.append(linedata)
             circles[uc.uid]=ll
 
         users=session.query(User).filter(User.uid.in_(uid)).all()

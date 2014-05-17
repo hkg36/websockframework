@@ -16,16 +16,8 @@ def run(phone):
         ulist=[]
         uids=[u.uid for u in users]
 
-        users_circle=session.query(UserCircle,CircleDef).join(CircleDef,and_(UserCircle.cid==CircleDef.cid,UserCircle.subid==CircleDef.subid)).filter(UserCircle.uid.in_(uids)).all()
-        circles={}
-        for uc,cdef in users_circle:
-            ll=circles.get(uc.uid,[])
-            ll.append({'cid':uc.cid,'subid':uc.subid,'title':cdef.title,'level':cdef.level,'time':uc.time,"by_uid":uc.by_uid})
-            circles[uc.uid]=ll
-
         for u in users:
             udata=u.toJson()
-            udata['circle']=circles.get(u.uid,None)
             ulist.append(udata)
 
         return Res({"users":ulist})
