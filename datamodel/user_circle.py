@@ -19,6 +19,17 @@ class CircleDef(dbconfig.DBBase):
                 "store_group_id":self.store_group_id,
                 "poster_url":self.poster_url,
                 "interact_poster":self.interact_poster}
+class CircleBoardHistory(dbconfig.DBBase):
+    __tablename__ = 'circle_board_history'
+    bid=Column(Integer,nullable=False,autoincrement=True,primary_key=True)
+    cid=Column(Integer,index=True,nullable=False)
+    board=Column(String(256),nullable=False)
+    time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    def toJson(self):
+        return {"bid":self.bid,
+                "cid":self.cid,
+                "board":self.board,
+                "time":self.time}
 
 class CircleRole(dbconfig.DBBase):
     __tablename__ = 'circle_role'
@@ -37,7 +48,7 @@ class CircleRole(dbconfig.DBBase):
 class UserCircle(dbconfig.DBBase):
     __tablename__ = 'circle_user'
     uid=Column(BigInteger,nullable=False)
-    cid=Column(Integer,nullable=False)
+    cid=Column(Integer,nullable=False,index=True)
     roleid=Column(Integer,nullable=False,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     by_uid=Column(BigInteger)
