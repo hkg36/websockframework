@@ -118,8 +118,20 @@ dd { margin: 0 0 0 2em; }
 
 img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; max-width:100%;}
 
-table { border-collapse: collapse; border-spacing: 0; }
-td { vertical-align: top; }
+table{
+border-collapse: collapse ;
+    border-spacing: 0;
+}
+
+td{
+border: 1px solid black ;
+    vertical-align: top;
+}
+th{
+border: 1px solid black ;
+    vertical-align: top;
+}
+
 
 @media only screen and (min-width: 480px) {
     body{font-size:14px;}

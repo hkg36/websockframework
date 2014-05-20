@@ -72,10 +72,11 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 ```python
 {"sessionid": "AaJIMq5LeVICdZT", "ws": "ws:\/\/127.0.0.1:8000\/ws", "timeout": 1387973440.355645}
 ```
-Sessionid|会话id
-:--|:--
-Ws|websocket站点链接
-Timeout |会话超时时间，时间戳方式(相对于1970.1.1 00:00:00以秒计算的偏移量)
+
+|Sessionid|会话id|
+|---------------|-------------------|
+|Ws|websocket站点链接|
+|Timeout |会话超时时间，时间戳方式(相对于1970.1.1 00:00:00以秒计算的偏移量)|
 
 聊天内容提交格式，等同于web表单
 从 /PostWithFile 取得上传token
