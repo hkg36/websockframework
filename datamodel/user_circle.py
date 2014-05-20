@@ -11,6 +11,7 @@ class CircleDef(dbconfig.DBBase):
     store_group_id=Column(Integer,default=0)
     poster_url=Column(String(1024))
     interact_poster=Column(SmallInteger,default=0)
+    icon_url=Column(String(1024))
 
     def toJson(self):
         return {"cid":self.cid,
@@ -18,7 +19,8 @@ class CircleDef(dbconfig.DBBase):
                 "board":self.board,
                 "store_group_id":self.store_group_id,
                 "poster_url":self.poster_url,
-                "interact_poster":self.interact_poster}
+                "interact_poster":self.interact_poster,
+                "icon_url":self.icon_url}
 class CircleBoardHistory(dbconfig.DBBase):
     __tablename__ = 'circle_board_history'
     bid=Column(Integer,nullable=False,autoincrement=True,primary_key=True)

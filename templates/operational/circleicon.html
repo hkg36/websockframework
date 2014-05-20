@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>上传头像</title>
+</head>
+<body>
+<form method="post" action="http://up.qiniu.com/" enctype="multipart/form-data">
+  		<input name="token" type="hidden" value="{{ token }}"><br />
+       圈子id<input name="x:cid" type="text" value=""><br />
+  		file<input name="file" type="file" /><br />
+  		<input type="submit" value="提交"/>
+</form>
+</body>
+</html>
