@@ -11,11 +11,11 @@ websocket是以数据帧为单位传输的，使用json协议进行通信。
 #####(1)	请求应答模式：#
 请求：
 
-```python
+```
 {
 	"func":"function_name", #函数名
 	"parm":{				#参数表，以参数名:参数值的形式组织，
-"parm1":value,    #参数值可以是数组，字典等他形式
+        "parm1":value,    #参数值可以是数组，字典等他形式
 		"parm2":value,
 		…
 	},
@@ -24,7 +24,7 @@ websocket是以数据帧为单位传输的，使用json协议进行通信。
 ```
 应答：
 
-```python
+```
 {
 	"errno":0,    #错误码，0是成功
 	"error":"ok", #错误信息
@@ -34,7 +34,7 @@ websocket是以数据帧为单位传输的，使用json协议进行通信。
 }
 ```
 #####(2)	服务器推送数据：#
-```python
+```
 {
 	"push":true，#推送标记，客户端用来识别推送信息和一般应答
 	"type":1  ,#协议标记，待定
@@ -69,7 +69,7 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 
 /PhoneLogin?phone=&lt;phone&gt&code=&lt;code&gt;
 使用手机号和验证码登录，返回内容：
-```python
+```
 {"sessionid": "AaJIMq5LeVICdZT", "ws": "ws:\/\/127.0.0.1:8000\/ws", "timeout": 1387973440.355645}
 ```
 
@@ -97,7 +97,7 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 ##WebSocket 站点部分#
 ###请求和应答协议
 请求：
-```python
+```
 {
 	"func":"function_name", #函数名
 	"parm":{				#参数表，以参数名:参数值的形式组织，
@@ -109,12 +109,12 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 }
 ```
 在下面的说明中请求简写为
-```python
+```
 	function_name(parm1<参数注释>,parm2={有默认值的参数},…)
 ```
 
 应答：
-```python
+```
 {
 	"push":false,
 	"errno":0,    #错误码，0是成功
@@ -130,7 +130,7 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 
 1. session.start(sessionid)连接启动，建立websocket连接后第一个指令必须是这个，否则其他指令无效
 
-```python
+```
     Result={"uid":,
     "nick":
     "headpic":
@@ -148,7 +148,7 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 6. group.invite (gid,uid<可以是用户id数组>) 邀请用户加入群
 7. user.friend_list(uid,pos=0<开始位置>,count=50<数量>)某个用户的好友列表，pos和count用来翻页
 
-```python
+```
 Result={
 	"friend_id":
 		[
@@ -180,7 +180,7 @@ Result={
 25. post.likes(postid,pos=0,count=50) //喜欢的人
 26. phonebook.upload(phone_list) 上传通信录，不用每次上传完整的，服务器会合并
 	请求例子，注意参数是数组
-```python
+```
 {
     "func":"phonebook.upload",
     "parm":{
@@ -213,7 +213,7 @@ Result={
 44. user.get_tag("uids":[1,2]) 取得用户标签
 45. user.filter(alltag,lat,long) 搜索用户
 
-```python
+```
     {
         "func":"user.filter",
         "parm":{
@@ -237,7 +237,7 @@ user.info 里的每个user 增加 circle字段
 56. circle.my() 我加入的圈子,用来读取圈子列表,返回所有我加入的圈子
 ###向客户端推送消息
 ####1. 事件推送
-```python
+```
     {"push": true,
 	 "type": "event",
        "data":
@@ -252,7 +252,7 @@ user.info 里的每个user 增加 circle字段
     }
 ```
 ####2. 新消息提示，推送的消息包括好友的消息和注册的群的消息，客户端可以根据groupid区分,可能会重复推送同一条消息，如好友在当前群中，客户端注意容错
-```python
+```
 	{
 	"push":true，#推送标记，客户端用来识别推送信息和一般应答
 	"type":"newpost"
@@ -275,7 +275,7 @@ user.info 里的每个user 增加 circle字段
 	}
 ```
 ####4 新私信提示,私信不分用户推送，客户端可以根据用户id分组
-```python
+```
 	{
 		"push":true，//推送标记，客户端用来识别推送信息和一般应答
 		"type":"newmsg"
@@ -291,7 +291,7 @@ user.info 里的每个user 增加 circle字段
 }
 ```
 ####5 推荐用户，推荐加为好友的用户，来自通信录,数据带有手机号码信息
-```python
+```
 	{
 		"push":true,
 		"type":"fromphonebook",
@@ -315,7 +315,7 @@ user.info 里的每个user 增加 circle字段
 	}
 ```
 6.回复推送,推给原帖所有者
-```javascript
+```
 {
     "push": true,
      "data":
@@ -333,7 +333,7 @@ user.info 里的每个user 增加 circle字段
 }
 ```
 7 喜欢推送,推送给原帖所有者
-```javascript
+```
 {"push": true,
  "data":
     {"like":
@@ -346,7 +346,7 @@ user.info 里的每个user 增加 circle字段
 }
 ```
 8 圈子新公告通知
-```python
+```
 {
     "push":true,
     "data":
@@ -371,14 +371,14 @@ http://service.xianchangjia.com/upload/Message?sessionid=YtcS7pKQSydYPnJ&usepage
 ##向帖子附加多媒体内容,只能向自己的贴子附加,服务器检查帖子的归属
 http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=71&usepage=1
 ##交易接口
-```javascript
+```
 {
 	"func":"merchandise.groups", //商品分组
 	"parm":{
 	}
 }
 ```
-```javascript
+```
 {
 	"func":"merchandise.list", //列出所有商品列表,暂时先这样
 	"parm":{
@@ -386,7 +386,7 @@ http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=7
 	}
 }
 ```
-```javascript
+```
 {
 	"func":"merchandise.count_price", //计算价格
 	"parm":{
@@ -395,7 +395,7 @@ http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=7
 	}
 }
 ```
-```javascript
+```
 {
 	"func":"merchandise.createorder", //网页支付,获取网页地址打开浏览器操作,用于第一次支付或者不想用已有的卡支付的情况
 	"parm":{
@@ -407,7 +407,7 @@ http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=7
 ```
 ##支付成功推送:
 发起支付时都会返回orderid ,这里通过orderid来更新本地数据状态,有可能会重复推送成功信息,因为不同途径的支付成功通知无法区别,但是orderid肯定是一样的
-```python
+```
 {
 "push":true,
     "data":{
@@ -429,7 +429,7 @@ http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=7
     "type":"paylog"
 }
 ```
-```python
+```
 {
 	"func":"merchandise.history",
 	"parm":{
@@ -438,7 +438,7 @@ http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=7
 	}
 }
 ```
-```python
+```
 {
 "func":"merchandise.recommendbyme",
 "parm":{
@@ -447,7 +447,7 @@ http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=7
 }
 }//我推荐的订单,参数全部可选
 ```
-```python
+```
 {
 	"func":"merchandise.get",
 	"parm":{
@@ -455,14 +455,14 @@ http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=7
 	}
 }
 ```
-```python
+```
 {
 	"func":"merchandise.cards", //取得用户已绑定卡的列表,客户端可缓存
 	"parm":{
 	}
 }
 ```
-```python
+```
 {
 	"func":"merchandise.paybycard", //银行卡直接扣款
 	"parm":{
