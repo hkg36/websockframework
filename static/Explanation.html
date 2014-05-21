@@ -11,17 +11,15 @@
 <script type="application/javascript" src="/static/script/markdown/extensions/prettify.js"></script>
 <link href="/static/script/markdown/googlecode.css" rel="stylesheet">
 <script src="/static/script/markdown/highlight.min.js"></script>
-<script type="application/javascript">
-    hljs.initHighlightingOnLoad();
-</script>
 <script type="application/javascript" src="/static/script/jquery-2.0.3.min.js"></script>
 <link rel="stylesheet" href="/static/script/markdown/markdown.css" type="text/css" />
 <div style="text-align: left;width: 800px;margin:0 auto;" id="show_div"></div>
-<div style="display: block" id="markdownsrc">{{ content }}</div>
 <script type="application/javascript">
-    var converter = new Showdown.converter({ extensions: ['github','table','prettify'] });
-    $("#show_div").html(converter.makeHtml($("#markdownsrc").html()));
-    $("#markdownsrc").remove()
+    $.get( "Explanation.md", function( data ) {
+    var converter = new Showdown.converter({ extensions: ['github','table'] });
+    $("#show_div").html(converter.makeHtml(data));
+        hljs.initHighlighting()
+    })
 </script>
 </body>
 </html>

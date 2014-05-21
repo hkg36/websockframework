@@ -4,16 +4,24 @@
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title></title>
 </head>
-<body>
-<b>这里提到的接口都是get打开获得测试页面，post提交是真正的操作接口。</b><br />
-<b>建议使用浏览器调试功能查看请求的具体格式</b><br />
-<a href="/operational_background/SendMessageToUser">向用户发送消息</a><br />
-<a href="/operational_background/UpdateCircleBoard">更新圈子公告</a><br />
-<a href="/operational_background/SendMessageToCircleUser">向圈子用户发送消息</a><br />
-<br/>
-<b>以下是上传文件相关的页面</b><br />
-<b>上传文件是上传到七牛云存储，将链接中的参数 usepage=1 去掉就能得到上传的token</b><br />
-<b>请参考 <a href="http://developer.qiniu.com/docs/v6/api/overview/up/form-upload.html">七牛表单上传</a></b><br />
-<a href="/operational_background/CircleIcon?usepage=1">更新圈子图标</a>
+<body style="text-align:center">
+<script type="application/javascript" src="/static/script/markdown/showdown.js"></script>
+<script type="application/javascript" src="/static/script/markdown/extensions/github.js"></script>
+<script type="application/javascript" src="/static/script/markdown/extensions/table.js"></script>
+<script type="application/javascript" src="/static/script/markdown/extensions/prettify.js"></script>
+<link href="/static/script/markdown/googlecode.css" rel="stylesheet">
+<script src="/static/script/markdown/highlight.min.js"></script>
+<script type="application/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+<script type="application/javascript" src="/static/script/jquery-2.0.3.min.js"></script>
+<link rel="stylesheet" href="/static/script/markdown/markdown.css" type="text/css" />
+<div style="text-align: left;width: 800px;margin:0 auto;" id="show_div"></div>
+<script type="application/javascript">
+    $.get( "operationalbk.md", function( data ) {
+    var converter = new Showdown.converter({ extensions: ['github','table','prettify'] });
+    $("#show_div").html(converter.makeHtml(data));
+    })
+</script>
 </body>
 </html>

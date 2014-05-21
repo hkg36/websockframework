@@ -214,14 +214,14 @@ Result={
 45. user.filter(alltag,lat,long) 搜索用户
 
 ```python
-    {
-        "func":"user.filter",
-        "parm":{
-            "alltag":["大师","品质"], #用户至少包含所有的tag
-            "lat":12.4455, #坐标不填就是全部用户搜索
-            "long":138.223
-        }
+{
+    "func":"user.filter",
+    "parm":{
+        "alltag":["大师","品质"], #用户至少包含所有的tag
+        "lat":12.4455, #坐标不填就是全部用户搜索
+        "long":138.223
     }
+}
 ```
 46. post.get_new_reply(from_reply=0, like_after=None) 返回最近的回复,不会超过30条,不会包括最近20个post以外的回复 like_after 某个时间点之后的喜欢,不会包括最近20个post以外的喜欢,不填就没有
 47. group.set_member_control(gid, uid, can_post=None) 设置某个群成员是否可以发帖
