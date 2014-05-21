@@ -8,19 +8,16 @@
 <script type="application/javascript" src="/static/script/markdown/showdown.js"></script>
 <script type="application/javascript" src="/static/script/markdown/extensions/github.js"></script>
 <script type="application/javascript" src="/static/script/markdown/extensions/table.js"></script>
-<script type="application/javascript" src="/static/script/markdown/extensions/prettify.js"></script>
 <link href="/static/script/markdown/googlecode.css" rel="stylesheet">
 <script src="/static/script/markdown/highlight.min.js"></script>
-<script type="application/javascript">
-    hljs.initHighlightingOnLoad();
-</script>
-<script type="application/javascript" src="/static/script/jquery-2.0.3.min.js"></script>
+<script type="application/javascript" src="/static/script/jquery-2.1.1.min.js"></script>
 <link rel="stylesheet" href="/static/script/markdown/markdown.css" type="text/css" />
 <div style="text-align: left;width: 800px;margin:0 auto;" id="show_div"></div>
 <script type="application/javascript">
     $.get( "operationalbk.md", function( data ) {
-    var converter = new Showdown.converter({ extensions: ['github','table','prettify'] });
+    var converter = new Showdown.converter({ extensions: ['github','table'] });
     $("#show_div").html(converter.makeHtml(data));
+        hljs.initHighlighting();
     })
 </script>
 </body>
