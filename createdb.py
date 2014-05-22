@@ -6,6 +6,7 @@ def emptyfun(*args,**kwargs):
 mongoengine.connect=emptyfun
 from dbconfig import *
 
+db.echo=True
 for filename in os.listdir(r'datamodel'):
     if filename.endswith('.py') and filename!='__init__.py':
         print filename

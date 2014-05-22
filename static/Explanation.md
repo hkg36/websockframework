@@ -235,6 +235,11 @@ user.info 里的每个user 增加 circle字段
 54. active.by_user(uid) 和active.do一样,直接输入对方uid即可
 55. circle.by_user(uid,cid=None) 加入某个用户所在的圈子,不指定cid的话加入默认的圈子
 56. circle.my() 我加入的圈子,用来读取圈子列表,返回所有我加入的圈子
+57. circle.board_history(cid) 公告板历史记录，就是圈子通知
+58. circle.postlist(cid,before_postid=None,count=20) 圈子动态列表，before_postid用于向前翻页，现在是同时拉出所有点赞和回复
+59. circle.addpost(cid,content,pictures=[]) 发圈子动态，pictures是图片链接字符串数组，上传方法按照[上传图片文件](#uploadimage)
+60. circle.likepost(postid) 给圈子动态点赞，重复给同一个动态点赞会返回过去的记录，不会有效果，可以通过记录的时间戳判断
+70. circle.addreply(postid,content) 给圈子动态回复，现在只能回复文字，需要回复图片就说很容易加上的
 ###向客户端推送消息
 ####1. 事件推送
 ```python
@@ -360,17 +365,21 @@ user.info 里的每个user 增加 circle字段
     "type":"circle.newboard"
 }
 ```
-#多媒体消息
+#多媒体消息 （请自己替换一个自己的sessionid）
+**客户端上传的时候，去掉 usepage=1 直接获得 token**
 ##上传头像
-http://service.xianchangjia.com/upload/HeadImg?sessionid=5Wnp5qPWgpAhDRK&usepage=1 测试页面
-http://service.xianchangjia.com/upload/HeadImg?sessionid=5Wnp5qPWgpAhDRK      取得token
+http://service.laixinle.com/upload/HeadImg?sessionid=5Wnp5qPWgpAhDRK&usepage=1 测试页面
+http://service.laixinle.com/upload/HeadImg?sessionid=5Wnp5qPWgpAhDRK      取得token
 ##群里发多媒体帖子
-http://service.xianchangjia.com/upload/Post?sessionid=5Wnp5qPWgpAhDRK&usepage=1
+http://service.laixinle.com/upload/Post?sessionid=5Wnp5qPWgpAhDRK&usepage=1
 ##多媒体私信
-http://service.xianchangjia.com/upload/Message?sessionid=YtcS7pKQSydYPnJ&usepage=1
+http://service.laixinle.com/upload/Message?sessionid=YtcS7pKQSydYPnJ&usepage=1
 ##向帖子附加多媒体内容,只能向自己的贴子附加,服务器检查帖子的归属
-http://service.xianchangjia.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=71&usepage=1
-##交易接口
+http://service.laixinle.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=71&usepage=1
+<a name="uploadimage" id="uploadimage"></a>
+##上传图片文件，得到图片链接
+http://service.laixinle.com/upload/Image?usepage=1&sessionid=kkfZCxu1gQyVT9G
+#交易接口
 ```python
 {
 	"func":"merchandise.groups", //商品分组

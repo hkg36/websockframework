@@ -1,7 +1,9 @@
 #coding:utf-8
 __author__ = 'amen'
 from sqlalchemy import *
+from mongoengine import *
 import dbconfig
+import datetime
 
 class CircleDef(dbconfig.DBBase):
     __tablename__ = 'circle_define'
@@ -62,3 +64,42 @@ class UserCircle(dbconfig.DBBase):
                 "roleid":self.roleid,
                 'time':self.time,
                 "by_uid":self.by_uid}
+
+class LikeRecord(EmbeddedDocument):
+    uid=LongField(required=True)
+    time=DateTimeField(default=datetime.datetime.now)
+    def toJson(self):
+        return {'uid':self.uid,
+                "time":self.time}
+class ReplyRecord(EmbeddedDocument):
+    uid=LongField(required=True)
+    content=StringField(required=True)
+    time=DateTimeField(default=datetime.datetime.now)
+    def toJson(self):
+        return {"uid":self.uid,
+                "content":self.content,
+                'time':self.time}
+class CirclePost(Document):
+    postid=SequenceField(primary_key=True)
+    uid=LongField(required=True)
+    cid=IntField(required=True)
+    content=StringField()
+    picture_list=ListField(URLField())
+    likes=ListField(EmbeddedDocumentField(LikeRecord))
+    replys=ListField(EmbeddedDocumentField(ReplyRecord))
+    time=DateTimeField(default=datetime.datetime.now)
+    def toJson(self):
+        data= {'postid':self.postid,
+                'uid':self.uid,
+                'cid':self.cid,
+                'picture_list':[one for one in self.picture_list],
+                'likes':[one.toJson() for one in self.likes],
+                'replys':[one.toJson() for one in self.replys],
+                'content':self.content,
+                'time':self.time,
+                }
+        return data
+
+    meta = {
+        'indexes': [('cid','-postid'),]
+    }
