@@ -23,6 +23,18 @@ class CircleDef(dbconfig.DBBase):
                 "poster_url":self.poster_url,
                 "interact_poster":self.interact_poster,
                 "icon_url":self.icon_url}
+class CircleExList(dbconfig.DBBase): #外部插件列表
+    __tablename__ = 'circle_ex_list'
+    ceid=Column(Integer,nullable=False,autoincrement=True,primary_key=True)
+    cid=Column(Integer,nullable=False,index=True)
+    title=Column(String(16))
+    url=Column(String(1024))
+    time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
+    def toJson(self):
+        return {'title':self.title,
+                'url':self.url,
+                'time':self.time}
+
 class CircleBoardHistory(dbconfig.DBBase):
     __tablename__ = 'circle_board_history'
     bid=Column(Integer,nullable=False,autoincrement=True,primary_key=True)

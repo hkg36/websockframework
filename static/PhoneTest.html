@@ -21,7 +21,24 @@
         border:1px solid #336633;
         word-break: break-all;
     }
+    .pop-box {
+z-index: 9999; /*这个数值要足够大，才能够显示在最上层*/
+margin-bottom: 3px;
+display: none;
+position: absolute;
+background: #FFF;
+border:solid 1px #6e8bde;
+}
+
+
 </style>
+<div id='pop-div' style="width: 800px;height: 600px" class="pop-box">
+    <div class='buttonPanel' style="text-align: right" style="text-align: right">
+    <input value="Close" id="btn1" onclick="hideDiv('pop-div');" type="button" />
+    </div>
+    <div id="showcode" style="width: 800px;height: 570px;overflow:scroll;"></div>
+</div>
+
 <div style="width: 100%">
 <div class="infopane">
     <div id="state"></div>
@@ -50,7 +67,9 @@ sessionid<input type="text" id="sessionid"><input type="button" value="开始" o
 </div>
 
 <script type="text/javascript" src="script/json2.js"></script>
-<script type="text/javascript" src="script/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="script/jquery-2.1.1.min.js"></script>
+<link href="/static/script/markdown/googlecode.css" rel="stylesheet">
+<script src="/static/script/markdown/highlight.min.js"></script>
 <script type="text/javascript">
 var ws;
 function start_connect(){
@@ -71,10 +90,13 @@ function start_connect(){
             return
         }
 
+        var jstr=evt.data
+        jstr=jstr.replace(/</g,'&lt;')
+        jstr=jstr.replace(/>/g,'&gt;')
         if(jdata['push']==true)
-            $("#push_pane").append('<div class="push_style">'+evt.data+'</div>')
+            $("#push_pane").append('<div class="push_style">'+jstr+'</div>')
         else
-            $("#host").append('<div class="info_style">'+evt.data+'</div>')
+            $("#host").append('<div class="info_style">'+jstr+'</div>')
     }
     ws.onclose=function(){
         $("#state").html("connect losted")
@@ -123,6 +145,40 @@ function sendWord()
     {
         $("#host").empty()
     }
+
+function popupDiv(div_id) {
+    var div_obj = $("#"+div_id);
+    var windowWidth = document.documentElement.clientWidth;
+    var windowHeight = document.documentElement.clientHeight;
+    var popupHeight = div_obj.height();
+    var popupWidth = div_obj.width();
+    //添加并显示遮罩层
+    $("<div id='mask'></div>").addClass("mask")
+    .width(windowWidth * 0.99)
+    .height(windowHeight * 0.99)
+    .click(function() {hideDiv(div_id); })
+    .appendTo("body")
+    .fadeIn(200);
+    div_obj.css({"position": "absolute"})
+    .animate({left: windowWidth/2-popupWidth/2,
+    top: windowHeight/2-popupHeight/2, opacity: "show" }, "slow");
+}
+
+function hideDiv(div_id) {
+$("#mask").remove();
+$("#" + div_id).animate({left: 0, top: 0, opacity: "hide" }, "slow");
+}
+
+function popFormatedJson(v){
+var jobj=JSON.parse(v.currentTarget.innerHTML)
+var jstr=JSON.stringify(jobj,null,2)
+$("#showcode").html("<pre><code class='javascript'>"+jstr+"</code> </pre>")
+    hljs.highlightBlock($("#showcode")[0])
+popupDiv('pop-div')
+}
+$('.infopane').on('click','.info_style',popFormatedJson);
+ $('.infopane').on('click','.push_style',popFormatedJson);
+
 </script>
 
 </body>
