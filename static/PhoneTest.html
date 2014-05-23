@@ -91,8 +91,12 @@ function start_connect(){
         }
 
         var jstr=evt.data
-        jstr=jstr.replace(/</g,'&lt;')
-        jstr=jstr.replace(/>/g,'&gt;')
+        jstr=jstr.replace(/<|>/g,function (match){
+            if(match=='<')
+                return '&lt;'
+            else if(match=='>')
+                return '&gt;'
+        })
         if(jdata['push']==true)
             $("#push_pane").append('<div class="push_style">'+jstr+'</div>')
         else

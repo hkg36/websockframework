@@ -51,11 +51,15 @@ def RequestWork(params,body,reply_queue):
             iosdevices=session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).all()
             #print 'ios device:',len(iosdevices)
             cdef=session.query(CircleDef).filter(CircleDef.cid==cid).first()
+            push_word=None
             if params['type']=="circle.newboard":
                 if len(post['board'])>50:
                     push_word=u"%s %s..."%(cdef.name,post['board'][0:50])
                 else:
                     push_word=u"%s %s"%(cdef.name,post['board'])
+            if params['type']=="circle.newpost":
+                user=session.query(User).filter(User).first()
+                push_word=u"%s在%s发了新动态"%()
             #print push_word
             if push_word:
                 for iosdev in iosdevices:

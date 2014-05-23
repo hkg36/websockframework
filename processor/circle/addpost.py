@@ -2,7 +2,7 @@ from tools.session import CheckSession
 
 __author__ = 'amen'
 from datamodel.user_circle import CircleDef, UserCircle, CircleBoardHistory, CirclePost
-from tools.helper import Res
+from tools.helper import Res, DefJsonEncoder
 import BackEndEnvData
 import dbconfig
 
@@ -16,4 +16,8 @@ def run(cid,content,pictures=[]):
     newpost.uid=BackEndEnvData.uid
     newpost.content=content
     newpost.save()
-    return Res({"post":newpost.toJson()})
+    json_msg=DefJsonEncoder.encode(newpost.toJson())
+    BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
+                                        routing_key="sys.circle_new_board",headers={"type":"circle.newpost"},
+                                        compression='gzip')
+    return Res({"postid":newpost.postid})
