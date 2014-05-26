@@ -1,6 +1,7 @@
 #coding:utf-8
 import urllib
 from tools.helper import AutoFitJson
+import codecs
 
 __author__ = 'amen'
 import json
@@ -15,22 +16,23 @@ import website_config
 
 class Version(WebSiteBasePage.AutoPage):
     def GET(self):
+        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
+        policy.callbackUrl='http://%s/android/VersionDone'%website_config.hostname
+        policy.callbackBody='{"name":"http://$(bucket).qiniudn.com/$(key)","hash":"$(etag)",' \
+                            '"verCode":"$(x:verCode)","verName":"$(x:verName)","Info":"$(x:Info)"}'
+        uptoken =policy.token()
+
         tpl=WebSiteBasePage.jinja2_env.get_template('android/newversion.html')
-        return tpl.render()
+        return tpl.render(token=uptoken)
+class VersionDone(WebSiteBasePage.AutoPage):
     def POST(self):
-        prams=web.input(file={})
-        verCode=int(prams['verCode'])
-        verName=prams['verName']
-        Info=prams['Info']
-        file=prams['file']
+        backdata=json.loads(web.data())
+        verCode=int(backdata['verCode'])
+        verName=urllib.unquote_plus(backdata['verName'].encode('ascii')).decode('utf-8')
+        Info=urllib.unquote_plus(backdata['Info'].encode('ascii')).decode('utf-8')
+        file=backdata['name']
 
-        filepath=file.filename.replace('\\','/') # replaces the windows-style slashes with linux ones.
-        filename=filepath.split('/')[-1] # splits the and chooses the last part (the filename with extension)
-        fout = open('static/android/'+ filename,'w') # creates the file where the uploaded file should be stored
-        fout.write(file.file.read()) # writes the uploaded file to the newly created file.
-        fout.close() # closes the file, upload complete.
-
-        fout=open('static/android/version.js','w')
-        json.dump({'verCode':verCode,'verName':verName,'Info':Info,'url':'http://%s/static/android/%s'%(website_config.hostname,filename)},fout)
+        fout= codecs.open('static/android/version.js','w','utf-8')
+        json.dump({'verCode':verCode,'verName':verName,'Info':Info,'url':file},fout,ensure_ascii=False)
         fout.close()
-        raise web.seeother('/static/android/version.js')
+        return json.dumps({"url":'http://%s/static/android/version.js'%website_config.hostname})

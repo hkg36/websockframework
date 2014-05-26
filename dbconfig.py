@@ -19,6 +19,7 @@ redisdb=redis.StrictRedis(host='192.173.1.213', port=6379)
 memclient=memcache.Client(['192.173.1.213:11211'])
 mongoengine.connect('Site',host='mongodb://192.173.1.213:27010/')
 
-qiniu.conf.ACCESS_KEY = "x5yGWWp6fBGMwlJyEU0GVzilkNIa7Mc87ibrKpdU"
-qiniu.conf.SECRET_KEY = "r_8i1p4LCaiI0isFxuF2paAKhoQotGeqngCD4B1O"
-qiniuSpace="kidswant"
+qiniu.conf.ACCESS_KEY = "W4nYpf8HOCEyCzjLHpO0QVYGOykRucI1MIniLpgL"
+qiniu.conf.SECRET_KEY = "3NRgrf8v_XHGGoWROaXYZoFYPvSeN3HnI_19eVfk"
+qiniuSpace="laixinle"
+qiniuDownLoadLinkHead="http://%s.qiniudn.com/"%qiniuSpace

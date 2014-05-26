@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
+        <title>jQuery Mobile基本页面结构</title>
+        <link rel="stylesheet" href="script/jquery/jquery.mobile-1.4.2.min.css" />
+        <link rel="stylesheet" href="script/jquery/jquery.mobile.theme-1.4.2.min.css" />
+        <link rel="stylesheet" href="script/jquery/jquery.mobile.external-png-1.4.2.min.css" />
+        <link rel="stylesheet" href="script/jquery/jquery.mobile.icons-1.4.2.min.css" />
+        <link rel="stylesheet" href="script/jquery/jquery.mobile.inline-png-1.4.2.min.css" />
+        <link rel="stylesheet" href="script/jquery/jquery.mobile.inline-svg-1.4.2.min.css" />
+        <link rel="stylesheet" href="script/jquery/jquery.mobile.structure-1.4.2.min.css" />
+
+        <script src="/static/script/jquery-1.9.1.min.js"></script>
+        <script src="script/jquery/jquery.mobile-1.4.2.min.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="home">
+            <div data-role="header">
+                <a  data-icon="delete">Cancel</a>
+                <h1>Edit Contact</h1>
+                 <a data-icon="check">Save</a>
+            </div>
+            <div data-role="content">
+                <p>What vehicles do you like?</p>
+                  <p><a href="#Cars" data-transition="slide" data-role="button">Cars</a></p>
+                  <p><a href="#Trains" data-rel="dialog" data-transition="slideup" data-role="button">Trains</a></p>
+                  <p><a href="#Planes" data-transition="slide" data-role="button">Planes</a></p>
+            </div>
+            <div data-role="footer">
+                <h4>Footer</h4>
+            </div>
+        </div>
+    <div data-role="page" id="Cars">
+   <div data-role="header">
+       <a href="#home" data-icon="back">Cancel</a>
+      <h1>Cars</h1>
+   </div><!-- /header -->
+   <div data-role="content">
+      <p>We can add a list of cars</p>
+       <p><a href="#home" data-transition="slide" data-role="button">Home</a></p>
+   </div><!-- /content -->
+   <div data-role="footer">
+      <h4>Page Footer</h4>
+   </div><!-- /footer -->
+</div><!-- /page -->
+
+
+<!-- Start of third page -->
+<div data-role="page" id="Trains">
+   <div data-role="header">
+      <h1>Trains</h1>
+   </div><!-- /header -->
+   <div data-role="content">
+      <p>We can add a list of trains</p>
+   </div><!-- /content -->
+   <div data-role="footer">
+      <h4>Page Footer</h4>
+   </div><!-- /footer -->
+</div><!-- /page -->
+
+
+<!-- Start of fourth page -->
+<div data-role="page" id="Planes">
+   <div data-role="header">
+      <h1>Planes</h1>
+</div><!-- /header -->
+   <div data-role="content">
+      <p>We can add a list of planes</p>
+   </div><!-- /content -->
+   <div data-role="footer">
+   <h4>Page Footer</h4>
+</div><!-- /footer -->
+</div><!-- /page -->
+    </body>
+</html>

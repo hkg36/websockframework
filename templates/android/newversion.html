@@ -5,11 +5,13 @@
     <title></title>
 </head>
 <body>
-<form method="post" enctype="multipart/form-data">
+<form method="post" action="http://up.qiniu.com/" enctype="multipart/form-data">
+  		<input name="token" type="hidden" value="{{ token }}">
+    <input name="key" type="hidden" value="laixin_newversion.apk">
   		新版本code<input type="text" onkeyup= "value=value.replace(/[^\d]/g, '') "
-                      style="ime-mode:Disabled" name="verCode"><br>
-        新版本号 <input type="text" name="verName"><br>
-        新版本描述<textarea name="Info" rows="5" cols="50"></textarea><br>
+                      style="ime-mode:Disabled" name="x:verCode"><br>
+        新版本号 <input type="text" name="x:verName"><br>
+        新版本描述<textarea name="x:Info" rows="5" cols="50"></textarea><br>
   		file<input name="file" type="file" /><br>
   		<input type="submit" value="提交"/>
 </body>

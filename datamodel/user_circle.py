@@ -99,6 +99,7 @@ class CirclePost(Document):
     picture_list=ListField(URLField())
     likes=ListField(EmbeddedDocumentField(LikeRecord))
     replys=ListField(EmbeddedDocumentField(ReplyRecord))
+    mid=IntField()
     time=DateTimeField(default=datetime.datetime.now)
     def toJson(self):
         data= {'postid':self.postid,
@@ -108,6 +109,7 @@ class CirclePost(Document):
                 'likes':[one.toJson() for one in self.likes],
                 'replys':[one.toJson() for one in self.replys],
                 'content':self.content,
+                'mid':self.mid,
                 'time':self.time,
                 }
         return data

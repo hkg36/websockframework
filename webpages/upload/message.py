@@ -36,7 +36,6 @@ class Message(WebSiteBasePage.AutoPage):
         return tpl.render(token=uptoken)
 
 class MessageDone(WebSiteBasePage.AutoPage):
-    SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=json.loads(web.data())
         with dbconfig.Session() as session:
@@ -46,7 +45,7 @@ class MessageDone(WebSiteBasePage.AutoPage):
             content_data=imgdata.get('content')
             if content_data:
                 newmsg.content=urllib.unquote_plus(content_data.encode('ascii')).decode('utf-8')
-            fileurl=self.SITE+imgdata['hash']
+            fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             filetype=int(imgdata['filetype'])
             if filetype==1:
                 newmsg.picture=fileurl

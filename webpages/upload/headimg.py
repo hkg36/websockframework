@@ -40,14 +40,13 @@ class HeadImg(WebSiteBasePage.AutoPage):
         pass
 
 class HeadImgDone(WebSiteBasePage.AutoPage):
-    SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=json.loads(web.data())
         with dbconfig.Session() as session:
             user=session.query(datamodel.user.User).filter(datamodel.user.User.uid==imgdata['uid']).first()
             if user is None:
                 return json.dumps({"errno":1,"error":"user lost"})
-            fileurl=self.SITE+imgdata['hash']
+            fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             user.headpic=fileurl
             session.merge(user)
             session.commit()
@@ -78,14 +77,13 @@ class BackgroundImg(WebSiteBasePage.AutoPage):
     def POST(self):
         pass
 class BackgroundImgDone(WebSiteBasePage.AutoPage):
-    SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=json.loads(web.data())
         with dbconfig.Session() as session:
             user=session.query(datamodel.user.User).filter(datamodel.user.User.uid==imgdata['uid']).first()
             if user is None:
                 return json.dumps({"errno":1,"error":"user lost"})
-            fileurl=self.SITE+imgdata['hash']
+            fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             user.background_image=fileurl
             session.merge(user)
             session.commit()
@@ -115,14 +113,13 @@ class UserExMedia(WebSiteBasePage.AutoPage):
         return tpl.render(token=uptoken)
 
 class UserExMediaDone(WebSiteBasePage.AutoPage):
-    SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=json.loads(web.data())
         with  dbconfig.Session() as session:
             exmedia=datamodel.user.UserExMedia()
             exmedia.uid=imgdata['uid']
             exmedia.text=urllib.unquote_plus(imgdata['text'].encode('ascii')).decode('utf-8')
-            fileurl=self.SITE+imgdata['hash']
+            fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             filetype=int(imgdata['filetype'])
             if filetype==1:
                 exmedia.picture=fileurl

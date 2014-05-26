@@ -4,7 +4,7 @@ from tools.helper import AutoFitJson
 
 __author__ = 'amen'
 import json
-
+import obtools
 import qiniu.rs
 import web
 
@@ -14,14 +14,9 @@ import datamodel.user
 import website_config
 
 class Image(WebSiteBasePage.AutoPage):
+    @obtools.AccessControl()
     def GET(self):
         params=web.input(usepage='0')
-        sessionid=params.get('sessionid',None)
-        if sessionid is None:
-            return "No Session id"
-        data=dbconfig.redisdb.get(str('session:%s'%sessionid))
-        if data is None:
-            return {"errno":1,"error":"session not found","result":{}}
         policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
         policy.returnBody='{"errno":0,"error":"Success","url":"http://$(bucket).qiniudn.com/$(key)"}'
         uptoken =policy.token()

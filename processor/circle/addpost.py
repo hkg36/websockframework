@@ -7,7 +7,7 @@ import BackEndEnvData
 import dbconfig
 
 @CheckSession()
-def run(cid,content,pictures=[]):
+def run(cid,content,pictures=[],mid=None):
     if isinstance(pictures,list)==False:
         pictures=[pictures]
     newpost=CirclePost()
@@ -15,6 +15,7 @@ def run(cid,content,pictures=[]):
     newpost.cid=cid
     newpost.uid=BackEndEnvData.uid
     newpost.content=content
+    newpost.mid=mid
     newpost.save()
     json_msg=DefJsonEncoder.encode(newpost.toJson())
     BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,

@@ -46,14 +46,13 @@ class Media(WebSiteBasePage.AutoPage):
         return tpl.render(token=uptoken)
 
 class MediaDone(WebSiteBasePage.AutoPage):
-    SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=json.loads(web.data())
         with  dbconfig.Session() as session:
             rm=RecommendMedia()
             rm.uid=imgdata['uid']
             rm.recommend_uid=imgdata['recommend_uid']
-            fileurl=self.SITE+imgdata['hash']
+            fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             filetype=int(imgdata['filetype'])
             if filetype==1:
                 rm.picture=fileurl

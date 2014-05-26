@@ -30,14 +30,13 @@ class CircleIcon(WebSiteBasePage.AutoPage):
         pass
 
 class CircleIconDone(WebSiteBasePage.AutoPage):
-    SITE="http://%s.u.qiniudn.com/"%dbconfig.qiniuSpace
     def POST(self):
         imgdata=json.loads(web.data())
         with dbconfig.Session() as session:
             cdef=session.query(CircleDef).filter(CircleDef.cid==imgdata['cid']).first()
             if cdef is None:
                 return json.dumps({"errno":1,"error":"cid lost"})
-            fileurl=self.SITE+imgdata['hash']
+            fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             cdef.icon_url=fileurl
             session.merge(cdef)
             session.commit()
