@@ -6,8 +6,9 @@ except Exception,e:
 import time
 import datetime
 import json
-import mongoengine.connection
-
+import dbconfig
+import cPickle as pickle
+import urllib
 
 def Res(res={},errno=0,error='no error'):
     return {"errno":errno,"error":error,"result":res}
@@ -67,15 +68,22 @@ def script_path():
     import inspect, os
     caller_file = inspect.stack()[1][1]         # caller's filename
     return os.path.abspath(os.path.dirname(caller_file))# path
-def mongo_autoincrement(tablename):
-    conn=mongoengine.connection.get_connection()
-    site=conn['Site']
-    autoi=site.autoincrement_sequence
-    res=autoi.find_and_modify(
-        query={"_id": tablename},
-        update={"$inc" : {"seq":1}},
-        upsert=True,
-        new=True)
-    return res['seq']
+
+def FunctionCache(timeout=20):
+    def ACF(fun):
+        def Work(*args,**kwargs):
+            fkey= 'funcCache:%s.%s(%s%s)'%(fun.__module__,fun.__name__,DefJsonEncoder.encode(args) if args else '',DefJsonEncoder.encode(kwargs) if kwargs else '')
+            fkey=urllib.quote(fkey)
+            print fkey
+            result=dbconfig.memclient.get(fkey)
+            if result is None:
+                res=fun(*args,**kwargs)
+                result=pickle.dumps(res,pickle.HIGHEST_PROTOCOL)
+                dbconfig.memclient.set(fkey,result,timeout,128)
+                return res
+            else:
+                return pickle.loads(result)
+        return Work
+    return ACF
 if __name__ == '__main__':
     print CombineGeo(147.9873,32.5678)

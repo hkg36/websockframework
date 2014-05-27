@@ -3,8 +3,10 @@
 <head>
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title></title>
+    <script type="application/javascript" src="/static/script/jquery-2.1.1.min.js"></script>
 </head>
 <body>
+<input type="button" value="删除上个版本" id="delversion">
 <form method="post" action="http://up.qiniu.com/" enctype="multipart/form-data">
   		<input name="token" type="hidden" value="{{ token }}">
     <input name="key" type="hidden" value="laixin_newversion.apk">
@@ -14,5 +16,13 @@
         新版本描述<textarea name="x:Info" rows="5" cols="50"></textarea><br>
   		file<input name="file" type="file" /><br>
   		<input type="submit" value="提交"/>
+</form>
+<script type="application/javascript">
+    $("#delversion").on("click",function (){
+        $.get("/android/DeleteVersion",function(data){
+            alert('已删除')
+        })
+    })
+</script>
 </body>
 </html>

@@ -13,6 +13,7 @@ import WebSiteBasePage
 import dbconfig
 import datamodel.user
 import website_config
+import os
 
 class Version(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -24,6 +25,15 @@ class Version(WebSiteBasePage.AutoPage):
 
         tpl=WebSiteBasePage.jinja2_env.get_template('android/newversion.html')
         return tpl.render(token=uptoken)
+class DeleteVersion(WebSiteBasePage.AutoPage):
+    def GET(self):
+        try:
+            os.remove('static/android/version.js')
+        except Exception,e:
+            pass
+        qnclient=qiniu.rs.Client()
+        qnclient.delete(dbconfig.qiniuSpace,'laixin_newversion.apk')
+        return "0"
 class VersionDone(WebSiteBasePage.AutoPage):
     def POST(self):
         backdata=json.loads(web.data())

@@ -160,7 +160,59 @@ Result={
 	"count":10
 }
 ```
-8. user.info(uid<用户id数组>) 查询用户基本信息
+8. user.info2(uid) 查询一个用户基本信息，可以随便调用不影响服务器性能
+```python
+{
+  "push": false,
+  "errno": 0,
+  "result": {
+    "circles": [
+      {
+        "interact_poster": 0,
+        "cid": 1,
+        "roleid": 2,
+        "level": 2,
+        "poster_url": null,
+        "name": "vv",
+        "by_uid": 1,
+        "board": "vfv",
+        "time": 1347163200,
+        "title": "服务员",
+        "icon_url": null,
+        "store_group_id": 3
+      }
+    ],
+    "exdata": {
+      "like_me_count": 3,
+      "uid": 1,
+      "tags": [
+        "大师",
+        "品质"
+      ]
+    },
+    "user": {
+      "background_image": null,
+      "actor_level": 1,
+      "uid": 1,
+      "create_time": 1397275200,
+      "headpic": null,
+      "active_by": 0,
+      "actor": 0,
+      "sex": 0,
+      "nick": "a",
+      "birthday": null,
+      "marriage": null,
+      "is_stew": 0,
+      "signature": null,
+      "position": null,
+      "height": 0,
+      "active_level": 0
+    }
+  },
+  "cdata": "4uq9haktil",
+  "error": "no error"
+}
+```
 9. group.info(gid<群id或者id数组>) 查询群基本信息
 10. post.add(gid,content) 发布信息
 11. group.post_list(gid,pos=0,count=50) 返回的是倒序列表，pos，count用于向过去翻页
