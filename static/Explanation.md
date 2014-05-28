@@ -128,18 +128,35 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 以下应答只说明result部分
 
 
-1. session.start(sessionid)连接启动，建立websocket连接后第一个指令必须是这个，否则其他指令无效
+1. session.start2(sessionid)连接启动，建立websocket连接后第一个指令必须是这个，否则其他指令无效
 
 ```python
-    Result={"uid":,
-    "nick":
-    "headpic":
-    "sex":
-    "birthday":"1970-1-1 12:1:1"
-    "marriage":
-    "background_image":
-    "height":
-    "create_time":}
+    {
+  "push": false,
+  "errno": 0,
+  "result": {
+    "user": {
+      "background_image": null,
+      "actor_level": 1,
+      "uid": 3,
+      "create_time": 1397275200,
+      "headpic": null,
+      "active_by": 0,
+      "actor": 0,
+      "sex": 0,
+      "nick": "c",
+      "birthday": null,
+      "marriage": null,
+      "is_stew": 0,
+      "signature": null,
+      "position": null,
+      "height": 0,
+      "active_level": 0
+    }
+  },
+  "cdata": "rxr1xlsilh",
+  "error": "no error"
+}
 ```
 2. user.add_friend(uid<可以是用户id数组或者是用户id>) 添加好友
 3. user.del_friend(uid<可以是用户id数组或者是用户id>) 删除好友
@@ -289,9 +306,25 @@ user.info 里的每个user 增加 circle字段
 56. circle.my() 我加入的圈子,用来读取圈子列表,返回所有我加入的圈子
 57. circle.board_history(cid) 公告板历史记录，就是圈子通知
 58. circle.postlist(cid,before_postid=None,count=20) 圈子动态列表，before_postid用于向前翻页，现在是同时拉出所有点赞和回复
-59. circle.addpost(cid,content,pictures=[]) 发圈子动态，pictures是图片链接字符串数组，上传方法按照[上传图片文件](#uploadimage)
+59. circle.addpost(cid,content,pictures=[],mid=None) 发圈子动态，pictures是图片链接字符串数组，上传方法按照[上传图片文件](#uploadimage) mid 是商品id,要推荐商品的话参考 `merchandise.list`
 60. circle.likepost(postid) 给圈子动态点赞，重复给同一个动态点赞会返回过去的记录，不会有效果，可以通过记录的时间戳判断
 70. circle.addreply(postid,content) 给圈子动态回复，现在只能回复文字，需要回复图片就说很容易加上的
+71. tools.save_data() 上传客户端的任意数据，参数表是任意的，喜欢用什么就用什么，如
+```python
+{
+	"func":"tools.save_data",
+	"parm":{
+"ok":["sce","128"],
+"shit":1,
+"ff":{"ss":2}
+	}
+}
+```
+72. tools.read_data() 取得上传的数据
+73. user.invite(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0,position = None,join_cid=None,join_roleid=None) 邀请其他用户，
+必须填手机号和昵称，头像上传请使用[上传图片文件](#uploadimage)，第一次邀请会发短信，可以反复邀请，重复的邀请只是会修改邀请数据，最多一天只会发送一次短信,
+用户已经存在，返回2002错误和用户的信息，已经接受邀请返回2001错误
+74. user.invite_list() 已经发出的邀请列表，返回值中的joined_uid表示接受邀请的用户的用户id
 ###向客户端推送消息
 ####1. 事件推送
 ```python
@@ -432,42 +465,20 @@ http://service.laixinle.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=71&us
 ##上传图片文件，得到图片链接
 http://service.laixinle.com/upload/Image?usepage=1&sessionid=kkfZCxu1gQyVT9G
 #交易接口
-```python
-{
-	"func":"merchandise.groups", //商品分组
-	"parm":{
-	}
-}
-```
-```python
-{
-	"func":"merchandise.list", //列出所有商品列表,暂时先这样
-	"parm":{
-      "gid":1
-	}
-}
-```
-```python
-{
-	"func":"merchandise.count_price", //计算价格
-	"parm":{
-          "mid":1,
-          "people_count":2
-	}
-}
-```
-```python
-{
-	"func":"merchandise.createorder", //网页支付,获取网页地址打开浏览器操作,用于第一次支付或者不想用已有的卡支付的情况
-	"parm":{
-"mid":1,
-"people_count":2
-"hardwareid":"23123124123"
-	}
-}
-```
+1. merchandise.groups() //商品分组
+2. merchandise.list(gid), //列出分组的所有商品列表,暂时先这样
+3. merchandise.count_price(mid,people_count), //计算价格 people_count是人数
+4. merchandise.createorder(mid,people_count,hardwareid) //网页支付,获取网页地址打开浏览器操作,用于第一次支付或者不想用已有的卡支付的情况,
+hardwareid是客户端生成的能标识特定手机的字符串，随便用什么方法生成都行，每个手机要每次生成的都一样，支付平台要求这个字段
+5. merchandise.history(before,count) //before=订单号，用于翻页，默认不填是第一页
+6. merchandise.recommendbyme(before,count)  //因为我推荐而完成的订单,参数全部可选
+7. merchandise.get(mid=[1,3]) //取得特定的多个商品，商品id可以是数组
+8. merchandise.cards() //取得用户已绑定银行卡的列表,这个接口操作缓慢，如果没有使用新卡每次都一样，客户端请缓存
+9. merchandise.paybycard(cardid,mid,people_count,hardwareid) //银行卡直接扣款,cardid从`merchandise.cards()`取得，其他同`merchandise.createorder`
+
 ##支付成功推送:
 发起支付时都会返回orderid ,这里通过orderid来更新本地数据状态,有可能会重复推送成功信息,因为不同途径的支付成功通知无法区别,但是orderid肯定是一样的
+
 ```python
 {
 "push":true,
@@ -490,50 +501,6 @@ http://service.laixinle.com/upload/Image?usepage=1&sessionid=kkfZCxu1gQyVT9G
     "type":"paylog"
 }
 ```
-```python
-{
-	"func":"merchandise.history",
-	"parm":{
-"before":"1394090923-869",
-"count":2
-	}
-}
-```
-```python
-{
-"func":"merchandise.recommendbyme",
-"parm":{
-"before":"1394513419-906",
-"count":1
-}
-}//我推荐的订单,参数全部可选
-```
-```python
-{
-	"func":"merchandise.get",
-	"parm":{
-        "mid":[1,3]
-	}
-}
-```
-```python
-{
-	"func":"merchandise.cards", //取得用户已绑定卡的列表,客户端可缓存
-	"parm":{
-	}
-}
-```
-```python
-{
-	"func":"merchandise.paybycard", //银行卡直接扣款
-	"parm":{
-"cardid":"4126",
-"mid":1,
-"people_count":2,
-"hardwareid":"23123124123"
-	}
-}
-```
 #应答错误码
 
 0=成功
@@ -551,3 +518,7 @@ http://service.laixinle.com/upload/Image?usepage=1&sessionid=kkfZCxu1gQyVT9G
 1002 手机号已被另一个账号使用
 
 1003 验证码错误
+
+2001 已经接受邀请
+
+2002 手机号对应的用户已存在

@@ -97,6 +97,7 @@ class UserExData(Document):
     position=PointField()
     update_time=DateTimeField()
     like_me_count=LongField(default=0)
+    client_data=DictField()
 
     meta = {
         'indexes': ['tags']
@@ -108,4 +109,43 @@ class UserExData(Document):
             data["lat"]=self.position['coordinates'][1]
             data["long"]=self.position['coordinates'][0]
             data['time']=self.update_time
+        return data
+
+class UserInviteLog(Document):
+    uid=LongField(required=True)
+    phone=StringField(required=True)
+    headpic=URLField()
+    sex=IntField()
+    nick=StringField(max_length=32)
+    birthday = DateTimeField()
+    marriage = IntField(default=0)
+    height = IntField(default=0)
+    join_cid=IntField()
+    join_roleid=IntField()
+    position = StringField(max_length=256)
+    joined_uid=LongField()
+    create_time=DateTimeField(default=datetime.datetime.now)
+    sms_send_time=DateTimeField()
+
+    meta = {
+        'indexes': [{'fields':('uid','phone'), 'unique': True},'phone']
+    }
+
+    def toJson(self):
+        data={
+            'uid':self.uid,
+            'phone':self.phone,
+            'headpic':self.headpic,
+            'sex':self.sex,
+            'nick':self.nick,
+            'birthday':self.birthday,
+            'marriage':self.marriage,
+            'height':self.height,
+            'join_cid':self.join_cid,
+            'join_roleid':self.join_roleid,
+            'position':self.position,
+            'joined_uid':self.joined_uid,
+            'create_time':self.create_time,
+            'sms_send_time':self.sms_send_time
+        }
         return data

@@ -20,4 +20,8 @@ def run(sessionid):
                 text('insert into connection_info(uid,queue_id,connection_id) values(:uid,:queue_id,:connection_id) ON DUPLICATE KEY UPDATE queue_id=:queue_id,connection_id=:connection_id'),
                 {"uid":user_data.uid,"queue_id":BackEndEnvData.reply_queue,"connection_id":BackEndEnvData.connection_id})
             session.commit()
+
+            #if user_data.nick is None:
+                #UserInviteLog.q
+
         return {"errno":0,"error":"no error","result":{"user":user_data.toJson()}}
