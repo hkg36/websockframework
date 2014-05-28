@@ -112,6 +112,7 @@ class UserExData(Document):
         return data
 
 class UserInviteLog(Document):
+    invite_id=SequenceField(primary_key=True)
     uid=LongField(required=True)
     phone=StringField(required=True)
     headpic=URLField()
@@ -133,6 +134,7 @@ class UserInviteLog(Document):
 
     def toJson(self):
         data={
+            'invite_id':self.invite_id,
             'uid':self.uid,
             'phone':self.phone,
             'headpic':self.headpic,

@@ -21,7 +21,8 @@ def LoadEvent(event):
         return {'eid':event['eid'],
                 'create_time':event['create_time'],
                 'type':event_type,
-                'uid':event['param1']}
+                'uid':event['param1'],
+                'add_type':event.get('param2',0)}
     elif event_type=='group_invite':
         return  {'eid':event['eid'],
                 'create_time':event['create_time'],
