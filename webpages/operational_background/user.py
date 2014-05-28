@@ -5,6 +5,7 @@ from datamodel.message import Message
 import dbconfig
 from tools.helper import DefJsonEncoder
 from webpages.MainPage import pusher
+from webpages.operational_background.obtools import AccessControl
 
 __author__ = 'amen'
 class SendMessageToUser(WebSiteBasePage.AutoPage):
@@ -34,5 +35,9 @@ class SendMessageToUser(WebSiteBasePage.AutoPage):
                                                 routing_key='sys.message_to_notify')
             return DefJsonEncoder.encode({'msgid':newmsg.msgid})
 
+class FindSession(WebSiteBasePage.AutoPage):
+    def GET(self):
+        params=web.input()
+        return dbconfig.redisdb.get('session:'+params['sessionid'])
 
 
