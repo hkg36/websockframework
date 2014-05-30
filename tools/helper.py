@@ -18,11 +18,13 @@ def GetFileLink(db_file_record):
 def LoadEvent(event):
     event_type=event['type']
     if event_type=='add_friend':
-        return {'eid':event['eid'],
+        data= {'eid':event['eid'],
                 'create_time':event['create_time'],
                 'type':event_type,
-                'uid':event['param1'],
-                'add_type':event.get('param2',0)}
+                'uid':event['param1'],}
+        if event.get('param2'):
+            data['add_type']=event.get('param2')
+        return data
     elif event_type=='group_invite':
         return  {'eid':event['eid'],
                 'create_time':event['create_time'],

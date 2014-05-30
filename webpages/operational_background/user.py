@@ -39,5 +39,8 @@ class FindSession(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input()
         return dbconfig.redisdb.get('session:'+params['sessionid'])
+    def POST(self):
+        params=web.input()
+        return dbconfig.redisdb.get('session:'+params['sessionid'])
 
 
