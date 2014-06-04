@@ -1,5 +1,5 @@
-####<a href="/PhoneLogin">手机登陆测试页面</a>##
-####<a href="/static/PhoneTest.html">api测试页面</a>##
+####[手机登陆测试页面](/PhoneLogin)</a>##
+####[api测试页面](/static/PhoneTest.html)##
 
 
 App登陆使用http，或者https 方便以后登陆方式变更。登陆后，得到一个sessionid，用session id建立websocket长连接进行数据通信。Session id有一定的有效期，需要在到期前进行更换操作，过期需要重新登入。
@@ -239,7 +239,8 @@ Result={
 15. group.get_new_post(gid,frompos) 取得新消息，从某个位置开始，用于掉线后重新连上的情况
 16. group.create(name,board,type) 创建群
 17. group.delete(gid) 删除群，必须是创建者
-18. user.update(nick=None, signature=None,sex=None, birthday=None, marriage=None, height=None, position=None) 更新自己的信息,不提供的参数不更新
+18. user.update(nick=None, signature=None,sex=None, birthday=None, marriage=None, height=None, position=None,headpic=None) 更新自己的信息,不提供的参数不更新,
+头像是http地址，请使用[上传图片文件](#uploadimage)上传，不检查图片是否存在
 19. post.like(postid) 点喜欢
 20. post.dislike(postid) 点不喜欢
 21. post.reply(postid,content) 回帖，只能回原帖
@@ -325,6 +326,8 @@ user.info 里的每个user 增加 circle字段
 必须填手机号和昵称，头像上传请使用[上传图片文件](#uploadimage)，第一次邀请会发短信，可以反复邀请，重复的邀请只是会修改邀请数据，最多一天只会发送一次短信,
 用户已经存在，返回2002错误和用户的信息，已经接受邀请返回2001错误
 74. user.invite_list() 已经发出的邀请列表，返回值中的joined_uid表示接受邀请的用户的用户id
+75. <a name="qiniu_uploadtoken" id="qiniu_uploadtoken"></a> tools.qiniu_uploadtoken() 和[上传图片文件](#uploadimage) 取得token的方法完全相同，每个token有1个小时的有效期，
+可以在有效时间内上传无限的图片，建议要上传多张图片的时候，取得一个新token，然后依次上传图片，取得每张图片的url地址
 ###向客户端推送消息
 ####1. 事件推送
 ```python
@@ -462,7 +465,7 @@ http://service.laixinle.com/upload/Message?sessionid=YtcS7pKQSydYPnJ&usepage=1
 ##向帖子附加多媒体内容,只能向自己的贴子附加,服务器检查帖子的归属
 http://service.laixinle.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=71&usepage=1
 <a name="uploadimage" id="uploadimage"></a>
-##上传图片文件，得到图片链接
+##上传图片文件，得到图片链接,客户端请参考[这个指令](#qiniu_uploadtoken)
 http://service.laixinle.com/upload/Image?usepage=1&sessionid=kkfZCxu1gQyVT9G
 #交易接口
 1. merchandise.groups() //商品分组
