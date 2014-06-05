@@ -328,6 +328,39 @@ user.info 里的每个user 增加 circle字段
 74. user.invite_list() 已经发出的邀请列表，返回值中的joined_uid表示接受邀请的用户的用户id
 75. <a name="qiniu_uploadtoken" id="qiniu_uploadtoken"></a> tools.qiniu_uploadtoken() 和[上传图片文件](#uploadimage) 取得token的方法完全相同，每个token有1个小时的有效期，
 可以在有效时间内上传无限的图片，建议要上传多张图片的时候，取得一个新token，然后依次上传图片，取得每张图片的url地址
+76. circle.request_join(uid,cid) 向某个用户请求加入某个圈子，会向对方推送请求通知
+```python
+{
+  "push": true,
+  "data": {
+    "event": {
+      "cid": 2,
+      "create_time": 1401990301,
+      "type": "request_join_circle",
+      "eid": 31,
+      "uid": 2
+    }
+  },
+  "type": "event"
+} 
+```
+77. circle.accept_join(eid,roleid=None) 同意某人加入圈子，需要对应通知的eid，如果不提供roleid就是自己的roleid,如果提供，角色level不能高于自己
+```python
+{
+  "push": true,
+  "data": {
+    "event": {
+      "cid": 2,
+      "roleid": 1,
+      "by_uid": 19,
+      "create_time": 1401990395,
+      "eid": 35,
+      "type": "accept_join_circle"
+    }
+  },
+  "type": "event"
+} 
+```
 ###向客户端推送消息
 ####1. 事件推送
 ```python

@@ -38,6 +38,20 @@ def LoadEvent(event):
                 'uid':event['param1'],
                 'recommend_uid':event['param2']
         }
+    elif event_type=='request_join_circle':
+        return {'eid':event['eid'],
+                'create_time':event['create_time'],
+                'type':event_type,
+                'uid':event['param1'],
+                'cid':event['param2']}
+    elif event_type=="accept_join_circle":
+        return {'eid':event['eid'],
+                'create_time':event['create_time'],
+                'type':event_type,
+                'cid':event['param1'],
+                'roleid':event['param2'],
+                'by_uid':event['param3']
+                }
 
 def CombineGeo(long,lat):
     lat_int=int((lat+90)*10e6)

@@ -29,11 +29,13 @@ class CircleExList(dbconfig.DBBase): #外部插件列表
     cid=Column(Integer,nullable=False,index=True)
     title=Column(String(16))
     url=Column(String(1024))
+    icon_url=Column(String(1024))
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     def toJson(self):
         return {'title':self.title,
                 'url':self.url,
-                'time':self.time}
+                'time':self.time,
+                'icon_url':self.icon_url}
 
 class CircleBoardHistory(dbconfig.DBBase):
     __tablename__ = 'circle_board_history'
