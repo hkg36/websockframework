@@ -3,7 +3,7 @@ from sqlalchemy import and_
 import WebSiteBasePage
 import web
 from datamodel.message import Message
-from datamodel.user_circle import CircleDef, CircleBoardHistory, UserCircle
+from datamodel.user_circle import CircleDef, CircleBoardHistory, UserCircle, CirclePost
 import dbconfig
 from tools.helper import DefJsonEncoder
 from webpages.MainPage import pusher
@@ -67,3 +67,33 @@ class SendMessageToCircleUser(WebSiteBasePage.AutoPage):
                                                     routing_key='sys.message_to_notify')
 
             return DefJsonEncoder.encode({'msgid':msgids})
+
+class NewCirclePost(WebSiteBasePage.AutoPage):
+    def GET(self):
+        tpl=WebSiteBasePage.jinja2_env.get_template('operational/new_post.html')
+        return tpl.render()
+    def POST(self):
+        params=web.input()
+        cid=int(params.get('cid'))
+        content=params.get('content')
+        from_uid=int(params.get("from_uid",1))
+        piclist=params.get('piclist','')
+        if len(piclist):
+            piclist=piclist.split(',')
+        else:
+            piclist=[]
+        mid=None
+        if params.get('mid'):
+            mid=int(params.get('mid'))
+
+        newpost=CirclePost()
+        newpost.picture_list=piclist
+        newpost.cid=cid
+        newpost.uid=from_uid
+        newpost.content=content
+        newpost.mid=mid
+        newpost.save()
+        json_msg=DefJsonEncoder.encode(newpost.toJson())
+        pusher.rawPush(body=json_msg,
+                                            routing_key="sys.circle_new_board",headers={"type":"circle.newpost"})
+        return DefJsonEncoder.encode({"postid":newpost.postid})

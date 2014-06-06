@@ -27,9 +27,7 @@ def RequestWork(params,body,reply_queue):
         allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
         to_push=DefJsonEncoder.encode({"push":True,
                                     "type":params['type'],
-                                    "data":{
-                                        "board":post
-                                    }
+                                    "data":post
                                 })
         online_uids=set()
         queue_group={}
@@ -58,8 +56,8 @@ def RequestWork(params,body,reply_queue):
                 else:
                     push_word=u"%s %s"%(cdef.name,post['board'])
             if params['type']=="circle.newpost":
-                user=session.query(User).filter(User).first()
-                push_word=u"%s在%s发了新动态"%()
+                user=session.query(User).filter(User.uid==post['uid']).first()
+                push_word=u"%s在%s发了新动态"%(user.nick,cdef.name)
             #print push_word
             if push_word:
                 for iosdev in iosdevices:
