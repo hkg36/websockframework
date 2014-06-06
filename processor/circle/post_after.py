@@ -1,17 +1,16 @@
 from tools.session import CheckSession
 
 __author__ = 'amen'
-from datamodel.user_circle import CircleDef, UserCircle, CircleBoardHistory, CirclePost
+from datamodel.user_circle import CirclePost
 from tools.helper import Res
 import BackEndEnvData
 import dbconfig
 
 @CheckSession()
-def run(cid,before_postid=None,count=20):
+def run(cid,after_postid):
     params={'cid':cid}
-    if before_postid:
-        params['postid__lt']=before_postid
-    posts=CirclePost.objects(**params).order_by("-postid").limit(count)
+    params['postid__gt']=after_postid
+    posts=CirclePost.objects(**params).order_by("-postid").limit(100)
     allpost=[]
     for one in posts:
         allpost.append(one.toJson())

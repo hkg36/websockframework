@@ -27,10 +27,10 @@ class QueuePush(object):
         self.rawPush(queueid,{'connid':connectid},body)
     def Close(self,queueid,connectid):
         self.rawPush(queueid,{'connid':connectid,'close_connect':'1'},'close')
-    def rawPush(self,routing_key,headers,body):
+    def rawPush(self,routing_key,headers,body,exchange=None):
         self._InitConnect()
         self.producer.publish(body=body,delivery_mode=2,headers=headers,
-                              routing_key=routing_key,retry=True,compression='gzip')
+                              routing_key=routing_key,retry=True,compression='gzip',exchange=exchange)
     def sendCode(self,phone,code):
         self._InitConnect()
         json_str=json.dumps({'phone':str(phone),"content":u"您的来信验证码为:%s，请在5分钟内输入完成验证."%str(code)},ensure_ascii=False)

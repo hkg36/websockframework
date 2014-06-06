@@ -36,7 +36,7 @@ while True:
 
                 try:
                     json_post=json.dumps(log.toJson(),cls=AutoFitJson,ensure_ascii=False)
-                    pusher.rawPush(routing_key='sys.paylog',headers={},body=json_post)
+                    pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
                 except Exception,e:
                     pass
         session.commit()

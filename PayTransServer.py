@@ -102,7 +102,7 @@ if __name__ == '__main__':
         exit(0)
     QueueWork.WorkFunction=RequestWork
     QueueWork.init(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
-                    configs.Queue_User,configs.Queue_PassWord,'sys.paylog')
+                    configs.Queue_User,configs.Queue_PassWord,'sys.paylog',exchange_name="system")
     exchange=Exchange("sys.apn",type='topic',channel=QueueWork.channel,durable=True,delivery_mode=2)
     publish_debug_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.debug')
     publish_release_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.release')

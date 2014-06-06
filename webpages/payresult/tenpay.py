@@ -45,7 +45,7 @@ class TenpayNotifyCallBack(WebSiteBasePage.AutoPage):
 
             try:
                 json_post=json.dumps(pl.toJson(),cls=AutoFitJson,ensure_ascii=False,separators=(',', ':'))
-                pusher.rawPush(routing_key='sys.paylog',headers={},body=json_post)
+                pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
             except Exception,e:
                 print e
             return True

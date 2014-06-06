@@ -158,12 +158,12 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
   "error": "no error"
 }
 ```
-2. user.add_friend(uid<可以是用户id数组或者是用户id>) 添加好友
-3. user.del_friend(uid<可以是用户id数组或者是用户id>) 删除好友
+2. user.add\_friend(uid<可以是用户id数组或者是用户id>) 添加好友
+3. user.del\_friend(uid<可以是用户id数组或者是用户id>) 删除好友
 4. group.join(gid<群id>) 参加群
 5. group.leave(gid) 离开群
 6. group.invite (gid,uid<可以是用户id数组>) 邀请用户加入群
-7. user.friend_list(uid,pos=0<开始位置>,count=50<数量>)某个用户的好友列表，pos和count用来翻页
+7. user.friend\_list(uid,pos=0<开始位置>,count=50<数量>)某个用户的好友列表，pos和count用来翻页
 
 ```python
 Result={
@@ -232,11 +232,11 @@ Result={
 ```
 9. group.info(gid<群id或者id数组>) 查询群基本信息
 10. post.add(gid,content) 发布信息
-11. group.post_list(gid,pos=0,count=50) 返回的是倒序列表，pos，count用于向过去翻页
+11. group.post\_list(gid,pos=0,count=50) 返回的是倒序列表，pos，count用于向过去翻页
 12. group.regupdate(gid) 注册群的消息更新，用于进入群聊界面的时候刷新消息，新消息将通过推送到达，
 13. group.unregupdate(gid) 取消群消息更新
 14. group.my() 我加入的群
-15. group.get_new_post(gid,frompos) 取得新消息，从某个位置开始，用于掉线后重新连上的情况
+15. group.get\_new\_post(gid,frompos) 取得新消息，从某个位置开始，用于掉线后重新连上的情况
 16. group.create(name,board,type) 创建群
 17. group.delete(gid) 删除群，必须是创建者
 18. user.update(nick=None, signature=None,sex=None, birthday=None, marriage=None, height=None, position=None,headpic=None) 更新自己的信息,不提供的参数不更新,
@@ -244,11 +244,11 @@ Result={
 19. post.like(postid) 点喜欢
 20. post.dislike(postid) 点不喜欢
 21. post.reply(postid,content) 回帖，只能回原帖
-22. post.get_reply(postid,pos=0,count=50) 读取回复
+22. post.get\_reply(postid,pos=0,count=50) 读取回复
 23. message.send(uid,content=None,lat=None,long=None) 私信,发送坐标或者文本,都填写就是发送文本
 24. message.read(afterid=0) 读私信
 25. post.likes(postid,pos=0,count=50) //喜欢的人
-26. phonebook.upload(phone_list) 上传通信录，不用每次上传完整的，服务器会合并
+26. phonebook.upload(phone\_list) 上传通信录，不用每次上传完整的，服务器会合并
 	请求例子，注意参数是数组
 ```python
 {
@@ -262,25 +262,26 @@ Result={
 }
 ```
 
-27. ios.reg(device_token,is_debug) 注册ios设备，is_debug指的是是否是测试证书，测试证书将通过测试通道推送
+27. ios.reg(device\_token,is\_debug) 注册ios设备，is\_debug指的是是否是测试证书，测试证书将通过测试通道推送
 28. group.members(gid) 群成员列表
 29. event.read(pos=0) 取得历史事件，从某个id开始，如果超过50条，只取最新的50条
-30. active.generate_code（level）生成激活码，激活等级默认为1，不能高于自己的actor_level
-31. active.do(active_code) 激活自己，返回激活等级和激活者的id
+30. active.generate\_code（level）生成激活码，激活等级默认为1，不能高于自己的actor\_level
+31. active.do(active\_code) 激活自己，返回激活等级和激活者的id
 32. user.search(nick) 按昵称搜索用户，不支持全文检索
 33. geo.user.report(lat,long) 上报当前坐标,如lat=35.233334 long=134.556743
-34. group.update(gid,name=None,board=None,type=0,position=None,everyone_caninvite=None,only_member_speak=None,only_member_watch=None, lat=None,long=None,member_control=None) 更新群信息,必须是创建者, member_control 是否启用成员权限控制(1或0)
+34. group.update(gid,name=None,board=None,type=0,position=None,everyone\_caninvite=None,
+only\_member\_speak=None,only\_member\_watch=None, lat=None,long=None,member\_control=None) 更新群信息,必须是创建者, member\_control 是否启用成员权限控制(1或0)
 35. geo.user.search(lat,long) 搜索某个坐标附近的人
 36. post.get(postid) 参数可以是数组
 37. post.delete(postid) 删除帖子,只能删除自己的,同时删除跟贴和喜欢列表,不发通知
 
-38. post.reply_to_me (from_reply=0) 回复自己的贴子列表,只返回某个回复之后的回复
+38. post.reply\_to\_me (from\_reply=0) 回复自己的贴子列表,只返回某个回复之后的回复
 39. user.posts(uid,before=None,count=None) before是postid
 40. post.readex(postid) 取得帖子的附加多媒体信息,建议看到帖子的时候再拉取或者更新
-41. user.friend_timeline(before=None,count=None)
-42. group.remove_member(gid,uid) 群创建者踢人,uid可以是数组
-43. user.update_tag(tags=["大师","品质"]) 设置用户标签
-44. user.get_tag("uids":[1,2]) 取得用户标签
+41. user.friend\_timeline(before=None,count=None)
+42. group.remove\_member(gid,uid) 群创建者踢人,uid可以是数组
+43. user.update\_tag(tags=["大师","品质"]) 设置用户标签
+44. user.get\_tag("uids":[1,2]) 取得用户标签
 45. user.filter(alltag,lat,long) 搜索用户
 
 ```python
@@ -293,24 +294,25 @@ Result={
     }
 }
 ```
-46. post.get_new_reply(from_reply=0, like_after=None) 返回最近的回复,不会超过30条,不会包括最近20个post以外的回复 like_after 某个时间点之后的喜欢,不会包括最近20个post以外的喜欢,不填就没有
-47. group.set_member_control(gid, uid, can_post=None) 设置某个群成员是否可以发帖
+46. post.get\_new\_reply(from\_reply=0, like\_after=None) 返回最近的回复,不会超过30条,不会包括最近20个post以外的回复 like\_after 某个时间点之后的喜欢,不会包括最近20个post以外的喜欢,不填就没有
+47. group.set\_member\_control(gid, uid, can\_post=None) 设置某个群成员是否可以发帖
 48. circle.info(cid) 列出一个圈子的所有子标签
 49. circle.set(cid,roleid)设置自己的圈子和等级，测试用，以后可能会删掉
 user.info 里的每个user 增加 circle字段
-50. circle.invite_code(cid,roleid) 生成圈子邀请码,注意每个圈子角色都有level,不能生成比自己角色level高的角色邀请 用 circle.info 取得圈子的全部角色列表
-51. circle.join(vcode)  填写 circle.invite_code 的返回值,加入某个圈子并成为某个角色.不能接受降低level的角色,相同角色正常返回,但是数据不会有任何变化
+50. circle.invite\_code(cid,roleid) 生成圈子邀请码,注意每个圈子角色都有level,不能生成比自己角色level高的角色邀请 用 circle.info 取得圈子的全部角色列表
+51. circle.join(vcode)  填写 circle.invite\_code 的返回值,加入某个圈子并成为某个角色.不能接受降低level的角色,相同角色正常返回,但是数据不会有任何变化
 52. circle.users(cid) 圈子所有成员
 53. user.find(phone) 根据手机号模糊搜索用户,比如输入 180 会返回 180288777877 和 18098277332 等手机号的用户,最多4个,输入完整手机号只会返回1个
-54. active.by_user(uid) 和active.do一样,直接输入对方uid即可
-55. circle.by_user(uid,cid=None) 加入某个用户所在的圈子,不指定cid的话加入默认的圈子
+54. active.by\_user(uid) 和active.do一样,直接输入对方uid即可
+55. circle.by\_user(uid,cid=None) 加入某个用户所在的圈子,不指定cid的话加入默认的圈子
 56. circle.my() 我加入的圈子,用来读取圈子列表,返回所有我加入的圈子
-57. circle.board_history(cid) 公告板历史记录，就是圈子通知
-58. circle.postlist(cid,before_postid=None,count=20) 圈子动态列表，before_postid用于向前翻页，现在是同时拉出所有点赞和回复
+57. circle.board\_history(cid) 公告板历史记录，就是圈子通知
+58. circle.postlist(cid,before\_postid=None,count=20) 圈子动态列表，before\_postid用于向前翻页，现在是同时拉出所有点赞和回复
+58. circle.post\_after(cid,after\_postid) 圈子动态列表下拉刷新，取得比after\_postid更晚的新贴
 59. circle.addpost(cid,content,pictures=[],mid=None) 发圈子动态，pictures是图片链接字符串数组，上传方法按照[上传图片文件](#uploadimage) mid 是商品id,要推荐商品的话参考 `merchandise.list`
 60. circle.likepost(postid) 给圈子动态点赞，重复给同一个动态点赞会返回过去的记录，不会有效果，可以通过记录的时间戳判断
 70. circle.addreply(postid,content) 给圈子动态回复，现在只能回复文字，需要回复图片就说很容易加上的
-71. tools.save_data() 上传客户端的任意数据，参数表是任意的，喜欢用什么就用什么，如
+71. tools.save\_data() 上传客户端的任意数据，参数表是任意的，喜欢用什么就用什么，如
 ```python
 {
 	"func":"tools.save_data",
@@ -321,14 +323,14 @@ user.info 里的每个user 增加 circle字段
 	}
 }
 ```
-72. tools.read_data() 取得上传的数据
-73. user.invite(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0,position = None,join_cid=None,join_roleid=None) 邀请其他用户，
+72. tools.read\_data() 取得上传的数据
+73. user.invite(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0,position = None,join\_cid=None,join\_roleid=None) 邀请其他用户，
 必须填手机号和昵称，头像上传请使用[上传图片文件](#uploadimage)，第一次邀请会发短信，可以反复邀请，重复的邀请只是会修改邀请数据，最多一天只会发送一次短信,
 用户已经存在，返回2002错误和用户的信息，已经接受邀请返回2001错误
-74. user.invite_list() 已经发出的邀请列表，返回值中的joined_uid表示接受邀请的用户的用户id
+74. user.invite\_list() 已经发出的邀请列表，返回值中的joined\_uid表示接受邀请的用户的用户id
 75. <a name="qiniu_uploadtoken" id="qiniu_uploadtoken"></a> tools.qiniu_uploadtoken() 和[上传图片文件](#uploadimage) 取得token的方法完全相同，每个token有1个小时的有效期，
 可以在有效时间内上传无限的图片，建议要上传多张图片的时候，取得一个新token，然后依次上传图片，取得每张图片的url地址
-76. circle.request_join(uid,cid) 向某个用户请求加入某个圈子，会向对方推送请求通知
+76. circle.request\_join(uid,cid) 向某个用户请求加入某个圈子，会向对方推送请求通知
 ```python
 {
   "push": true,
@@ -344,7 +346,7 @@ user.info 里的每个user 增加 circle字段
   "type": "event"
 } 
 ```
-77. circle.accept_join(eid,roleid=None) 同意某人加入圈子，需要对应通知的eid，如果不提供roleid就是自己的roleid,如果提供，角色level不能高于自己
+77. circle.accept\_join(eid,roleid=None) 同意某人加入圈子，需要对应通知的eid，如果不提供roleid就是自己的roleid,如果提供，角色level不能高于自己
 ```python
 {
   "push": true,
@@ -498,19 +500,20 @@ http://service.laixinle.com/upload/Message?sessionid=YtcS7pKQSydYPnJ&usepage=1
 ##向帖子附加多媒体内容,只能向自己的贴子附加,服务器检查帖子的归属
 http://service.laixinle.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=71&usepage=1
 <a name="uploadimage" id="uploadimage"></a>
-##上传图片文件，得到图片链接,客户端请参考[这个指令](#qiniu_uploadtoken)
+##上传图片文件，得到图片链接,客户端请参考[这个指令](#qiniu_uploadtoken)，
+**一个token可以在1小时内上传无限次**
 http://service.laixinle.com/upload/Image?usepage=1&sessionid=kkfZCxu1gQyVT9G
 #交易接口
 1. merchandise.groups() //商品分组
 2. merchandise.list(gid), //列出分组的所有商品列表,暂时先这样
-3. merchandise.count_price(mid,people_count), //计算价格 people_count是人数
-4. merchandise.createorder(mid,people_count,hardwareid) //网页支付,获取网页地址打开浏览器操作,用于第一次支付或者不想用已有的卡支付的情况,
+3. merchandise.count\_price(mid,people\_count), //计算价格 people\_count是人数
+4. merchandise.createorder(mid,people\_count,hardwareid) //网页支付,获取网页地址打开浏览器操作,用于第一次支付或者不想用已有的卡支付的情况,
 hardwareid是客户端生成的能标识特定手机的字符串，随便用什么方法生成都行，每个手机要每次生成的都一样，支付平台要求这个字段
 5. merchandise.history(before,count) //before=订单号，用于翻页，默认不填是第一页
 6. merchandise.recommendbyme(before,count)  //因为我推荐而完成的订单,参数全部可选
 7. merchandise.get(mid=[1,3]) //取得特定的多个商品，商品id可以是数组
 8. merchandise.cards() //取得用户已绑定银行卡的列表,这个接口操作缓慢，如果没有使用新卡每次都一样，客户端请缓存
-9. merchandise.paybycard(cardid,mid,people_count,hardwareid) //银行卡直接扣款,cardid从`merchandise.cards()`取得，其他同`merchandise.createorder`
+9. merchandise.paybycard(cardid,mid,people\_count,hardwareid) //银行卡直接扣款,cardid从`merchandise.cards()`取得，其他同`merchandise.createorder`
 
 ##支付成功推送:
 发起支付时都会返回orderid ,这里通过orderid来更新本地数据状态,有可能会重复推送成功信息,因为不同途径的支付成功通知无法区别,但是orderid肯定是一样的

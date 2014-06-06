@@ -3,7 +3,7 @@ __author__ = 'amen'
 import traceback
 import codecs
 
-from kombu import Connection
+from kombu import Connection, Exchange
 from kombu.messaging import Consumer,Producer
 from kombu import Queue
 import kombu.serialization
@@ -20,12 +20,17 @@ producer=None
 task_queue=None
 consumer=None
 WorkFunction=None
-def init(host,port,virtual_host,usr,psw,queue_name):
+def init(host,port,virtual_host,usr,psw,queue_name,exchange_name=None):
     global connection,channel,producer,task_queue,consumer
     connection = Connection(hostname=host,port=port,userid=usr,password=psw,virtual_host=virtual_host)
     channel = connection.channel()
     producer=Producer(channel)
-    task_queue = Queue(queue_name,durable=True)
+
+    if exchange_name:
+        exchange=Exchange(exchange_name,'topic',channel,durable=True,delivery_mode=2)
+        task_queue = Queue(queue_name,routing_key=queue_name,durable=True,exchange=exchange)
+    else:
+        task_queue = Queue(queue_name,durable=True)
     consumer = Consumer(channel,task_queue,no_ack=False)
     consumer.qos(prefetch_count=1)
     consumer.register_callback(RequestCallBack)

@@ -22,7 +22,7 @@ class TestPushEPay(WebSiteBasePage.AutoPage):
                 paylog=session.query(StorePayLog).filter(StorePayLog.payid==payid).first()
 
                 json_post=json.dumps(paylog.toJson(),cls=AutoFitJson,ensure_ascii=False)
-                pusher.rawPush(routing_key='sys.paylog',headers={},body=json_post)
+                pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
                 return "ok"
         except Exception,e:
             return False
@@ -34,7 +34,7 @@ class TestPushTenpay(WebSiteBasePage.AutoPage):
             paylog=TenpayLog.objects(payid=payid).first()
 
             json_post=json.dumps(paylog.toJson(),cls=AutoFitJson,ensure_ascii=False)
-            pusher.rawPush(routing_key='sys.paylog',headers={},body=json_post)
+            pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
             return "ok"
         except Exception,e:
             return traceback.format_exc()

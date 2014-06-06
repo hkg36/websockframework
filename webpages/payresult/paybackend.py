@@ -45,7 +45,7 @@ class Paybackend(WebSiteBasePage.AutoPage):
 
             try:
                 json_post=json.dumps(log.toJson(),cls=AutoFitJson,ensure_ascii=False)
-                pusher.rawPush(routing_key='sys.paylog',headers={},body=json_post)
+                pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
                 return True
             except Exception,e:
                 return False
