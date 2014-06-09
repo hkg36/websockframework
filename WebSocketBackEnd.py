@@ -10,6 +10,7 @@ import getopt
 import sys
 import QueueWork
 import traceback
+import inspect
 
 
 def LoadProcFunctionList(module_root='processor'):

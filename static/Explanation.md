@@ -301,6 +301,7 @@ only\_member\_speak=None,only\_member\_watch=None, lat=None,long=None,member\_co
 user.info 里的每个user 增加 circle字段
 50. circle.invite\_code(cid,roleid) 生成圈子邀请码,注意每个圈子角色都有level,不能生成比自己角色level高的角色邀请 用 circle.info 取得圈子的全部角色列表
 51. circle.join(vcode)  填写 circle.invite\_code 的返回值,加入某个圈子并成为某个角色.不能接受降低level的角色,相同角色正常返回,但是数据不会有任何变化
+52. circle.leave(cid) 退出圈子
 52. circle.users(cid) 圈子所有成员
 53. user.find(phone) 根据手机号模糊搜索用户,比如输入 180 会返回 180288777877 和 18098277332 等手机号的用户,最多4个,输入完整手机号只会返回1个
 54. active.by\_user(uid) 和active.do一样,直接输入对方uid即可

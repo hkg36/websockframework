@@ -14,6 +14,7 @@ class CircleDef(dbconfig.DBBase):
     poster_url=Column(String(1024))
     interact_poster=Column(SmallInteger,default=0)
     icon_url=Column(String(1024))
+    default_roleid=Column(Integer,default=1)
 
     def toJson(self):
         return {"cid":self.cid,

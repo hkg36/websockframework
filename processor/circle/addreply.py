@@ -16,7 +16,8 @@ def run(postid,content):
     newpost.save()
 
     json_msg=DefJsonEncoder.encode({"reply":newreply.toJson(),
-              "cid":newpost.cid})
+                                                        "postid":postid,
+                                                        "cid":newpost.cid})
     BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                         routing_key="sys.circle_new_board",headers={"type":"circle.newreply"},
                                         compression='gzip')

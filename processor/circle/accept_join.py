@@ -6,7 +6,7 @@ from tools.addPushQueue import AddEventNotify
 from tools.session import CheckSession, GenSession
 
 __author__ = 'amen'
-from datamodel.user_circle import CircleRole, UserCircle
+from datamodel.user_circle import CircleRole, UserCircle, CircleDef
 from tools.helper import Res, DefJsonEncoder
 import BackEndEnvData
 import dbconfig
@@ -22,19 +22,12 @@ def run(eid,roleid=None):
         uid=event.param1
         cid=event.param2
 
-        self_circle,self_role=session.query(UserCircle,CircleRole).join(CircleRole,and_(CircleRole.cid==UserCircle.cid,CircleRole.roleid==UserCircle.roleid)).\
-            filter(UserCircle.cid==cid).first()
-        if roleid is not None and roleid!=self_circle.roleid:
-            toset_role=session.query(CircleRole).filter(and_(CircleRole.cid==cid,CircleRole.roleid==roleid)).first()
-            if toset_role.level>self_role.level:
-                return Res(errno=2,error="role level too height")
-        else:
-            toset_role=self_role
+        cdef=session.query(CircleDef).filter(CircleDef.cid==cid).first()
 
         self_uc=UserCircle()
         self_uc.uid=uid
-        self_uc.cid=toset_role.cid
-        self_uc.roleid=toset_role.roleid
+        self_uc.cid=cid
+        self_uc.roleid=cdef.default_roleid
         self_uc.by_uid=BackEndEnvData.uid
         self_uc=session.merge(self_uc)
         session.commit()

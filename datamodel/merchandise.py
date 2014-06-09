@@ -8,6 +8,7 @@ import dbconfig
 class StoreMerchandise(dbconfig.DBBase):
     __tablename__ = 'store_merchandise'
     mid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
+    icon_url=Column(String(1024))
     productcatalog=Column(Integer,default=1)
     productname=Column(String(50),nullable=False)
     productdesc=Column(String(200),nullable=False)
@@ -32,7 +33,8 @@ class StoreMerchandise(dbconfig.DBBase):
             'time':self.time,
             'ex_people_amount':self.ex_people_amount,
             'show_info':json_info,
-            'group_id':self.group_id
+            'group_id':self.group_id,
+            'icon_url':self.icon_url,
         }
         return data
 class StoreWeixinNotify(dbconfig.DBBase):

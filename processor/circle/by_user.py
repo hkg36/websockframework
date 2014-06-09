@@ -6,7 +6,7 @@ from tools.addPushQueue import AddEventNotify
 from tools.session import CheckSession, GenSession
 
 __author__ = 'amen'
-from datamodel.user_circle import CircleRole, UserCircle
+from datamodel.user_circle import CircleRole, UserCircle, CircleDef
 from tools.helper import Res, DefJsonEncoder
 import BackEndEnvData
 import dbconfig
@@ -23,18 +23,12 @@ def run(uid,cid=None):
         by_user_c=session.query(UserCircle).filter(findparam).order_by(UserCircle.time).first()
         if by_user_c is None:
             return Res(errno=3,error="user not in any circle")
-        self_uc=session.query(UserCircle).filter(and_(UserCircle.uid==BackEndEnvData.uid,UserCircle.cid==by_user_c.cid)).first()
-        if self_uc:
-            if self_uc.roleid==by_user_c.roleid:
-                return Res({"circle":{"cid":self_uc.cid,"roleid":self_uc.roleid}})
-            to_set_cd=session.query(CircleRole).filter(and_(CircleRole.cid==by_user_c.cid,CircleRole.roleid==by_user_c.roleid)).first()
-            self_cd=session.query(CircleRole).filter(and_(CircleRole.cid==self_uc.cid,CircleRole.roleid==self_uc.roleid)).first()
-            if self_cd.level>to_set_cd.level:
-                return Res(errno=2,error="can not lower level")
+        cdef=session.query(CircleDef).filter(CircleDef.cid==by_user_c.cid).first()
+
         self_uc=UserCircle()
         self_uc.uid=BackEndEnvData.uid
         self_uc.cid=by_user_c.cid
-        self_uc.roleid=by_user_c.roleid
+        self_uc.roleid=cdef.default_roleid
         self_uc.by_uid=by_user_c.uid
         self_uc=session.merge(self_uc)
         session.commit()
