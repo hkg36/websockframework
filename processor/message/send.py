@@ -8,8 +8,8 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-def run(uid,content=None,lat=None,long=None):
-    if content==None and (lat==None or long==None):
+def run(uid,content=None,lat=None,long=None,picture=None):
+    if content==None and (lat==None or long==None) and picture==None:
         return Res(errno=3,error="param error")
     with dbconfig.Session() as session:
         newmsg=Message()
@@ -18,6 +18,7 @@ def run(uid,content=None,lat=None,long=None):
         newmsg.content=content
         newmsg.lat=lat
         newmsg.long=long
+        newmsg.picture=picture
         newmsg=session.merge(newmsg)
         session.commit()
         AddMessageTrans(newmsg.toJson())

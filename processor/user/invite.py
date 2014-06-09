@@ -1,5 +1,6 @@
 #coding:utf-8
 from datamodel.user import UserInviteLog, User
+from datamodel.user_circle import CircleDef
 from tools.helper import Res, DefJsonEncoder
 from tools.session import CheckSession
 import BackEndEnvData
@@ -33,9 +34,11 @@ def run(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0
         uinl.height=height
     if position:
         uinl.position=position
-    if join_cid and join_roleid:
+    if join_cid:
         uinl.join_cid=join_cid
-        uinl.join_roleid=join_roleid
+        with dbconfig.Session() as session:
+            cdef=session.query(CircleDef).filter(CircleDef.cid==join_cid).first()
+        uinl.join_roleid= cdef.default_roleid
 
     if SEND_SMS and (uinl.sms_send_time is None or (datetime.datetime.now()-uinl.sms_send_time).days>1):
         uinl.sms_send_time=datetime.datetime.now()

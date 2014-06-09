@@ -44,8 +44,7 @@ def RequestWork(params,body,reply_queue):
                                           compression='gzip')
         offline_uids=list(uids-online_uids)
         #print "offline_uids",offline_uids
-        #if len(offline_uids)>0:
-        if True:
+        if len(offline_uids)>0:
             iosdevices=session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).all()
             #print 'ios device:',len(iosdevices)
             cdef=session.query(CircleDef).filter(CircleDef.cid==cid).first()
