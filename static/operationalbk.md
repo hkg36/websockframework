@@ -7,6 +7,7 @@
 
 ###一般接口，没有测试页面，直接用GET
 1. [搜索sessionid，注意自己改一个合法的id尝试](/operational_background/FindSession?sessionid=FJQoPSXJZahPsYk)
+2. [删除用户昵称,用来测试注册](/operational_background/DeleteNick?uid={uid}),请在参数中填写合法的uid，填写错误页面会出错
 
 ###以下是上传文件相关的页面#
 上传文件是上传到七牛云存储，将链接中的参数 usepage=1 去掉就能得到上传的token

@@ -129,35 +129,55 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 以下应答只说明result部分
 
 
-1. session.start2(sessionid)连接启动，建立websocket连接后第一个指令必须是这个，否则其他指令无效
+1. session.start2(sessionid)连接启动，建立websocket连接后第一个指令必须是这个，否则其他指令无效，
+[删除用户昵称,用来测试注册](/operational_background/DeleteNick?uid={uid}),请在参数中填写合法的uid，填写错误页面会出错
 
 ```python
-    {
+{
   "push": false,
   "errno": 0,
   "result": {
+    "invite_list": [   #被邀请第一次登录才有invite_list,正常的只有user
+      {
+        "joined_uid": 29,
+        "uid": 3,
+        "join_roleid": 2,
+        "headpic": "http://baidu.com",
+        "height": 12,
+        "phone": "12345789",
+        "birthday": 448693200,
+        "sex": 1,
+        "invite_id": 1,
+        "sms_send_time": null,
+        "nick": "牛逼人生",
+        "create_time": 1401257930,
+        "marriage": 1,
+        "join_cid": 1,
+        "position": "成都"
+      }
+    ],
     "user": {
       "background_image": null,
       "actor_level": 1,
-      "uid": 3,
-      "create_time": 1397275200,
-      "headpic": null,
+      "uid": 29,
+      "create_time": 1401303144,
+      "headpic": "http://baidu.com",
       "active_by": 0,
       "actor": 0,
-      "sex": 0,
-      "nick": "c",
-      "birthday": null,
-      "marriage": null,
+      "sex": 1,
+      "nick": "牛逼人生",
+      "birthday": 448693200,
+      "marriage": 1,
       "is_stew": 0,
       "signature": null,
-      "position": null,
-      "height": 0,
+      "position": "成都",
+      "height": 12,
       "active_level": 0
     }
   },
-  "cdata": "rxr1xlsilh",
+  "cdata": "7r4zu23c2i",
   "error": "no error"
-}
+} 
 ```
 2. user.add\_friend(uid<可以是用户id数组或者是用户id>) 添加好友
 3. user.del\_friend(uid<可以是用户id数组或者是用户id>) 删除好友
