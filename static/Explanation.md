@@ -130,6 +130,8 @@ Web站点包括登陆和涉及到上传大文件的指令（如发图片，声�
 
 
 1. session.start2(sessionid)连接启动，建立websocket连接后第一个指令必须是这个，否则其他指令无效，
+[删除sessionid,用来测试session失效](/operational_background/DeleteSessionID?sessionid=dARxvDhFQgyHpJz)
+sesionid现在的有效期是半年，用这个让某个session立刻失效，
 [删除用户昵称,用来测试注册](/operational_background/DeleteNick?uid={uid}),请在参数中填写合法的uid，填写错误页面会出错
 
 ```python

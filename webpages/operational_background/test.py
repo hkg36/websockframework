@@ -15,3 +15,9 @@ class DeleteNick(WebSiteBasePage.AutoPage):
             user=session.merge(user)
             session.commit()
             return "user %d nick reset"%user.uid
+class DeleteSessionID(WebSiteBasePage.AutoPage):
+    def GET(self):
+        params=web.input()
+        sessionid=params.get('sessionid')
+        dbconfig.redisdb.delete(str('session:%s'%sessionid))
+        return "deleted"
