@@ -7,11 +7,10 @@ import json
 
 import QueueWork
 from datamodel.connection_info import ConnectionInfo
-from datamodel.friendlist import FriendList
-from datamodel.group import Group
 from datamodel.group_member import GroupMember
 from datamodel.ios import IOSDevice
 from datamodel.user import User
+from datamodel.user_circle import UserCircle, CircleDef
 import dbconfig
 from tools.helper import AutoFitJson, DefJsonEncoder
 
@@ -19,28 +18,14 @@ from tools.helper import AutoFitJson, DefJsonEncoder
 def RequestWork(params,body,reply_queue):
     post=json.loads(body)
     gid=post['gid']
-    uid=post['uid']
-    uids=set()
     with dbconfig.Session() as session:
-        group=session.query(Group).filter(Group.gid==gid).first()
-        if group is None:
-            return
+        userlist=session.query(GroupMember).filter(GroupMember.gid==gid).all()
+        uids=set([one.uid for one in userlist])
 
-        gwus=session.query(GroupMember).filter(GroupMember.gid==gid).all()
-        #gwus=session.query(GroupWatchUpdate).filter(GroupWatchUpdate.gid==gid).all()
-        for gwu in gwus:
-            uids.add(gwu.uid)
-
-        """if group.only_member_watch==0:
-            fds=session.query(FriendList).filter(FriendList.friendid==uid).all()
-            for fd in fds:
-                uids.add(fd.uid)"""
         allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
         to_push=DefJsonEncoder.encode({"push":True,
-                                    "type":"newpost",
-                                    "data":{
-                                        "post":post
-                                    }
+                                    "type":params['type'],
+                                    "data":post
                                 })
         online_uids=set()
         queue_group={}
@@ -57,21 +42,30 @@ def RequestWork(params,body,reply_queue):
                                           compression='gzip')
         offline_uids=list(uids-online_uids)
         #print "offline_uids",offline_uids
-        if len(offline_uids)>0:
+        if False and len(offline_uids)>0:
             iosdevices=session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).all()
             #print 'ios device:',len(iosdevices)
-            fromuser=session.query(User).filter(User.uid==uid).first()
-            push_word=u"%s在%s说:%s"%(fromuser.nick,group.group_name,post['content'])
-            #print push_word
-            for iosdev in iosdevices:
-                if iosdev.is_debug:
-                    publish_debug_exchange.publish("body",headers={"message":push_word,
-                      "uhid":iosdev.device_token,"badge":iosdev.badge+1})
+            cdef=session.query(CircleDef).filter(CircleDef.cid==cid).first()
+            push_word=None
+            if params['type']=="circle.newboard":
+                if len(post['board'])>50:
+                    push_word=u"%s %s..."%(cdef.name,post['board'][0:50])
                 else:
-                    publish_release_exchange.publish("body",headers={"message":push_word,
-                      "uhid":iosdev.device_token,"badge":iosdev.badge+1})
-            session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).update({IOSDevice.badge:IOSDevice.badge+1},False)
-            session.commit()
+                    push_word=u"%s %s"%(cdef.name,post['board'])
+            if params['type']=="circle.newpost":
+                user=session.query(User).filter(User.uid==post['uid']).first()
+                push_word=u"%s在%s发了新动态"%(user.nick,cdef.name)
+            #print push_word
+            if push_word:
+                for iosdev in iosdevices:
+                    if iosdev.is_debug:
+                        publish_debug_exchange.publish("body",headers={"message":push_word,
+                          "uhid":iosdev.device_token,"badge":iosdev.badge+1})
+                    else:
+                        publish_release_exchange.publish("body",headers={"message":push_word,
+                          "uhid":iosdev.device_token,"badge":iosdev.badge+1})
+                session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).update({IOSDevice.badge:IOSDevice.badge+1},False)
+                session.commit()
 
 exchange=None
 publish_debug_exchange = None
@@ -91,7 +85,7 @@ if __name__ == '__main__':
         exit(0)
     QueueWork.WorkFunction=RequestWork
     QueueWork.init(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
-                    configs.Queue_User,configs.Queue_PassWord,'sys.post_to_notify')
+                    configs.Queue_User,configs.Queue_PassWord,'group.change')
     exchange=Exchange("sys.apn",type='topic',channel=QueueWork.channel,durable=True,delivery_mode=2)
     publish_debug_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.debug')
     publish_release_exchange = Producer(QueueWork.channel,exchange,routing_key='msg.release')
