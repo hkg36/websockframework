@@ -7,12 +7,14 @@ import json
 
 import QueueWork
 from datamodel.connection_info import ConnectionInfo
+from datamodel.group import Group
 from datamodel.group_member import GroupMember
 from datamodel.ios import IOSDevice
 from datamodel.user import User
 from datamodel.user_circle import UserCircle, CircleDef
 import dbconfig
 from tools.helper import AutoFitJson, DefJsonEncoder
+from tools.with_cache import GetUserInfo
 
 
 def RequestWork(params,body,reply_queue):
@@ -42,19 +44,21 @@ def RequestWork(params,body,reply_queue):
                                           compression='gzip')
         offline_uids=list(uids-online_uids)
         #print "offline_uids",offline_uids
-        if False and len(offline_uids)>0:
+        if len(offline_uids)>0:
             iosdevices=session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).all()
             #print 'ios device:',len(iosdevices)
-            cdef=session.query(CircleDef).filter(CircleDef.cid==cid).first()
+            group_info=session.query(Group).filter(Group.gid==gid).first()
+            user_info=GetUserInfo(post['uid'])
             push_word=None
-            if params['type']=="circle.newboard":
-                if len(post['board'])>50:
-                    push_word=u"%s %s..."%(cdef.name,post['board'][0:50])
-                else:
-                    push_word=u"%s %s"%(cdef.name,post['board'])
-            if params['type']=="circle.newpost":
-                user=session.query(User).filter(User.uid==post['uid']).first()
-                push_word=u"%s在%s发了新动态"%(user.nick,cdef.name)
+            if params['type']=="group.newpost":
+                push_word=u"%s在%s"%(user_info['user']['nick'],group_info.group_name)
+                if 'content' in post:
+                    if len(post['content'])>20:
+                        push_word+=u"说 %s..."%(post['content'][0:20])
+                    else:
+                        push_word+=u"说 %s"%(post['content'])
+                elif 'pictures' in post:
+                    push_word+=u"发了几张图片"
             #print push_word
             if push_word:
                 for iosdev in iosdevices:

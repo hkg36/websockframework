@@ -254,7 +254,7 @@ Result={
 }
 ```
 9. group.info(gid<群id或者id数组>) 查询群基本信息
-10. post.add(gid,content) 发布信息
+10. ~~post.add(gid,content) 发布信息~~
 11. group.post\_list(gid,pos=0,count=50) 返回的是倒序列表，pos，count用于向过去翻页
 12. group.regupdate(gid) 注册群的消息更新，用于进入群聊界面的时候刷新消息，新消息将通过推送到达，
 13. group.unregupdate(gid) 取消群消息更新
@@ -264,13 +264,13 @@ Result={
 17. group.delete(gid) 删除群，必须是创建者
 18. user.update(nick=None, signature=None,sex=None, birthday=None, marriage=None, height=None, position=None,headpic=None) 更新自己的信息,不提供的参数不更新,
 头像是http地址，请使用[上传图片文件](#uploadimage)上传，不检查图片是否存在
-19. post.like(postid) 点喜欢
-20. post.dislike(postid) 点不喜欢
-21. post.reply(postid,content) 回帖，只能回原帖
-22. post.get\_reply(postid,pos=0,count=50) 读取回复
+19. ~~post.like(postid) 点喜欢~~
+20. ~~post.dislike(postid) 点不喜欢~~
+21. ~~post.reply(postid,content) 回帖，只能回原帖~~
+22. ~~post.get\_reply(postid,pos=0,count=50) 读取回复~~
 23. message.send(uid,content=None,lat=None,long=None,picture=None) 私信,发送坐标或者文本或者图片,都填写就是发送文本，图片请使用[上传图片文件](#uploadimage)
 24. message.read(afterid=0) 读私信
-25. post.likes(postid,pos=0,count=50) //喜欢的人
+25. ~~post.likes(postid,pos=0,count=50) //喜欢的人~~
 26. phonebook.upload(phone\_list) 上传通信录，不用每次上传完整的，服务器会合并
 	请求例子，注意参数是数组
 ```python
@@ -295,12 +295,12 @@ Result={
 34. group.update(gid,name=None,board=None,type=0,position=None,everyone\_caninvite=None,
 only\_member\_speak=None,only\_member\_watch=None, lat=None,long=None,member\_control=None) 更新群信息,必须是创建者, member\_control 是否启用成员权限控制(1或0)
 35. geo.user.search(lat,long) 搜索某个坐标附近的人
-36. post.get(postid) 参数可以是数组
-37. post.delete(postid) 删除帖子,只能删除自己的,同时删除跟贴和喜欢列表,不发通知
+36. ~~post.get(postid) 参数可以是数组~~
+37. ~~post.delete(postid) 删除帖子,只能删除自己的,同时删除跟贴和喜欢列表,不发通知~~
 
-38. post.reply\_to\_me (from\_reply=0) 回复自己的贴子列表,只返回某个回复之后的回复
-39. user.posts(uid,before=None,count=None) before是postid
-40. post.readex(postid) 取得帖子的附加多媒体信息,建议看到帖子的时候再拉取或者更新
+38. ~~post.reply\_to\_me (from\_reply=0) 回复自己的贴子列表,只返回某个回复之后的回复~~
+39. ~~user.posts(uid,before=None,count=None) before是postid~~
+40. ~~post.readex(postid) 取得帖子的附加多媒体信息,建议看到帖子的时候再拉取或者更新~~
 41. user.friend\_timeline(before=None,count=None)
 42. group.remove\_member(gid,uid) 群创建者踢人,uid可以是数组
 43. user.update\_tag(tags=["大师","品质"]) 设置用户标签
@@ -387,6 +387,14 @@ user.info 里的每个user 增加 circle字段
   "type": "event"
 } 
 ```
+58. group.postlist(gid,before\_postid=None,count=20) 群动态列表，before\_postid用于向前翻页，现在是同时拉出所有点赞和回复
+58. group.post\_after(gid,after\_postid) 群动态列表下拉刷新，取得比after\_postid更晚的新贴
+59. group.addpost(gid,content=None,pictures=[],video=None,videolen=None,voice=None,voicelen=None,
+    lat=None,lng=None) 发圈子动态，pictures是图片链接字符串数组，上传方法按照[上传图片文件](#uploadimage) ,可以上传视频(video=视频链接)，声音(voice=音频链接)，长度单位是毫秒整数，
+    视频音频上传方法和图片相同，取得视频截图可以使用类似这样的链接附加参数 http://open.qiniudn.com/thinking-in-go.mp4<b style="color:red">?</b>vframe/jpg/offset/7<b style="color:red">|</b>imageView2/1/w/150/h/200/q/56/format/JPG
+    后面参数部分的意义是（1） vframe/jpg/offset/7 将视频第7秒截图 （2）imageView2/1/w/150/h/200/q/56/format/JPG 将截图重新压制成新的图片尺寸。
+60. circle.likepost(postid) 给群动态点赞，重复给同一个动态点赞会返回过去的记录，不会有效果，可以通过记录的时间戳判断
+70. circle.addreply(postid,content) 给群动态回复，现在只能回复文字，需要回复图片就说很容易加上的
 ###向客户端推送消息
 ####1. 事件推送
 ```python

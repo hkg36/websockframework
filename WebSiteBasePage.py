@@ -2,11 +2,15 @@ import os
 import importlib
 
 from jinja2 import Environment, FileSystemLoader
+import web
 
 jinja2_env = Environment(loader=FileSystemLoader('templates'),auto_reload=False)
 
 class AutoPage(object):
-    pass
+    def SetNoCache(self):
+        web.header('Cache-Control','no-cache, no-store, must-revalidate',unique=True)
+        web.header('Pragma','no-cache',unique=True)
+        web.header('Expires','0',unique=True)
 
 def LoadPageList(module_root='webpages'):
     pathlist=[]
