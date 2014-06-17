@@ -66,24 +66,25 @@ sessionid<input type="text" id="sessionid"><input type="button" value="开始" o
 </div>
 </div>
 
-<script type="text/javascript" src="script/json2.js"></script>
-<script type="text/javascript" src="script/jquery-2.1.1.min.js"></script>
+<script type="application/javascript" src="script/json2.js"></script>
+<script type="application/javascript" src="script/jquery-2.1.1.min.js"></script>
+<script type="application/javascript" src="script/msgpack.js"></script>
 <link href="/static/script/markdown/googlecode.css" rel="stylesheet">
 <script src="/static/script/markdown/highlight.min.js"></script>
 <script type="text/javascript">
 var ws;
 function start_connect(){
-    ws = new WebSocket("wss://"+location.hostname+":8001/ws");
+    ws = new WebSocket("wss://"+location.hostname+":8001/msgpack");
     ws.binaryType = "arraybuffer";
     ws.onopen = function() {
      $("#state").html("connected");
     };
     ws.onmessage = function (evt) {
         var rawdata=evt.data;
-
+        var bufview=new Uint8Array(rawdata)
         var jdata
         try{
-            jdata=JSON.parse(rawdata)
+            jdata=msgpack.unpack(bufview)
         }
         catch (err)
         {
@@ -91,7 +92,7 @@ function start_connect(){
             return
         }
 
-        var jstr=evt.data
+        var jstr=JSON.stringify(jdata)
         jstr=jstr.replace(/<|>/g,function (match){
             if(match=='<')
                 return '&lt;'
@@ -131,12 +132,18 @@ function sendWord()
     var cdata=randomChar(10)
     data['cdata']=cdata
 
-    var string_data=JSON.stringify(data)
-    ws.send(string_data)
+    var string_data=msgpack.pack(data)
+    var buf=new ArrayBuffer(string_data.length)
+        var bufview=new Uint8Array(buf)
+        for(var i=0;i<string_data.length;i++)
+        {
+            bufview[i]=string_data[i]
+        }
+    ws.send(buf)
 }
     function clickstart()
     {
-        ws.send(JSON.stringify(
+        var tosend=msgpack.pack(
                 {
                     func:"session.start2",
                     parm:{
@@ -144,7 +151,14 @@ function sendWord()
                     },
                     cdata:randomChar(10)
                 }
-        ))
+        )
+        var buf=new ArrayBuffer(tosend.length)
+        var bufview=new Uint8Array(buf)
+        for(var i=0;i<tosend.length;i++)
+        {
+            bufview[i]=tosend[i]
+        }
+        ws.send(buf)
     }
     function clearlog()
     {
