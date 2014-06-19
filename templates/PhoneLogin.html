@@ -10,8 +10,14 @@
 <form method="get">
     phone <input type="text" name="phone" id="phone"><input type="button" value="取得code" onclick="getcode()"><br />
     code <input type="text" name="code" id="code"><br />
+    <input type="checkbox" name="cryptsession" value="1">使用加密sessionid<br>
     <input type="submit" >
-</form>
+</form><br>
+加密sessionid是为了减少数据库操作的新格式，请尽量转换到新格式seesionid，旧格式依然可用<br>
+客户端建立连接的时候，在连接地址后加参数<br>
+wss://service.laixinle.com:8001/ws?usezlib=1&sessionid={你得到的sessionid}&cdata={等同于session.start2的cdata参数}<br>
+连接启动后不需要主动调用session.start2,但是，请和原先一样等待session.start2的返回结果，<br>
+<a href="/static/PhoneTestJSON.html">新sessionid的测试页面</a>
 <script type="text/javascript">
     function getcode()
     {

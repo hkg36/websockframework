@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="application/javascript" src="script/jquery-2.1.1.min.js"></script>
+<input type="file" id="file">
+<input type="button" id="button" value="test"><br>
+<canvas id="myCanvas" width="400" height="400"></canvas>
+<script type="application/javascript">
+    function buttonclicked()
+    {
+       var rdf=$("#file")[0].files[0]
+        var reader = new FileReader()
+        reader.onload = function(event){
+            var filedata=event.target.result
+            var img     = new Image();
+
+            // wait until the image has been fully processed
+            img.onload = function() {
+                var canvas = document.getElementById('myCanvas');
+                var context = canvas.getContext('2d');
+                context.drawImage(this, 0,0);
+            };
+            img.src = filedata;
+        }
+        //reader.readAsArrayBuffer(rdf)
+        reader.readAsDataURL(rdf)
+    }
+    $("#button").on('click',buttonclicked)
+</script>
+</body>
+</html>

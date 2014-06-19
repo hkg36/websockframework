@@ -19,17 +19,41 @@ from stormed.connection import Connection
 from stormed.channel import Consumer
 from stormed.message import Message
 from stormed.frame import status
+from tools.helper import DecodeCryptSession, DefJsonEncoder
 
 connection_list={}
 class RabbitMQServer(tornado.websocket.WebSocketHandler):
     last_act_time=0
     def open(self):
         self.usezlib=int(self.get_argument('usezlib',0))
+
+        sessionid=self.get_argument('sessionid',None)
+        cdata=self.get_argument('cdata',None)
+        self.userdata=None
+        if sessionid:
+            self.userdata=DecodeCryptSession(sessionid)
+            if self.userdata:
+                self.userdata['uid']=str(self.userdata['uid'])
+
         self.connid=uuid.uuid4().get_hex()
         print self.connid+' connected'
         connection_list[self.connid]=self
         self.last_act_time=time.time()
         self.cip=self.request.remote_ip
+
+        if self.userdata:
+            msgbody=DefJsonEncoder.encode(
+                {
+                    "func":"session.start2",
+                    "parm":{
+                        "sessionid":None,
+                    },
+                    "cdata":cdata
+                }
+            )
+            msg=Message(body=msgbody,delivery_mode=2,reply_to=mqserver.back_queue)
+            msg.headers={"connid":self.connid,'cip':self.cip,"uid":self.userdata['uid']}
+            mqserver.publish(msg)
     def on_message(self, message):
         try:
             if self.usezlib:
@@ -38,6 +62,8 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
             pass
         msg=Message(body=message,delivery_mode=2,reply_to=mqserver.back_queue)
         msg.headers={"connid":self.connid,'cip':self.cip}
+        if self.userdata:
+            msg.headers['uid']=self.userdata['uid']
         mqserver.publish(msg)
         self.last_act_time=time.time()
     def on_close(self):
@@ -45,6 +71,8 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
         connection_list.pop(self.connid,'')
         msg=Message(body='{"func":"connection_lost","parm":{}}',delivery_mode=2)
         msg.headers={"connid":self.connid,'cip':self.cip}
+        if self.userdata:
+            msg.headers['uid']=self.userdata['uid']
         mqserver.publish(msg)
     def on_pong(self,data):
         self.last_act_time=time.time()
@@ -55,6 +83,7 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
             data=zlib.compress(data)
         self.write_message(data,binary=self.usezlib)
         self.last_act_time=time.time()
+
 class MessagePackServer(tornado.websocket.WebSocketHandler):
     last_act_time=0
     def open(self):

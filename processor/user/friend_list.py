@@ -15,6 +15,13 @@ def run(uid=0,pos=0,count=10):
             .order_by(FriendList.time.desc())\
             .offset(pos).limit(count).all()
         fl=[]
+        default_friend={
+            24, #来信小助手
+        }
         for one in allfriend:
+            if one.friendid in default_friend:
+                default_friend.remove(one.friendid)
             fl.append({'uid':one.friendid,'type':one.type,'time':one.time})
+        for one in default_friend:
+            fl.append({'uid':one,'type':0,'time':0})
     return Res({'friend_id':fl,'pos':pos,'count':count})

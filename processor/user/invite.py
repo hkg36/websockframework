@@ -7,7 +7,7 @@ import BackEndEnvData
 import dbconfig
 import datetime
 
-SEND_SMS=False
+
 @CheckSession()
 def run(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0,position = None,join_cid=None,join_roleid=None):
     with dbconfig.Session() as session:
@@ -40,7 +40,7 @@ def run(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0
             cdef=session.query(CircleDef).filter(CircleDef.cid==join_cid).first()
         uinl.join_roleid= cdef.default_roleid
 
-    if SEND_SMS and (uinl.sms_send_time is None or (datetime.datetime.now()-uinl.sms_send_time).days>1):
+    if (uinl.sms_send_time is None or (datetime.datetime.now()-uinl.sms_send_time).days>1):
         uinl.sms_send_time=datetime.datetime.now()
 
         userself=session.query(User).filter(User.uid==BackEndEnvData.uid).first()

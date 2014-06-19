@@ -1,4 +1,5 @@
 #coding:utf8
+from tools.helper import DecodeCryptSession, BuildCryptSession, DefJsonEncoder
 from tools.session import GenSession
 from tools.urls import GetClientWSSite, GetClientWSSSite
 
@@ -29,13 +30,17 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                         session.commit()
 
                     dbconfig.memclient.delete(str('vcode:%s'%phone))
-                    session_id=GenSession()
-                    TIMEOUTTIME=3600*24*5
-                    time_out=time.time()+TIMEOUTTIME
-                    dbconfig.redisdb.set(str('session:%s'%session_id),json.dumps({'uid':user_info.uid}),ex=datetime.timedelta(days=180))
-                    return json.dumps({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite(),'wss':GetClientWSSSite()})
+                    if int(params.get('cryptsession',0)):
+                        session_id=BuildCryptSession(user_info.uid)
+                        return DefJsonEncoder.encode({'sessionid':session_id,'ws':GetClientWSSite(),'wss':GetClientWSSSite()})
+                    else:
+                        session_id=GenSession()
+                        TIMEOUTTIME=3600*24*5
+                        time_out=time.time()+TIMEOUTTIME
+                        dbconfig.redisdb.set(str('session:%s'%session_id),json.dumps({'uid':user_info.uid}),ex=datetime.timedelta(days=180))
+                        return DefJsonEncoder.encode({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite(),'wss':GetClientWSSSite()})
             else:
-                return json.dumps({'error':'code error'})
+                return DefJsonEncoder.encode({'error':'code error'})
         tpl=WebSiteBasePage.jinja2_env.get_template('PhoneLogin.html')
         return tpl.render()
 

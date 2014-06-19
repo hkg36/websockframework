@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>手机客户端websocket</title>
+</head>
+<body>
+<style>
+    .infopane
+    {
+        float:left;
+        width: 50%;
+    }
+    .info_style
+    {
+        border:1px solid #FF6699;
+        word-break: break-all;
+    }
+    .push_style
+    {
+        border:1px solid #336633;
+        word-break: break-all;
+    }
+    .pop-box {
+z-index: 9999; /*这个数值要足够大，才能够显示在最上层*/
+margin-bottom: 3px;
+display: none;
+position: absolute;
+background: #FFF;
+border:solid 1px #6e8bde;
+}
+
+
+</style>
+<div id='pop-div' style="width: 800px;height: 600px" class="pop-box">
+    <div class='buttonPanel' style="text-align: right" style="text-align: right">
+    <input value="Close" id="btn1" onclick="hideDiv('pop-div');" type="button" />
+    </div>
+    <div id="showcode" style="width: 800px;height: 570px;overflow:scroll;"></div>
+</div>
+
+<div style="width: 100%">
+<div class="infopane">
+    <div id="state"></div>
+    这是加密版sessionid测试页面，连接不会自动开始<br>
+sessionid<input type="text" id="sessionid"><input type="button" value="开始" onclick="start_connect()"><br/>
+    <textarea style="width: 400px;height: 100px" id="command">{
+	"func":"function_name",
+	"parm":{
+        "parm1":value,
+	}
+}</textarea><br />
+    <input type="button" value="提交命令" onclick="sendWord()"><input type="button" value="clear log" onclick="clearlog()"><br />
+    <div id="host" style="width: 100%">
+
+    </div>
+</div>
+<div class="infopane">
+ <input type="button" value="clear push log" onclick="clearpushlog()">
+    <script type="text/javascript">
+        function clearpushlog()
+        {
+            $('#push_pane').empty()
+        }
+    </script>
+  <div id="push_pane" style="width: 100%"/>
+</div>
+</div>
+
+<script type="text/javascript" src="script/json2.js"></script>
+<script type="text/javascript" src="script/jquery-2.1.1.min.js"></script>
+<link href="/static/script/markdown/googlecode.css" rel="stylesheet">
+<script src="/static/script/markdown/highlight.min.js"></script>
+<script type="text/javascript">
+var ws;
+function start_connect(){
+    var sessionid=$("#sessionid").val()
+    if(!sessionid)
+        return
+    ws = new WebSocket("wss://"+location.hostname+":8001/ws?sessionid="+sessionid+"&cdata="+randomChar(10));
+    ws.binaryType = "arraybuffer";
+    ws.onopen = function() {
+     $("#state").html("connected");
+    };
+    ws.onmessage = function (evt) {
+        var rawdata=evt.data;
+
+        var jdata
+        try{
+            jdata=JSON.parse(rawdata)
+        }
+        catch (err)
+        {
+            alert(rawdata)
+            return
+        }
+
+        var jstr=evt.data
+        jstr=jstr.replace(/<|>/g,function (match){
+            if(match=='<')
+                return '&lt;'
+            else if(match=='>')
+                return '&gt;'
+        })
+        if(jdata['push']==true)
+            $("#push_pane").append('<div class="push_style">'+jstr+'</div>')
+        else
+            $("#host").append('<div class="info_style">'+jstr+'</div>')
+    }
+    ws.onclose=function(){
+        $("#state").html("connect losted")
+        setTimeout("start_connect()",1000)
+        $("#host").append('<div class="push_style">连接断开</div>')
+    }
+}
+function  randomChar(l)  {
+  var  x="0123456789qwertyuioplkjhgfdsazxcvbnm";
+  var  tmp="";
+  for(var  i=0;i<  l;i++)  {
+  tmp  +=  x.charAt(Math.ceil(Math.random()*100000000)%x.length);
+  }
+  return  tmp;
+}
+function sendWord()
+{
+    var data
+    try{
+    data=JSON.parse($('#command').val())
+    }
+    catch (err)
+    {
+        alert(err.description)
+        return
+    }
+    var cdata=randomChar(10)
+    data['cdata']=cdata
+
+    var string_data=JSON.stringify(data)
+    ws.send(string_data)
+}
+    function clickstart()
+    {
+        ws.send(JSON.stringify(
+                {
+                    func:"session.start2",
+                    parm:{
+                        sessionid:$("#sessionid").val()
+                    },
+                    cdata:randomChar(10)
+                }
+        ))
+    }
+    function clearlog()
+    {
+        $("#host").empty()
+    }
+
+function popupDiv(div_id) {
+    var div_obj = $("#"+div_id);
+    var windowWidth = document.documentElement.clientWidth;
+    var windowHeight = document.documentElement.clientHeight;
+    var popupHeight = div_obj.height();
+    var popupWidth = div_obj.width();
+    //添加并显示遮罩层
+    $("<div id='mask'></div>").addClass("mask")
+    .width(windowWidth * 0.99)
+    .height(windowHeight * 0.99)
+    .click(function() {hideDiv(div_id); })
+    .appendTo("body")
+    .fadeIn(200);
+    div_obj.css({"position": "absolute"})
+    .animate({left: windowWidth/2-popupWidth/2,
+    top: windowHeight/2-popupHeight/2, opacity: "show" }, "slow");
+}
+
+function hideDiv(div_id) {
+$("#mask").remove();
+$("#" + div_id).animate({left: 0, top: 0, opacity: "hide" }, "slow");
+}
+
+function popFormatedJson(v){
+var jobj=JSON.parse(v.currentTarget.innerHTML)
+var jstr=JSON.stringify(jobj,null,2)
+$("#showcode").html("<pre><code class='javascript'>"+jstr+"</code> </pre>")
+    hljs.highlightBlock($("#showcode")[0])
+popupDiv('pop-div')
+}
+$('.infopane').on('click','.info_style',popFormatedJson);
+ $('.infopane').on('click','.push_style',popFormatedJson);
+
+</script>
+
+</body>
+</html>
