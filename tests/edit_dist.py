@@ -46,38 +46,51 @@ def LevenshteinDistance2(s,t):
                       d[i][j-1],  # an insertion
                       d[i-1][j-1]  # a substitution
                 )+1
-    for one in d:
-        print one
-    i=0
-    j=0
-    while i<m and j<n:
+
+    max_step=d[m][n]
+    rount=[]
+    checked=set()
+    def findnextrount(i,j,rount):
+        if (i,j) in checked:
+            return False
+        checked.add((i,j))
+        if i==m and j==n:
+            return True
+        if i==m or j==n:
+            return False
         now=d[i][j]
+        if now>max:
+            return False
         delete=d[i+1][j]
         replace=d[i+1][j+1]
         insert=d[i][j+1]
 
-        if replace<=delete and replace<=insert:
-            j+=1
-            i+=1
-            if now==replace:
-                print((i,j,'kep',s[i-1]))
-            else:
-                print((i,j,'rep',s[i-1],t[j-1]))
-
-        elif delete<=insert:
-            i+=1
-            print((i,j,'del',s[i-1]))
-
-        else:
-            j+=1
-            print((i,j,'add',t[j-1]))
-
-    return d[m][n]
+        if replace>=now:
+            if findnextrount(i+1,j+1,rount):
+                if now==replace:
+                    rount.insert(0,(i,j,'keep',s[i]))
+                else:
+                    rount.insert(0,(i,j,'replace',s[i],t[j]))
+                return True
+        if delete>now:
+            if findnextrount(i+1,j,rount):
+                rount.insert(0,(i,j,'delele',s[i]))
+                return True
+        if insert>now:
+            if findnextrount(i,j+1,rount):
+                rount.insert(0,(i,j,'add',t[j]))
+                return True
+        return False
+    findnextrount(0,0,rount)
+    return max_step,d,rount
 
 
 a='Sunday'
 b='Saturday'
-print len(a)
-print len(b)
-print LevenshteinDistance2(a,b)
+data= LevenshteinDistance2(a,b)
+for one in data[1]:
+    print one
+for one in data[2]:
+    print(one)
+print data
 print LevenshteinDistance(a,b)

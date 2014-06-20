@@ -3,7 +3,7 @@ import WebSiteBasePage
 import web
 from datamodel.message import Message
 import dbconfig
-from tools.helper import DefJsonEncoder
+from tools.helper import DefJsonEncoder, DecodeCryptSession
 from webpages.MainPage import pusher
 from webpages.operational_background.obtools import AccessControl
 
@@ -38,9 +38,12 @@ class SendMessageToUser(WebSiteBasePage.AutoPage):
 class FindSession(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input()
+        sessionid=params['sessionid']
+        uiddata=DecodeCryptSession(sessionid)
+        if uiddata:
+            return DefJsonEncoder.encode(uiddata)
         return dbconfig.redisdb.get('session:'+params['sessionid'])
     def POST(self):
-        params=web.input()
-        return dbconfig.redisdb.get('session:'+params['sessionid'])
+        return self.GET()
 
 

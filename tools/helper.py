@@ -14,6 +14,7 @@ from Crypto import Random
 import msgpack
 import base64
 import random
+import uuid
 
 def Res(res={},errno=0,error='no error'):
     return {"errno":errno,"error":error,"result":res}
@@ -111,7 +112,7 @@ def FunctionCache(timeout=20):
 session_crypt_key=b'7Y9VZl9M3HDmDfnb'
 session_crypt_head='x\xaa\x83\xd4\xf3d\x01\xfa\xaf\x84\xfe;\xde\xd2o\x08'
 def BuildCryptSession(uid):
-    data=msgpack.packb([random.randint(0,256),time.time(),uid])
+    data=msgpack.packb([uuid.uuid4().get_bytes(),time.time(),uid])
     cipher = AES.new(session_crypt_key, AES.MODE_CFB, session_crypt_head)
     msg = cipher.encrypt(data)
     msg64=base64.b64encode(msg)
@@ -127,7 +128,7 @@ def DecodeCryptSession(sessionid):
         srcdata=msgpack.unpackb(data)
     except Exception,e:
         return None
-    return {'uid':srcdata[2],'time':srcdata[1]}
+    return {'uid':srcdata[2],'time':srcdata[1],'uuid':srcdata[0]}
 if __name__ == '__main__':
     session= BuildCryptSession(223)
     print(session)
