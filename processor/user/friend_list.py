@@ -23,5 +23,5 @@ def run(uid=0,pos=0,count=10):
                 default_friend.remove(one.friendid)
             fl.append({'uid':one.friendid,'type':one.type,'time':one.time})
         for one in default_friend:
-            fl.append({'uid':one,'type':0,'time':0})
+            fl.insert(0,{'uid':one,'type':0,'time':0})
     return Res({'friend_id':fl,'pos':pos,'count':count})
