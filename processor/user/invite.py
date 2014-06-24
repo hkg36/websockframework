@@ -45,7 +45,7 @@ def run(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0
 
         userself=session.query(User).filter(User.uid==BackEndEnvData.uid).first()
         json_msg=DefJsonEncoder.encode({'phone':str(phone),
-                                        "content":u"手机号%s(%s)的用户邀请你一起玩『来信』,点这里下载 http://www.baidu.com"%(userself.phone,userself.nick)})
+                                        "content":u"手机号%s(%s)的用户邀请你一起玩『来信』,点这里下载 http://t.cn/RvYAd47 "%(userself.phone,userself.nick)})
         BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                           exchange='sys.sms',routing_key='sms.code',compression='gzip')
     uinl.save()

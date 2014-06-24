@@ -6,7 +6,6 @@ from datamodel.post_reply import PostReply
 
 __author__ = 'amen'
 import dbconfig
-import time
 import datetime
 
 
@@ -22,5 +21,7 @@ def DataClean():
         post_deleted=session.query(Post).filter(Post.time<deadline).delete(False)
         session.commit()
         print "del %d msg,%d event,%d post,%d postlike,%d postreply"%(msg_deleted,event_deleted,post_deleted,post_like_deleted,post_reply_deleted)
-DataClean()
+
+if __name__ == '__main__':
+    DataClean()
 
