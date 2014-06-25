@@ -2,10 +2,12 @@
 import WebSiteBasePage
 import web
 from datamodel.message import Message
+from datamodel.user import User
 import dbconfig
-from tools.helper import DefJsonEncoder, DecodeCryptSession
+from tools.helper import DefJsonEncoder, DecodeCryptSession, AutoFitJson
 from webpages.MainPage import pusher
 from webpages.operational_background.obtools import AccessControl
+import json
 
 __author__ = 'amen'
 class SendMessageToUser(WebSiteBasePage.AutoPage):
@@ -45,5 +47,17 @@ class FindSession(WebSiteBasePage.AutoPage):
         return dbconfig.redisdb.get('session:'+params['sessionid'])
     def POST(self):
         return self.GET()
+class FindUser(WebSiteBasePage.AutoPage):
+    def GET(self):
+        params=web.input()
+        phone=params['phone']
+        if len(phone)<6:
+            return 'phone too short'
+        with dbconfig.Session() as session:
+            users=session.query(User).filter(User.phone.like(phone+'%')).all()
+            alluser=[one.toJson() for one in users]
+
+            web.header('Content-Type', 'text/plain')
+            return json.dumps(alluser,ensure_ascii=False,cls=AutoFitJson,indent=3)
 
 

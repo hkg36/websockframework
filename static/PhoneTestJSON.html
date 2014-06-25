@@ -43,7 +43,7 @@ border:solid 1px #6e8bde;
 <div class="infopane">
     <div id="state"></div>
     这是加密版sessionid测试页面，连接不会自动开始<br>
-sessionid<input type="text" id="sessionid"><input type="button" value="开始" onclick="start_connect()"><br/>
+sessionid<input type="text" id="sessionid"><input type="button" value="开始" id='startbn'><br/>
     <textarea style="width: 400px;height: 100px" id="command">{
 	"func":"function_name",
 	"parm":{
@@ -72,12 +72,20 @@ sessionid<input type="text" id="sessionid"><input type="button" value="开始" o
 <link href="/static/script/markdown/googlecode.css" rel="stylesheet">
 <script src="/static/script/markdown/highlight.min.js"></script>
 <script type="text/javascript">
+    $("#startbn").on('click',function()
+    {
+        if(ws) {
+            ws.onclose=null
+            ws.close()
+        }
+        start_connect()
+    })
 var ws;
 function start_connect(){
     var sessionid=$("#sessionid").val()
     if(!sessionid)
         return
-    ws = new WebSocket("wss://"+location.hostname+":8001/ws?sessionid="+sessionid+"&cdata="+randomChar(10));
+    ws = new WebSocket("wss://"+location.hostname+":8001/ws?sessionid="+encodeURIComponent(sessionid)+"&cdata="+encodeURIComponent(randomChar(10)));
     ws.binaryType = "arraybuffer";
     ws.onopen = function() {
      $("#state").html("connected");

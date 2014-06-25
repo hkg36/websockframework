@@ -9,6 +9,7 @@ import getopt
 import importlib
 import msgpack
 import json
+import base64
 
 import tornado
 import tornado.websocket
@@ -191,6 +192,17 @@ def RunPingFuncion():
             conn.ping(b'0')
     tornado.ioloop.IOLoop.instance().add_timeout(time.time()+CHECK_TIMEOUT,RunPingFuncion)
 mqserver=None
+
+class GetConnectionList(tornado.web.RequestHandler):
+    def get(self):
+        connlist=[]
+        for connid in connection_list:
+            conn=connection_list[connid]
+            if isinstance(conn,RabbitMQServer) and conn.userdata:
+                data={'connid':connid,'uuid':(conn.userdata['uuid']),
+                      'uid':conn.userdata['uid'],'time':conn.userdata['time']}
+                connlist.append(data)
+        self.write(str(connlist))
 def main():
     settings = {
         'template_path': os.path.join(os.path.dirname(__file__), 'templates'),
@@ -198,7 +210,8 @@ def main():
     }
     application = tornado.web.Application([
                                               (r'/ws',RabbitMQServer),
-                                              (r'/msgpack',MessagePackServer)
+                                              (r'/msgpack',MessagePackServer),
+                                              (r'/tools/getconn',GetConnectionList),
                                               ], **settings)
 
 
