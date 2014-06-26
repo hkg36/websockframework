@@ -15,6 +15,7 @@ class StoreMerchandise(dbconfig.DBBase):
     amount=Column(Integer,default=2)
     ex_people_amount=Column(Integer,default=0)
     show_info=Column(String(4096))
+    show_post_url=Column(String(1024))
     group_id=Column(Integer,index=True)
     no_list=Column(Integer,default=0)
     time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
@@ -34,6 +35,7 @@ class StoreMerchandise(dbconfig.DBBase):
             'ex_people_amount':self.ex_people_amount,
             'show_info':json_info,
             'group_id':self.group_id,
+            'show_post_url':self.show_post_url,
             'icon_url':self.icon_url,
         }
         return data

@@ -115,14 +115,14 @@ def BuildCryptSession(uid):
     data=msgpack.packb([uuid.uuid4().get_bytes(),time.time(),uid])
     cipher = AES.new(session_crypt_key, AES.MODE_CFB, session_crypt_head)
     msg = cipher.encrypt(data)
-    msg64=base64.b64encode(msg)
+    msg64=base64.b16encode(msg)
     return "SCK_"+msg64
 def DecodeCryptSession(sessionid):
     if sessionid.startswith('SCK_')==False:
         return None
     try:
         msg64=sessionid[4:]
-        msg=base64.b64decode(msg64)
+        msg=base64.b16decode(msg64)
         cipher = AES.new(session_crypt_key, AES.MODE_CFB, session_crypt_head)
         data=cipher.decrypt(msg)
         srcdata=msgpack.unpackb(data)

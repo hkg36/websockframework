@@ -35,6 +35,9 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
             self.userdata=DecodeCryptSession(sessionid)
             if self.userdata:
                 self.userdata['uid']=str(self.userdata['uid'])
+        if sessionid and self.userdata is None:
+            self.close()
+            return
 
         self.connid=uuid.uuid4().get_hex()
         print self.connid+' connected'
