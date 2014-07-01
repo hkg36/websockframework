@@ -10,11 +10,11 @@ import dbconfig
 import cPickle as pickle
 import urllib
 from Crypto.Cipher import AES
-from Crypto import Random
 import msgpack
 import base64
 import random
 import uuid
+import leveldb
 
 def Res(res={},errno=0,error='no error'):
     return {"errno":errno,"error":error,"result":res}
@@ -106,6 +106,29 @@ def FunctionCache(timeout=20):
                 return res
             else:
                 return pickle.loads(result)
+        return Work
+    return ACF
+bufferleveldb=None
+def LocalBuffer(timeout=30):
+    def ACF(fun):
+        def Work(*args,**kwargs):
+            global bufferleveldb
+            if not bufferleveldb:
+                filename='/tmp/%d.leveldb'%random.randint(100000000000,1000000000000)
+                bufferleveldb=leveldb.LevelDB(filename)
+            keyname='%s.%s(%s,%s)'%(fun.__module__,fun.__name__,json.dumps(args),json.dumps(kwargs))
+            #print keyname
+            try:
+                buffered=bufferleveldb.Get(keyname)
+                buffres=msgpack.unpackb(buffered)
+                if time.time()- buffres['time']<timeout:
+                    #print 'use buffer'
+                    return pickle.loads(buffres['res'])
+            except Exception,e:
+                pass
+            funres=fun(*args,**kwargs)
+            bufferleveldb.Put(keyname,msgpack.packb({'res':pickle.dumps(funres),'time':time.time()}))
+            return funres
         return Work
     return ACF
 

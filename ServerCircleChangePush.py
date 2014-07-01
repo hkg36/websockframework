@@ -14,15 +14,30 @@ from datamodel.ios import IOSDevice
 from datamodel.user import User
 from datamodel.user_circle import UserCircle, CircleDef
 import dbconfig
-from tools.helper import AutoFitJson, DefJsonEncoder
+from tools.helper import AutoFitJson, DefJsonEncoder, LocalBuffer
 
-
+@LocalBuffer()
+def GetGroupUser(cid):
+    with dbconfig.Session() as session:
+        userlist=session.query(UserCircle).filter(UserCircle.cid==cid).all()
+        return set([one.uid for one in userlist])
+@LocalBuffer()
+def GetCircleDef(cid):
+    with dbconfig.Session() as session:
+        cdef=session.query(CircleDef).filter(CircleDef.cid==cid).first()
+        session.expunge(cdef)
+        return cdef
+@LocalBuffer()
+def GetUserInfo(uid):
+    with dbconfig.Session() as session:
+        user=session.query(User).filter(User.uid==uid).first()
+        session.expunge(user)
+        return user
 def RequestWork(params,body,reply_queue):
     post=json.loads(body)
     cid=post['cid']
     with dbconfig.Session() as session:
-        userlist=session.query(UserCircle).filter(UserCircle.cid==cid).all()
-        uids=set([one.uid for one in userlist])
+        uids=GetGroupUser(cid)
 
         allconn=session.query(ConnectionInfo).filter(ConnectionInfo.uid.in_(list(uids))).all()
         to_push=DefJsonEncoder.encode({"push":True,
@@ -47,7 +62,7 @@ def RequestWork(params,body,reply_queue):
         if len(offline_uids)>0:
             iosdevices=session.query(IOSDevice).filter(IOSDevice.uid.in_(offline_uids)).all()
             #print 'ios device:',len(iosdevices)
-            cdef=session.query(CircleDef).filter(CircleDef.cid==cid).first()
+            cdef=GetCircleDef(cid)
             push_word=None
             if params['type']=="circle.newboard":
                 if len(post['board'])>50:
@@ -55,7 +70,7 @@ def RequestWork(params,body,reply_queue):
                 else:
                     push_word=u"%s %s"%(cdef.name,post['board'])
             if params['type']=="circle.newpost":
-                user=session.query(User).filter(User.uid==post['uid']).first()
+                user=GetUserInfo(post['uid'])
                 push_word=u"%s在%s发了新动态"%(user.nick,cdef.name)
             #print push_word
             if push_word:

@@ -15,8 +15,6 @@ def run(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0
         if user is not None:
             return Res({'user':user.toJson()},errno=2002,error=u"手机号对应的用户已存在")
     uinl=UserInviteLog.objects(uid=BackEndEnvData.uid,phone=phone).first()
-    if uinl and uinl.joined_uid:
-        return Res()
     if uinl is None:
         uinl=UserInviteLog()
         uinl.uid=BackEndEnvData.uid
@@ -49,4 +47,4 @@ def run(phone,nick,headpic=None,sex=None,birthday = None,marriage = 0,height = 0
         BackEndEnvData.queue_producer.publish(body=json_msg,delivery_mode=2,
                                           exchange='sys.sms',routing_key='sms.code',compression='gzip')
     uinl.save()
-    return Res()
+    return Res({})
