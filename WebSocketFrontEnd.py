@@ -136,7 +136,7 @@ class RabbitMQ_Queue(object):
         self.Queue_PassWord=Queue_PassWord
         self.Queue_Path=Queue_Path
         self.Queue_Port=Queue_Port
-        self.back_queue="WSBack-"+BackQueueName
+        self.back_queue="WSBack-%s.resback"%BackQueueName
         self._start_new_connect()
     def on_connect(self):
         if self.conn.status!=status.OPENED:
@@ -145,25 +145,28 @@ class RabbitMQ_Queue(object):
         else:
             print 'connect rabbitmq success'
             self.channel = self.conn.channel()
-            self.channel.queue_declare('task', durable=True,
-                             callback=self.on_queue_creation)
-            self.channel.queue_declare(self.back_queue,auto_delete=True,callback=self.on_queue_back_created,durable=False)
+            self.channel.exchange_declare('front_end',type='topic',durable=True,callback=self.on_exchange_declare)
 
-    def on_queue_creation(self,qinfo):
-        print "queue %s created"%qinfo.queue
-        self.task_queue=qinfo.queue
+    def on_exchange_declare(self):
+        self.channel.queue_declare(self.back_queue,auto_delete=True,callback=self.on_queue_back_created,durable=False)
+
+        print "exchange %s created"%'front_end'
+        #self.task_queue=qinfo.queue
 
         global start_notified
         if start_notified==False:
             start_notified=True
             msg=Message(body='{"func":"front_end_restart","parm":{}}',delivery_mode=2,reply_to=self.back_queue)
-            msg.headers={'type':"1"}
             self.publish(msg)
+
     def on_queue_back_created(self,qinfo):
         print "back queue %s created"%qinfo.queue
         self.back_queue=qinfo.queue
+        self.channel.queue_bind(self.back_queue,'front_end',self.back_queue,self.on_backqueue_bind)
         consumer = Consumer(self.consume_callback)
         self.channel.consume(qinfo.queue, consumer, no_ack=True)
+    def on_backqueue_bind(self):
+        print "back queue %s bind"%self.back_queue
     def consume_callback(self,msg):
         connid=msg.headers.get("connid",None)
         if connid:
@@ -185,7 +188,7 @@ class RabbitMQ_Queue(object):
         time.sleep(5)
         self._start_new_connect()
     def publish(self,msg):
-        self.channel.publish(msg,'',self.task_queue)
+        self.channel.publish(msg,'front_end','task.front')
 
 CHECK_TIMEOUT=10*60
 def RunPingFuncion():

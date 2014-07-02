@@ -20,7 +20,8 @@ producer=None
 task_queue=None
 consumer=None
 WorkFunction=None
-def init(host,port,virtual_host,usr,psw,queue_name,exchange_name=None):
+back_exchange=None
+def init(host,port,virtual_host,usr,psw,queue_name,exchange_name=None,routing_key=None):
     global connection,channel,producer,task_queue,consumer
     connection = Connection(hostname=host,port=port,userid=usr,password=psw,virtual_host=virtual_host)
     channel = connection.channel()
@@ -28,7 +29,7 @@ def init(host,port,virtual_host,usr,psw,queue_name,exchange_name=None):
 
     if exchange_name:
         exchange=Exchange(exchange_name,'topic',channel,durable=True,delivery_mode=2)
-        task_queue = Queue(queue_name,routing_key=queue_name,durable=True,exchange=exchange)
+        task_queue = Queue(queue_name,routing_key=routing_key,durable=True,exchange=exchange)
     else:
         task_queue = Queue(queue_name,durable=True)
     consumer = Consumer(channel,task_queue,no_ack=False)
@@ -68,12 +69,14 @@ def RequestCallBack(body, message):
                                   routing_key=properties['reply_to'],
                                   correlation_id=properties.get('correlation_id'),
                                   content_type='application/data',
-                                  content_encoding='binary')
+                                  content_encoding='binary',
+                                  exchange=back_exchange)
         else:
             producer.publish(body=replybody,delivery_mode=2,headers=replyheader,
                                   routing_key=properties['reply_to'],
                                   correlation_id=properties.get('correlation_id'),
-                                  compression='gzip')
+                                  compression='gzip',
+                                  exchange=back_exchange)
     else:
         print json.dumps(replyheader),replybody
     message.ack()

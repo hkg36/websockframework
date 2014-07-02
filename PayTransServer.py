@@ -37,7 +37,8 @@ def RequestWork(params,body,reply_queue):
                 toids.remove(conn.uid)
                 QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                               routing_key=conn.queue_id,
-                                              compression='gzip')
+                                              compression='gzip',
+                                              exchange="front_end")
         iosdevs=session.query(IOSDevice).filter(IOSDevice.uid.in_(list(toids))).all()
         if len(iosdevs)>0:
             try:

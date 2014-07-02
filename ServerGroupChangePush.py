@@ -41,7 +41,8 @@ def RequestWork(params,body,reply_queue):
         for conn_id in queue_group:
             QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":"$".join(queue_group[conn_id])},
                                           routing_key=conn_id,
-                                          compression='gzip')
+                                          compression='gzip',
+                                          exchange="front_end")
         offline_uids=list(uids-online_uids)
         #print "offline_uids",offline_uids
         if len(offline_uids)>0:

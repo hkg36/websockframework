@@ -97,7 +97,7 @@ def FunctionCache(timeout=20):
         def Work(*args,**kwargs):
             fkey= 'funcCache:%s.%s(%s%s)'%(fun.__module__,fun.__name__,DefJsonEncoder.encode(args) if args else '',DefJsonEncoder.encode(kwargs) if kwargs else '')
             fkey=urllib.quote(fkey)
-            print fkey
+            #print fkey
             result=dbconfig.memclient.get(fkey)
             if result is None:
                 res=fun(*args,**kwargs)

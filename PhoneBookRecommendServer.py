@@ -44,7 +44,8 @@ def RequestWork(params,body,reply_queue):
                             })
     QueueWork.producer.publish(body=to_push,delivery_mode=2,headers={"connid":conn.connection_id},
                                   routing_key=conn.queue_id,
-                                  compression='gzip')
+                                  compression='gzip',
+                                  exchange="front_end")
 if __name__ == '__main__':
     config_model='configs.frontend'
     opts, args=getopt.getopt(sys.argv[1:],'c:',

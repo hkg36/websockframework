@@ -82,7 +82,8 @@ if __name__ == '__main__':
         print 'config error',str(e)
         exit(0)
     QueueWork.WorkFunction=RequestWork
+    QueueWork.back_exchange='front_end'
     QueueWork.init(configs.Queue_Server,configs.Queue_Port,configs.Queue_Path,
-                    configs.Queue_User,configs.Queue_PassWord,'task')
+                    configs.Queue_User,configs.Queue_PassWord,'task','front_end','task.front')
     BackEndEnvData.queue_producer=QueueWork.producer
     QueueWork.run()

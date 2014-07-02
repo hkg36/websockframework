@@ -59,10 +59,12 @@ def run(mid,people_count,hardwareid,recommend_uid=None):
                                             routing_key='sys.sendweixin',
                                             compression='gzip')
 
-        mer=MerchantAPI()
-        gourl=mer.wap_credit(od,transtime,156,price,str(sm.productcatalog),
-                                 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)",
-                                 sm.productname,sm.productdesc,BackEndEnvData.client_ip,
-                                 usr.phone,4,"IMEI:"+hardwareid,"http://%s/payresult/Paybackend"%website_config.hostname,
-                                 "http://%s/payresult/Paybackend"%website_config.hostname,"1|2")
+        gourl=None
+        if price>0:
+            mer=MerchantAPI()
+            gourl=mer.wap_credit(od,transtime,156,price,str(sm.productcatalog),
+                                     "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)",
+                                     sm.productname,sm.productdesc,BackEndEnvData.client_ip,
+                                     usr.phone,4,"IMEI:"+hardwareid,"http://%s/payresult/Paybackend"%website_config.hostname,
+                                     "http://%s/payresult/Paybackend"%website_config.hostname,"1|2")
         return Res({'gourl':gourl,'orderid':od})

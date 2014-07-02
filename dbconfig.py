@@ -10,10 +10,12 @@ class AutoSession(Session):
         return self
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
-db=create_engine("mysql://root:123456@192.173.1.213:4040/site?charset=utf8",pool_recycle=60,echo=True)
+db=create_engine("mysql://root:123456@192.173.1.213:3306/site?charset=utf8",pool_recycle=60,echo=True)
+#readdb=create_engine("mysql://root:123456@192.173.1.212:3306/site?charset=utf8",pool_recycle=60,echo=True)
 DBBase=declarative_base(name="DBBase")
 #Session = sessionmaker(bind=db)
 Session = sessionmaker(bind=db,autocommit=False,autoflush=False,class_=AutoSession)
+#ReadSession=sessionmaker(bind=readdb,autocommit=False,autoflush=False,class_=AutoSession)
 
 redisdb=redis.StrictRedis(host='192.173.1.213', port=6379)
 memclient=memcache.Client(['192.173.1.213:11211'])
