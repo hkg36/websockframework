@@ -9,12 +9,11 @@ import json
 import dbconfig
 import cPickle as pickle
 import urllib
-from Crypto.Cipher import AES
 import msgpack
-import base64
 import random
-import uuid
 import leveldb
+from crypt_session import *
+from json_tools import *
 
 def Res(res={},errno=0,error='no error'):
     return {"errno":errno,"error":error,"result":res}
@@ -75,18 +74,6 @@ def CombineGeo(long,lat):
             result|=mid<<(i+1);
         return result;
 
-class AutoFitJson(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj,datetime.datetime):
-            return time.mktime(obj.timetuple())
-        return json.JSONEncoder.default(self, obj)
-DefJsonEncoder=AutoFitJson(skipkeys=False,
-    check_circular=True,
-    allow_nan=True,
-    indent=None,
-    encoding='utf-8',
-    default=None,ensure_ascii=False,separators=(',', ':'))
-
 def script_path():
     import inspect, os
     caller_file = inspect.stack()[1][1]         # caller's filename
@@ -132,27 +119,3 @@ def LocalBuffer(timeout=30):
         return Work
     return ACF
 
-session_crypt_key=b'7Y9VZl9M3HDmDfnb'
-session_crypt_head='x\xaa\x83\xd4\xf3d\x01\xfa\xaf\x84\xfe;\xde\xd2o\x08'
-def BuildCryptSession(uid):
-    data=msgpack.packb([uuid.uuid4().get_bytes(),time.time(),uid])
-    cipher = AES.new(session_crypt_key, AES.MODE_CFB, session_crypt_head)
-    msg = cipher.encrypt(data)
-    msg64=base64.b16encode(msg)
-    return "SCK_"+msg64
-def DecodeCryptSession(sessionid):
-    if sessionid.startswith('SCK_')==False:
-        return None
-    try:
-        msg64=sessionid[4:]
-        msg=base64.b16decode(msg64)
-        cipher = AES.new(session_crypt_key, AES.MODE_CFB, session_crypt_head)
-        data=cipher.decrypt(msg)
-        srcdata=msgpack.unpackb(data)
-    except Exception,e:
-        return None
-    return {'uid':srcdata[2],'time':srcdata[1],'uuid':srcdata[0]}
-if __name__ == '__main__':
-    session= BuildCryptSession(223)
-    print(session)
-    print DecodeCryptSession(session)
