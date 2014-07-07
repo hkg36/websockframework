@@ -34,4 +34,4 @@ def run():
             data=circles[cid]
             data['exlist']=cexmap.get(cid,[])
             reslist.append(data)
-    return Res({"circles":reslist,'uid':BackEndEnvData.uid})
+    return Res({"circles":reslist})

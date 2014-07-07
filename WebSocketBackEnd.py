@@ -53,6 +53,8 @@ def RequestWork(params,body,reply_queue):
                 BackEndEnvData.client_ip=params.get('cip')
                 if params.get("uid"):
                     BackEndEnvData.uid=int(params.get('uid'))
+                else:
+                    BackEndEnvData.uid=None
                 result=mfunc(**function_params)
                 if result is None:
                     return

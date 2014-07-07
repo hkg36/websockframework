@@ -541,11 +541,12 @@ http://service.laixinle.com/upload/Image?usepage=1&sessionid=kkfZCxu1gQyVT9G
 3. merchandise.count\_price(mid,people\_count), //计算价格 people\_count是人数
 4. merchandise.createorder(mid,people\_count,hardwareid) //网页支付,获取网页地址打开浏览器操作,用于第一次支付或者不想用已有的卡支付的情况,
 hardwareid是客户端生成的能标识特定手机的字符串，随便用什么方法生成都行，每个手机要每次生成的都一样，支付平台要求这个字段
-5. merchandise.history(before,count) //before=订单号，用于翻页，默认不填是第一页
+5. merchandise.history(before,count) //before=订单号，用于翻页，默认不填是第一页  paystate= 0(未付款) 1(已付款) 2(已退款) 3(已预订) -1(订单错误)
 6. merchandise.recommendbyme(before,count)  //因为我推荐而完成的订单,参数全部可选
 7. merchandise.get(mid=[1,3]) //取得特定的多个商品，商品id可以是数组
 8. merchandise.cards() //取得用户已绑定银行卡的列表,这个接口操作缓慢，如果没有使用新卡每次都一样，客户端请缓存
 9. merchandise.paybycard(cardid,mid,people\_count,hardwareid) //银行卡直接扣款,cardid从`merchandise.cards()`取得，其他同`merchandise.createorder`
+10. merchandise.pre_order(mid) 预订商品。这个方式不会有付款流程，返回数据里没有跳转url，但是有订单号，历史记录里，这种订单的**paystate=3** 就是已预订状态
 
 ##支付成功推送:
 发起支付时都会返回orderid ,这里通过orderid来更新本地数据状态,有可能会重复推送成功信息,因为不同途径的支付成功通知无法区别,但是orderid肯定是一样的
