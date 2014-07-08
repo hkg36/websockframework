@@ -15,10 +15,8 @@ def run(sessionid):
     with dbconfig.Session() as session:
         user_data=session.query(User).filter(User.uid==data['uid']).first()
         if user_data:
-            session.execute(text('delete from connection_info where uid=:uid or (queue_id=:queue_id and connection_id=:connection_id)'),
+            session.execute(text('delete from connection_info where uid=:uid or (queue_id=:queue_id and connection_id=:connection_id);'+
+            'insert into connection_info(uid,queue_id,connection_id) values(:uid,:queue_id,:connection_id)'),
                             {"uid":user_data.uid,"queue_id":BackEndEnvData.reply_queue,"connection_id":BackEndEnvData.connection_id})
-            session.execute(
-                text('insert into connection_info(uid,queue_id,connection_id) values(:uid,:queue_id,:connection_id) ON DUPLICATE KEY UPDATE queue_id=:queue_id,connection_id=:connection_id'),
-                {"uid":user_data.uid,"queue_id":BackEndEnvData.reply_queue,"connection_id":BackEndEnvData.connection_id})
             session.commit()
         return {"errno":0,"error":"no error","result":user_data.toJson()}

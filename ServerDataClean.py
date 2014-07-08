@@ -10,7 +10,7 @@ import datetime
 
 
 def DataClean():
-    deadline=datetime.datetime.now()-datetime.timedelta(days=120)
+    deadline=datetime.datetime.now()-datetime.timedelta(days=60)
     with dbconfig.Session() as session:
         msg_deleted=session.query(Message).filter(Message.time<deadline).delete(False)
         event_deleted=session.query(Events).filter(Events.create_time<deadline).delete(False)

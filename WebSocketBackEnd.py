@@ -36,6 +36,10 @@ def LoadProcFunctionList(module_root='processor'):
 function_list=None
 
 def RequestWork(params,body,reply_queue):
+    BackEndEnvData.uid=None
+    BackEndEnvData.reply_queue=None
+    BackEndEnvData.connection_id=None
+    BackEndEnvData.client_ip=None
     try:
         request=json.loads(body)
     except Exception,e:
@@ -53,8 +57,6 @@ def RequestWork(params,body,reply_queue):
                 BackEndEnvData.client_ip=params.get('cip')
                 if params.get("uid"):
                     BackEndEnvData.uid=int(params.get('uid'))
-                else:
-                    BackEndEnvData.uid=None
                 result=mfunc(**function_params)
                 if result is None:
                     return
