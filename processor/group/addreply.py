@@ -1,5 +1,5 @@
 from datamodel.post2 import GroupPost
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 
 __author__ = 'amen'
 from datamodel.user_circle import ReplyRecord
@@ -8,6 +8,7 @@ import BackEndEnvData
 import dbconfig
 
 @CheckSession()
+@FrequencyControl()
 def run(postid,content):
     newpost=GroupPost.objects(postid=postid).first()
     newreply=ReplyRecord()

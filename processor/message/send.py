@@ -2,12 +2,13 @@
 from datamodel.message import Message
 from tools.addPushQueue import AddMessageTrans
 from tools.helper import Res
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
+@FrequencyControl(10)
 def run(uid,content=None,lat=None,long=None,picture=None):
     if content==None and (lat==None or long==None) and picture==None:
         return Res(errno=3,error="param error")

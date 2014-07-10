@@ -1,4 +1,4 @@
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 
 __author__ = 'amen'
 from datamodel.user_circle import CircleDef, UserCircle, CircleBoardHistory, CirclePost, ReplyRecord
@@ -7,6 +7,7 @@ import BackEndEnvData
 import dbconfig
 
 @CheckSession()
+@FrequencyControl()
 def run(postid,content):
     newpost=CirclePost.objects(postid=postid).first()
     newreply=ReplyRecord()

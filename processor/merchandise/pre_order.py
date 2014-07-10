@@ -5,7 +5,7 @@ from datamodel.merchandise import StoreMerchandise,StorePayState, StoreWeixinNot
 from datamodel.user import User
 from processor.merchandise.count_price import get_price
 from tools.helper import Res
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 import time
 import random
 from paylib.SmsWap import MerchantAPI
@@ -15,6 +15,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
+@FrequencyControl()
 def run(mid):
     with dbconfig.Session() as session:
         transtime=int(time.time())

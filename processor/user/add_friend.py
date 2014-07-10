@@ -3,7 +3,7 @@ from datamodel.events import Events
 from datamodel.friendlist import FriendList
 from tools.addPushQueue import AddEventNotify
 from tools.helper import Res
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 
 __author__ = 'amen'
 import BackEndEnvData
@@ -11,6 +11,7 @@ import dbconfig
 
 
 @CheckSession()
+@FrequencyControl()
 def run(uid,type=0):
     if isinstance(uid,list)==False:
         uid=[uid]

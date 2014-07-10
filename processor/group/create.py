@@ -2,12 +2,13 @@
 from datamodel.group import Group
 from datamodel.group_member import GroupMember
 from tools.helper import Res, CombineGeo
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 
 __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
+@FrequencyControl()
 def run(name,board,type=0,position=None,lat=None,long=None):
     with dbconfig.Session() as session:
         newgroup=Group()

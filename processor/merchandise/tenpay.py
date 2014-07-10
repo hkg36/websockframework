@@ -6,7 +6,7 @@ from datamodel.tenpaylog import *
 from datamodel.user import User
 from processor.merchandise.count_price import get_price
 from tools.helper import Res
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 import time
 import random
 import paylib.tenpaylib
@@ -16,6 +16,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
+@FrequencyControl()
 def run(mid,people_count,hardwareid=None,recommend_uid=None):
     with dbconfig.Session() as session:
         sm=session.query(StoreMerchandise).filter(StoreMerchandise.mid==mid).first()

@@ -2,7 +2,7 @@
 from datamodel.post2 import GroupPost
 from datamodel.user_circle import LikeRecord
 from tools.helper import Res, DefJsonEncoder
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 
 
 __author__ = 'amen'
@@ -10,6 +10,7 @@ import BackEndEnvData
 import dbconfig
 
 @CheckSession()
+@FrequencyControl()
 def run(postid):
     post=GroupPost.objects(postid=postid).first()
     if post is None:

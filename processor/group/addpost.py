@@ -1,7 +1,7 @@
 #coding:utf-8
 from datamodel.post2 import GroupPost
 from tools.helper import Res, DefJsonEncoder
-from tools.session import CheckSession
+from tools.session import CheckSession, FrequencyControl
 
 
 __author__ = 'amen'
@@ -9,6 +9,7 @@ import BackEndEnvData
 import dbconfig
 
 @CheckSession()
+@FrequencyControl()
 def run(gid,content=None,pictures=[],video=None,videolen=None,voice=None,voicelen=None,
     lat=None,lng=None):
     if not content and not pictures and not video and not voice:

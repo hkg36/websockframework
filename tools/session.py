@@ -2,12 +2,14 @@ from sqlalchemy import and_
 
 from datamodel.connection_info import ConnectionInfo
 from datamodel.user import User
+from tools.helper import Res
 
 
 __author__ = 'amen'
 import random
 import dbconfig
 import BackEndEnvData
+import urllib
 
 def GenSession(size=15):
     str = ''
@@ -36,5 +38,16 @@ def CheckSession(level=0):
             return result
         return warp
     return shell
+def FrequencyControl(time_sec=10):
+    def ACF(fun):
+        def Work(*args,**kwargs):
+            fkey= 'funFreqCtrl:%s.%s[%d]'%(fun.__module__,fun.__name__,BackEndEnvData.uid)
+            fkey=urllib.quote(fkey)
+            if dbconfig.memclient.add(fkey,'1',time=time_sec):
+                return fun(*args,**kwargs)
+            else:
+                return Res(errno=4,error='too quick,stop!!!')
+        return Work
+    return ACF
 if __name__ == '__main__':
     print GenSession(32)
