@@ -12,6 +12,7 @@ import WebSiteBasePage
 import dbconfig
 import datamodel.user
 import website_config
+import tools.crypt_session
 
 class Image(WebSiteBasePage.AutoPage):
     def GET(self):
@@ -19,7 +20,9 @@ class Image(WebSiteBasePage.AutoPage):
         sessionid=params.get('sessionid',None)
         if sessionid is None:
             return "No Session id"
-        data=dbconfig.redisdb.get(str('session:%s'%sessionid))
+        data=tools.crypt_session.DecodeCryptSession(sessionid)
+        if data is None:
+            data=dbconfig.redisdb.get(str('session:%s'%sessionid))
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
         policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)

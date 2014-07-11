@@ -12,6 +12,7 @@ import WebSiteBasePage
 import dbconfig
 import datamodel.user
 import website_config
+import tools.crypt_session
 
 def headimg_token(uid):
     policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
@@ -26,10 +27,13 @@ class HeadImg(WebSiteBasePage.AutoPage):
         sessionid=params.get('sessionid',None)
         if sessionid is None:
             return "No Session id"
-        data=dbconfig.redisdb.get(str('session:%s'%sessionid))
+        data=tools.crypt_session.DecodeCryptSession(sessionid)
+        if data is None:
+            data=dbconfig.redisdb.get(str('session:%s'%sessionid))
+            if data:
+                data=json.loads(data)
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
-        data=json.loads(data)
         uptoken =headimg_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
@@ -64,10 +68,13 @@ class BackgroundImg(WebSiteBasePage.AutoPage):
         sessionid=params.get('sessionid',None)
         if sessionid is None:
             return "No Session id"
-        data=dbconfig.redisdb.get(str('session:%s'%sessionid))
+        data=tools.crypt_session.DecodeCryptSession(sessionid)
+        if data is None:
+            data=dbconfig.redisdb.get(str('session:%s'%sessionid))
+            if data:
+                data=json.loads(data)
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
-        data=json.loads(data)
         uptoken = backgroundimg_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
@@ -101,10 +108,13 @@ class UserExMedia(WebSiteBasePage.AutoPage):
         sessionid=params.get('sessionid',None)
         if sessionid is None:
             return "No Session id"
-        data=dbconfig.redisdb.get(str('session:%s'%sessionid))
+        data=tools.crypt_session.DecodeCryptSession(sessionid)
+        if data is None:
+            data=dbconfig.redisdb.get(str('session:%s'%sessionid))
+            if data:
+                data=json.loads(data)
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
-        data=json.loads(data)
         uptoken = userexmedia_token(int(data['uid']))
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")

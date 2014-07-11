@@ -8,7 +8,7 @@ import logging
 logging.basicConfig()
 
 session=apnsclient.Session()
-con=session.get_connection("feedback_production",certificate=tools.APN_Tools.P12Certificate(cert_file="configs/laixin_release.p12",passphrase='Laixin123'))
+con=session.new_connection("feedback_production",certificate=tools.APN_Tools.P12Certificate(cert_file="configs/laixin_release.p12",passphrase='Laixin123'))
 srv = apnsclient.APNs(con)
 
 while True:

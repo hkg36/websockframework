@@ -522,14 +522,14 @@ user.info 里的每个user 增加 circle字段
 ```
 #多媒体消息 （请自己替换一个自己的sessionid）
 **客户端上传的时候，去掉 usepage=1 直接获得 token**
-##上传头像
+##~~上传头像~~user.update已经支持直接填写图片连接
 http://service.laixinle.com/upload/HeadImg?sessionid=5Wnp5qPWgpAhDRK&usepage=1 测试页面
 http://service.laixinle.com/upload/HeadImg?sessionid=5Wnp5qPWgpAhDRK      取得token
-##群里发多媒体帖子
+##~~群里发多媒体帖子~~group.addpost 已经支持直接填写多张图片地址
 http://service.laixinle.com/upload/Post?sessionid=5Wnp5qPWgpAhDRK&usepage=1
-##多媒体私信
+##~~多媒体私信~~message.send 已经支持直接填写图片连接
 http://service.laixinle.com/upload/Message?sessionid=YtcS7pKQSydYPnJ&usepage=1
-##向帖子附加多媒体内容,只能向自己的贴子附加,服务器检查帖子的归属
+##~~向帖子附加多媒体内容,只能向自己的贴子附加,服务器检查帖子的归属~~ group.addpost 已经支持直接填写多张图片地址
 http://service.laixinle.com/upload/PostEx?sessionid=05eh4JdjqeBPh2j&postid=71&usepage=1
 <a name="uploadimage" id="uploadimage"></a>
 ##上传图片文件，得到图片链接,客户端请参考[这个指令](#qiniu_uploadtoken)，
@@ -579,6 +579,7 @@ hardwareid是客户端生成的能标识特定手机的字符串，随便用什�
 1=session id无效需要重新登入<br>
 2=没有权限进行这个操作<br>
 3=查询目标不存在<br>
+4=操作速度过快，现在大部分写入接口只能10s操作一次，请不要无视这个错误，这通常和客户端bug有关<br>
 1000 昵称已使用<br>
 1001 新号码和旧号码相同<br>
 1002 手机号已被另一个账号使用<br>
