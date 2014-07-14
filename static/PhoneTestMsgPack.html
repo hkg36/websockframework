@@ -4,7 +4,7 @@
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>手机客户端websocket</title>
 </head>
-<body onload="start_connect()">
+<body>
 <style>
     .infopane
     {
@@ -42,7 +42,7 @@ border:solid 1px #6e8bde;
 <div style="width: 100%">
 <div class="infopane">
     <div id="state"></div>
-sessionid<input type="text" id="sessionid"><input type="button" value="开始" onclick="clickstart()"><br/>
+sessionid<input type="text" id="sessionid"><input type="button" value="开始" id='startbn'><br/>
     <textarea style="width: 400px;height: 100px" id="command">{
 	"func":"function_name",
 	"parm":{
@@ -72,9 +72,20 @@ sessionid<input type="text" id="sessionid"><input type="button" value="开始" o
 <link href="/static/script/markdown/googlecode.css" rel="stylesheet">
 <script src="/static/script/markdown/highlight.min.js"></script>
 <script type="text/javascript">
+     $("#startbn").on('click',function()
+    {
+        if(ws) {
+            ws.onclose=null
+            ws.close()
+        }
+        start_connect()
+    })
 var ws;
 function start_connect(){
-    ws = new WebSocket("wss://"+location.hostname+":8001/msgpack");
+    var sessionid=$("#sessionid").val()
+    if(!sessionid)
+        return
+    ws = new WebSocket("wss://"+location.hostname+":8001/msgpack?sessionid="+encodeURIComponent(sessionid)+"&cdata="+encodeURIComponent(randomChar(10)));
     ws.binaryType = "arraybuffer";
     ws.onopen = function() {
      $("#state").html("connected");
@@ -141,25 +152,6 @@ function sendWord()
         }
     ws.send(buf)
 }
-    function clickstart()
-    {
-        var tosend=msgpack.pack(
-                {
-                    func:"session.start2",
-                    parm:{
-                        sessionid:$("#sessionid").val()
-                    },
-                    cdata:randomChar(10)
-                }
-        )
-        var buf=new ArrayBuffer(tosend.length)
-        var bufview=new Uint8Array(buf)
-        for(var i=0;i<tosend.length;i++)
-        {
-            bufview[i]=tosend[i]
-        }
-        ws.send(buf)
-    }
     function clearlog()
     {
         $("#host").empty()

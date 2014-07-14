@@ -60,7 +60,7 @@ def RequestWork(params,body,reply_queue):
                 result=mfunc(**function_params)
                 if result is None:
                     return
-                result['push']=False
+                #result['push']=False
                 if 'cdata' in request and isinstance(result,dict):
                     result['cdata']=request['cdata']
                 if isinstance(result,(dict,list)):

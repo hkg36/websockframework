@@ -23,7 +23,7 @@ def DecodeCryptSession(sessionid):
         srcdata=msgpack.unpackb(data)
     except Exception,e:
         return None
-    return {'uid':srcdata[2],'time':srcdata[1],'uuid':srcdata[0]}
+    return {'uid':srcdata[2],'time':srcdata[1],'uuid':uuid.UUID(bytes=srcdata[0])}
 if __name__ == '__main__':
     session= BuildCryptSession(223)
     print(session)

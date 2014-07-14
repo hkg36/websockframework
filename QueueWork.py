@@ -25,6 +25,7 @@ def init(host,port,virtual_host,usr,psw,queue_name,exchange_name=None,routing_ke
     global connection,channel,producer,task_queue,consumer
     connection = Connection(hostname=host,port=port,userid=usr,password=psw,virtual_host=virtual_host)
     channel = connection.channel()
+    channel.auto_decode=False
     producer=Producer(channel)
 
     if exchange_name:

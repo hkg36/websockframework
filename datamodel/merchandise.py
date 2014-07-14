@@ -37,6 +37,7 @@ class StoreMerchandise(dbconfig.DBBase):
             'group_id':self.group_id,
             'show_post_url':self.show_post_url,
             'icon_url':self.icon_url,
+            'no_list':self.no_list,
         }
         return data
 class StoreWeixinNotify(dbconfig.DBBase):

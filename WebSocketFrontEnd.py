@@ -57,7 +57,8 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
                 }
             )
             msg=Message(body=msgbody,delivery_mode=2,reply_to=mqserver.back_queue)
-            msg.headers={"connid":self.connid,'cip':self.cip,"uid":self.userdata['uid']}
+            msg.headers={"connid":self.connid,'cip':self.cip,"uid":self.userdata['uid'],
+                         'stime':time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(self.userdata.get('time'))),'suuid':self.userdata.get('uuid').hex}
             mqserver.publish(msg)
     def on_message(self, message):
         try:
@@ -89,27 +90,15 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
         self.write_message(data,binary=self.usezlib)
         self.last_act_time=time.time()
 
-class MessagePackServer(tornado.websocket.WebSocketHandler):
-    last_act_time=0
+class MessagePackServer(RabbitMQServer):
     def open(self):
-        self.connid=uuid.uuid4().get_hex()
-        print self.connid+' connected(msgpack)'
-        connection_list[self.connid]=self
-        self.last_act_time=time.time()
-        self.cip=self.request.remote_ip
+        super(MessagePackServer,self).open()
+        print 'msgpack(connect)'
     def on_message(self, message):
         message=json.dumps(msgpack.unpackb(message))
         msg=Message(body=message,delivery_mode=2,reply_to=mqserver.back_queue)
         msg.headers={"connid":self.connid,'cip':self.cip}
         mqserver.publish(msg)
-        self.last_act_time=time.time()
-    def on_close(self):
-        print "%s closed(msgpack)"%self.connid
-        connection_list.pop(self.connid,'')
-        msg=Message(body='{"func":"connection_lost","parm":{}}',delivery_mode=2)
-        msg.headers={"connid":self.connid,'cip':self.cip}
-        mqserver.publish(msg)
-    def on_pong(self,data):
         self.last_act_time=time.time()
     def SendData(self,data,compressed):
         if compressed:
@@ -179,7 +168,7 @@ class RabbitMQ_Queue(object):
                         connection_list.pop(conn.connid,'')
                         conn.close()
                         conn.on_close()
-                        return
+                        continue
                     compressed=msg.headers.get('compression')=='application/x-gzip'
                     conn.SendData(msg.body,compressed)
     def on_queue_disconnect(self):

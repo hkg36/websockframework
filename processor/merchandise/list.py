@@ -11,7 +11,7 @@ import dbconfig
 @CheckSession()
 def run(gid):
     with dbconfig.Session() as session:
-        sm=session.query(StoreMerchandise).filter(and_(StoreMerchandise.group_id==gid,StoreMerchandise.no_list==0)).all()
+        sm=session.query(StoreMerchandise).filter(StoreMerchandise.group_id==gid).all()
         smlist=[]
         for one in sm:
             smlist.append(one.toJson())
