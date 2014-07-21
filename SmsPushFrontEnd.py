@@ -18,6 +18,7 @@ from stormed.connection import Connection
 from stormed.channel import Consumer
 from stormed.message import Message
 from stormed.frame import status
+from tools.json_tools import DefJsonEncoder
 from tools.session import GenSession
 import hashlib
 
@@ -29,7 +30,7 @@ private_code='JdYQIaDBRrdVKzIWgh8oGc9nURaFCCYI9U3y9LUnt0eD85a8sGQcY8Sq0k4S92cnYg
 class RabbitMQServer(tornado.websocket.WebSocketHandler):
     def open(self):
         self.ccode=GenSession(20)
-        self.write_message(json.dumps({"ccode":self.ccode}))
+        self.write_message(DefJsonEncoder.encode({"ccode":self.ccode}))
 
     def on_message(self, message):
         global private_code

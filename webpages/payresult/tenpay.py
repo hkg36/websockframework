@@ -6,6 +6,7 @@ import paylib.tenpaylib
 import datamodel.tenpaylog
 import datetime
 from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 from webpages.MainPage import pusher
 
 __author__ = 'amen'
@@ -44,7 +45,7 @@ class TenpayNotifyCallBack(WebSiteBasePage.AutoPage):
             pl.save()
 
             try:
-                json_post=json.dumps(pl.toJson(),cls=AutoFitJson,ensure_ascii=False,separators=(',', ':'))
+                json_post=DefJsonEncoder.encode(pl.toJson())
                 pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
             except Exception,e:
                 print e

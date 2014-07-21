@@ -5,6 +5,7 @@ import json
 from kombu import Connection
 from kombu.messaging import Producer
 from kombu import Exchange
+from tools.json_tools import DefJsonEncoder
 
 
 class QueuePush(object):
@@ -33,7 +34,7 @@ class QueuePush(object):
                               routing_key=routing_key,retry=True,compression='gzip',exchange=exchange)
     def sendCode(self,phone,code):
         self._InitConnect()
-        json_str=json.dumps({'phone':str(phone),"content":u"您的来信验证码为:%s，请在5分钟内输入完成验证."%str(code)},ensure_ascii=False)
+        json_str=DefJsonEncoder.encode({'phone':str(phone),"content":u"您的来信验证码为:%s，请在5分钟内输入完成验证."%str(code)})
         self.smsCodeProduce.publish(body=json_str,retry=True,compression='gzip')
 if __name__ == '__main__':
     Queue_User="guest"

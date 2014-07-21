@@ -103,7 +103,7 @@ def LocalBuffer(timeout=30):
             if not bufferleveldb:
                 filename='/tmp/%d.leveldb'%random.randint(100000000000,1000000000000)
                 bufferleveldb=leveldb.LevelDB(filename)
-            keyname='%s.%s(%s,%s)'%(fun.__module__,fun.__name__,json.dumps(args),json.dumps(kwargs))
+            keyname='%s.%s(%s,%s)'%(fun.__module__,fun.__name__,DefJsonEncoder.encode(args),DefJsonEncoder.encode(kwargs))
             #print keyname
             try:
                 buffered=bufferleveldb.Get(keyname)

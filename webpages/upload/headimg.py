@@ -1,6 +1,7 @@
 #coding:utf-8
 import urllib
 from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 
 __author__ = 'amen'
 import json
@@ -37,7 +38,7 @@ class HeadImg(WebSiteBasePage.AutoPage):
         uptoken =headimg_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return json.dumps({'token':uptoken})
+            return DefJsonEncoder.encode({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('upload/HeadImg.html')
         return tpl.render(token=uptoken)
     def POST(self):
@@ -49,12 +50,12 @@ class HeadImgDone(WebSiteBasePage.AutoPage):
         with dbconfig.Session() as session:
             user=session.query(datamodel.user.User).filter(datamodel.user.User.uid==imgdata['uid']).first()
             if user is None:
-                return json.dumps({"errno":1,"error":"user lost"})
+                return DefJsonEncoder.encode({"errno":1,"error":"user lost"})
             fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             user.headpic=fileurl
             session.merge(user)
             session.commit()
-        return json.dumps({"errno":0,"error":"Success","url":fileurl})
+        return DefJsonEncoder.encode({"errno":0,"error":"Success","url":fileurl})
 
 def backgroundimg_token(uid):
     policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
@@ -78,7 +79,7 @@ class BackgroundImg(WebSiteBasePage.AutoPage):
         uptoken = backgroundimg_token(data['uid'])
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return json.dumps({'token':uptoken})
+            return DefJsonEncoder.encode({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('upload/HeadImg.html')
         return tpl.render(token=uptoken)
     def POST(self):
@@ -89,12 +90,12 @@ class BackgroundImgDone(WebSiteBasePage.AutoPage):
         with dbconfig.Session() as session:
             user=session.query(datamodel.user.User).filter(datamodel.user.User.uid==imgdata['uid']).first()
             if user is None:
-                return json.dumps({"errno":1,"error":"user lost"})
+                return DefJsonEncoder.encode({"errno":1,"error":"user lost"})
             fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             user.background_image=fileurl
             session.merge(user)
             session.commit()
-        return json.dumps({"errno":0,"error":"Success","url":fileurl})
+        return DefJsonEncoder.encode({"errno":0,"error":"Success","url":fileurl})
 
 def userexmedia_token(uid):
     policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
@@ -118,7 +119,7 @@ class UserExMedia(WebSiteBasePage.AutoPage):
         uptoken = userexmedia_token(int(data['uid']))
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return json.dumps({'token':uptoken})
+            return DefJsonEncoder.encode({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('upload/UserExMedia.html')
         return tpl.render(token=uptoken)
 
@@ -144,4 +145,4 @@ class UserExMediaDone(WebSiteBasePage.AutoPage):
             exmedia=session.merge(exmedia)
             session.commit()
 
-            return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'did':exmedia.did}},cls=AutoFitJson)
+            return DefJsonEncoder.encode({"errno":0,"error":"Success","result":{"url":fileurl,'did':exmedia.did}})

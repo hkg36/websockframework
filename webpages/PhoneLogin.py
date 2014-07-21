@@ -37,7 +37,7 @@ class PhoneLogin(WebSiteBasePage.AutoPage):
                         session_id=GenSession()
                         TIMEOUTTIME=3600*24*5
                         time_out=time.time()+TIMEOUTTIME
-                        dbconfig.redisdb.set(str('session:%s'%session_id),json.dumps({'uid':user_info.uid}),ex=datetime.timedelta(days=180))
+                        dbconfig.redisdb.set(str('session:%s'%session_id),DefJsonEncoder.encode({'uid':user_info.uid}),ex=datetime.timedelta(days=180))
                         return DefJsonEncoder.encode({'sessionid':session_id,'timeout':time_out,'ws':GetClientWSSite(),'wss':GetClientWSSSite()})
             else:
                 return DefJsonEncoder.encode({'error':'code error'})
@@ -49,9 +49,9 @@ class getcode(WebSiteBasePage.AutoPage):
         params=web.input()
         phone=params['phone']
         if not dbconfig.memclient.add(str('sms_timeout:%s'%phone),'ok',time=60):
-            return json.dumps({"msg":"请等待60秒后再重新发送"})
+            return DefJsonEncoder.encode({"msg":"请等待60秒后再重新发送"})
         gcode=str(random.randint(1000,9999))
         dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=60*60)
         if int(params.get('notsms',0))==0:
             pusher.sendCode(phone,gcode)
-        return json.dumps({'code':gcode})
+        return DefJsonEncoder.encode({'code':gcode})

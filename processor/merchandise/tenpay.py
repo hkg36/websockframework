@@ -6,6 +6,7 @@ from datamodel.tenpaylog import *
 from datamodel.user import User
 from processor.merchandise.count_price import get_price
 from tools.helper import Res
+from tools.json_tools import DefJsonEncoder
 from tools.session import CheckSession, FrequencyControl
 import time
 import random
@@ -34,14 +35,14 @@ def run(mid,people_count,hardwareid=None,recommend_uid=None):
                                                               time.strftime("%m-%d %H:%M",time.localtime()))
         to_sendsms=session.query(StoreSmsNotify).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==mid)).all()
         for ssn in to_sendsms:
-            BackEndEnvData.queue_producer.publish(json.dumps({'content':msg_content,'phone':ssn.phone}),routing_key='sms.code',exchange='sys.sms')
+            BackEndEnvData.queue_producer.publish(DefJsonEncoder.encode({'content':msg_content,'phone':ssn.phone}),routing_key='sms.code',exchange='sys.sms')
 
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==mid)).all()
         to_weixin_user=set()
         for noti_one in to_notifys:
             to_weixin_user.add(noti_one.openid)
         if to_weixin_user:
-            json_msg=json.dumps({
+            json_msg=DefJsonEncoder.encode({
                 'weixin_users':list(to_weixin_user),
                 'content':msg_content
                 })

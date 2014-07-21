@@ -6,7 +6,7 @@
 </head>
 <body>
 <script type="text/javascript" src="../static/script/json2.js"></script>
-<script type="text/javascript" src="../static/script/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="../static/script/jquery-2.1.1.min.js"></script>
 <form method="get">
     phone <input type="text" name="phone" id="phone"><input type="button" value="取得code" onclick="getcode()"><br />
     code <input type="text" name="code" id="code"><br />
@@ -23,7 +23,7 @@ wss://service.laixinle.com:8001/ws?usezlib=1&sessionid={你得到的sessionid}&c
     function getcode()
     {
         $.ajax({
-                 url:"/getcode?phone="+$('#phone').val()+'&notsms='+($("#notsmsbox").attr('checked')=='checked'?1:0),
+                 url:"/getcode?phone="+$('#phone').val()+'&notsms='+($("#notsmsbox").is(':checked')?1:0),
                 success:function (data, textStatus){
                     var resdata=JSON.parse(data)
                     var code=resdata['code']

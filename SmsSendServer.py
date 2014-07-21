@@ -12,15 +12,24 @@ from kombu import Connection
 from kombu.messaging import Consumer,Producer
 from kombu import Exchange, Queue
 from lxml import etree
-
+import datetime
+import codecs
 
 def RequestWork(params,body):
     jsonobj=json.loads(body)
     content=jsonobj['content']
     phone=jsonobj['phone']
+    try:
+        f=codecs.open('/tmp/sms_log.txt','a','utf-8','ignore')
+        f.write(u'%s %s %s\n'%(phone,content,datetime.datetime.now().strftime('%b-%d-%y %H:%M:%S')))
+        f.close()
+    except:
+        pass
     print 'to phone',phone
     msg = urllib.quote(content.encode('utf-8'))
     curl=pycurl.Curl()
+    curl.setopt(pycurl.CONNECTTIMEOUT, 3)
+    curl.setopt(pycurl.TIMEOUT, 15)
     curl.fp = StringIO()
     curl.setopt(pycurl.URL, ("http://utf8.sms.webchinese.cn/?Uid=laifusi&Key=5be675cc08e2909f9f36&smsMob=%s&smsText=%s"%
                             (phone,msg)).encode())

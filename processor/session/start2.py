@@ -3,7 +3,7 @@ from sqlalchemy import text, or_
 from datamodel.connection_info import ConnectionInfo
 from datamodel.events import Events
 from datamodel.friendlist import FriendList
-from datamodel.user import User, UserInviteLog
+from datamodel.user import User, UserInviteLog, UserExData
 from datamodel.user_circle import UserCircle
 from tools.addPushQueue import AddEventNotify
 from tools.helper import Res
@@ -29,9 +29,6 @@ def run(sessionid):
         session.execute(text('delete from connection_info where uid=:uid or (queue_id=:queue_id and connection_id=:connection_id);'+
                     'insert into connection_info(uid,queue_id,connection_id) values(:uid,:queue_id,:connection_id);'),
                              {"uid":user_data.uid,"queue_id":BackEndEnvData.reply_queue,"connection_id":BackEndEnvData.connection_id})
-        """session.execute(
-            text('insert into connection_info(uid,queue_id,connection_id) values(:uid,:queue_id,:connection_id)'),
-            {"uid":be_uid,"queue_id":BackEndEnvData.reply_queue,"connection_id":BackEndEnvData.connection_id})"""
         session.commit()
 
         if new_user:
@@ -83,7 +80,10 @@ def run(sessionid):
             for one in eventpost:
                 AddEventNotify(one)
 
+        uexd=UserExData.objects(uid=BackEndEnvData.uid).first()
         resultdata={"user":user_data_json}
+        if uexd:
+            resultdata['client_data']=uexd.client_data
         if beinvitelist:
             resultdata['invite_list']=beinvitelist
         return Res(resultdata)

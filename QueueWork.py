@@ -1,4 +1,6 @@
 #coding:utf-8
+from tools.json_tools import DefJsonEncoder
+
 __author__ = 'amen'
 import traceback
 import codecs
@@ -79,5 +81,5 @@ def RequestCallBack(body, message):
                                   compression='gzip',
                                   exchange=back_exchange)
     else:
-        print json.dumps(replyheader),replybody
+        print DefJsonEncoder.encode(replyheader),replybody
     message.ack()

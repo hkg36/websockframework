@@ -91,11 +91,8 @@ class RabbitMQServer(tornado.websocket.WebSocketHandler):
         self.last_act_time=time.time()
 
 class MessagePackServer(RabbitMQServer):
-    def open(self):
-        super(MessagePackServer,self).open()
-        print 'msgpack(connect)'
     def on_message(self, message):
-        message=json.dumps(msgpack.unpackb(message))
+        message=DefJsonEncoder.encode(msgpack.unpackb(message))
         msg=Message(body=message,delivery_mode=2,reply_to=mqserver.back_queue)
         msg.headers={"connid":self.connid,'cip':self.cip}
         mqserver.publish(msg)

@@ -9,6 +9,7 @@ from paylib.SmsWap import MerchantAPI
 import dbconfig
 import datetime
 from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 from webpages.MainPage import pusher
 import traceback
 
@@ -21,7 +22,7 @@ class TestPushEPay(WebSiteBasePage.AutoPage):
             with dbconfig.Session() as session:
                 paylog=session.query(StorePayLog).filter(StorePayLog.payid==payid).first()
 
-                json_post=json.dumps(paylog.toJson(),cls=AutoFitJson,ensure_ascii=False)
+                json_post=DefJsonEncoder.encode(paylog.toJson())
                 pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
                 return "ok"
         except Exception,e:
@@ -33,7 +34,7 @@ class TestPushTenpay(WebSiteBasePage.AutoPage):
             payid=int(params.get("payid"))
             paylog=TenpayLog.objects(payid=payid).first()
 
-            json_post=json.dumps(paylog.toJson(),cls=AutoFitJson,ensure_ascii=False)
+            json_post=DefJsonEncoder.encode(paylog.toJson())
             pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
             return "ok"
         except Exception,e:

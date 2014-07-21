@@ -2,7 +2,7 @@
 import json
 from sqlalchemy import and_
 from datamodel.merchandise import StorePayState, StoreMerchandise, StorePayLog
-from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 from webpages.MainPage import pusher
 
 __author__ = 'amen'
@@ -35,7 +35,7 @@ while True:
                 session.commit()
 
                 try:
-                    json_post=json.dumps(log.toJson(),cls=AutoFitJson,ensure_ascii=False)
+                    json_post=DefJsonEncoder.encode(log.toJson())
                     pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
                 except Exception,e:
                     pass

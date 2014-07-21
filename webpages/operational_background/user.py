@@ -58,6 +58,6 @@ class FindUser(WebSiteBasePage.AutoPage):
             alluser=[one.toJson() for one in users]
 
             web.header('Content-Type', 'text/plain')
-            return json.dumps(alluser,ensure_ascii=False,cls=AutoFitJson,indent=3)
+            return DefJsonEncoder.encode(alluser)
 
 

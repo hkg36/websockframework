@@ -1,6 +1,7 @@
 #coding:utf-8
 import urllib
 from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 
 __author__ = 'amen'
 import json
@@ -22,7 +23,7 @@ class Image(WebSiteBasePage.AutoPage):
         uptoken =policy.token()
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return json.dumps({'token':uptoken})
+            return DefJsonEncoder.encode({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('upload/HeadImg.html')
         return tpl.render(token=uptoken)
     def POST(self):

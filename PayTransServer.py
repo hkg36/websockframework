@@ -71,7 +71,7 @@ def RequestWork(params,body,reply_queue):
 
         to_sendsms=session.query(StoreSmsNotify).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==post['mid'])).all()
         for ssn in to_sendsms:
-            QueueWork.producer.publish(json.dumps({'content':msg_content,'phone':ssn.phone}),routing_key='sms.code',exchange='sys.sms')
+            QueueWork.producer.publish(DefJsonEncoder.encode({'content':msg_content,'phone':ssn.phone}),routing_key='sms.code',exchange='sys.sms')
 
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==post['mid'])).all()
         to_weixin_user=set()
@@ -79,7 +79,7 @@ def RequestWork(params,body,reply_queue):
             to_weixin_user.add(noti_one.openid)
         if len(to_weixin_user)==0:
             return
-        send_weixin.publish(json.dumps({
+        send_weixin.publish(DefJsonEncoder.encode({
             'weixin_users':list(to_weixin_user),
             'content':msg_content
         }))

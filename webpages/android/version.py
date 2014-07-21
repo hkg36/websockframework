@@ -2,6 +2,7 @@
 import urllib
 from tools.helper import AutoFitJson
 import codecs
+from tools.json_tools import DefJsonEncoder
 
 __author__ = 'amen'
 import json
@@ -45,4 +46,4 @@ class VersionDone(WebSiteBasePage.AutoPage):
         fout= codecs.open('static/android/version.js','w','utf-8')
         json.dump({'verCode':verCode,'verName':verName,'Info':Info,'url':file},fout,ensure_ascii=False)
         fout.close()
-        return json.dumps({"url":'http://%s/static/android/version.js'%website_config.hostname})
+        return DefJsonEncoder.encode({"url":'http://%s/static/android/version.js'%website_config.hostname})

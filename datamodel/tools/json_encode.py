@@ -1,6 +1,3 @@
-"""
-print json.dumps(e, cls=new_alchemy_encoder(), check_circular=False)
-"""
 import json
 import datetime
 import time

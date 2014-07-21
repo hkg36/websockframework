@@ -8,6 +8,7 @@ from paylib.SmsWap import MerchantAPI
 import dbconfig
 import datetime
 from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 from webpages.MainPage import pusher
 
 __author__ = 'amen'
@@ -44,7 +45,7 @@ class Paybackend(WebSiteBasePage.AutoPage):
             session.commit()
 
             try:
-                json_post=json.dumps(log.toJson(),cls=AutoFitJson,ensure_ascii=False)
+                json_post=DefJsonEncoder.encode(log.toJson())
                 pusher.rawPush(exchange="system",routing_key='sys.paylog',headers={},body=json_post)
                 return True
             except Exception,e:

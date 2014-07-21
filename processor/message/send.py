@@ -8,7 +8,7 @@ __author__ = 'amen'
 import BackEndEnvData
 import dbconfig
 @CheckSession()
-@FrequencyControl(10)
+@FrequencyControl(5)
 def run(uid,content=None,lat=None,long=None,picture=None):
     if content==None and (lat==None or long==None) and picture==None:
         return Res(errno=3,error="param error")

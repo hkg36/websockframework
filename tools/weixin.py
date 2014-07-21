@@ -9,6 +9,7 @@ import time
 import pycurl
 from cStringIO import StringIO
 from dbconfig import AutoSession
+from tools.json_tools import DefJsonEncoder
 
 register_openers()
 
@@ -61,7 +62,7 @@ def SendMessage(token,json_message):
     crl.setopt(pycurl.MAXREDIRS, 5)
     crl.setopt(pycurl.ENCODING,"gzip,deflate")
     crl.setopt(pycurl.POST, 1)
-    crl.setopt(pycurl.POSTFIELDS,  json.dumps(json_message,ensure_ascii=False).encode('utf-8'))
+    crl.setopt(pycurl.POSTFIELDS, DefJsonEncoder.encode(json_message).encode('utf-8'))
     crl.setopt(pycurl.CONNECTTIMEOUT, 6)
     crl.setopt(pycurl.TIMEOUT, 15)
     crl.setopt(pycurl.SSL_VERIFYPEER,False)
@@ -90,7 +91,7 @@ def SetMenu(token,menu_json):
     #crl.setopt(pycurl.PROXY,proxy)
     crl.setopt(pycurl.HTTPPROXYTUNNEL,1)
     crl.fp = StringIO()
-    crl.setopt(crl.POSTFIELDS,  json.dumps(menu_json,ensure_ascii=False).encode('utf-8'))
+    crl.setopt(crl.POSTFIELDS, DefJsonEncoder.encode(menu_json).encode('utf-8'))
     crl.setopt(pycurl.URL, url.encode('utf-8'))
     crl.setopt(crl.WRITEFUNCTION, crl.fp.write)
     crl.perform()
@@ -119,7 +120,7 @@ def CreateQRCode(token,scene_id,expire_seconds=None):
         postdata={"expire_seconds": expire_seconds, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": scene_id}}}
     else:
         postdata={"action_name": "QR_LIMIT_SCENE", "action_info": {"scene": {"scene_id": scene_id}}}
-    request = urllib2.Request("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=%s"%(token),json.dumps(postdata))
+    request = urllib2.Request("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=%s"%(token),DefJsonEncoder.encode(postdata))
     data=json.loads(urllib2.urlopen(request).read())
     ticket=data['ticket']
     return "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s"%ticket

@@ -2,6 +2,7 @@
 from sqlalchemy import and_
 from datamodel.Recommend import RecommendUser, RecommendMedia
 from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 
 __author__ = 'amen'
 import WebSiteBasePage
@@ -41,7 +42,7 @@ class Media(WebSiteBasePage.AutoPage):
         uptoken = media_token(uid,recommend_uid)
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return json.dumps({'token':uptoken})
+            return DefJsonEncoder.encode({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('upload/PostEx.html')
         return tpl.render(token=uptoken)
 
@@ -69,4 +70,4 @@ class MediaDone(WebSiteBasePage.AutoPage):
                 update({RecommendUser.media_count:RecommendUser.media_count+1})
             session.commit()
 
-            return json.dumps({"errno":0,"error":"Success","result":{"url":fileurl,'did':rm.did}},cls=AutoFitJson)
+            return DefJsonEncoder.encode({"errno":0,"error":"Success","result":{"url":fileurl,'did':rm.did}})

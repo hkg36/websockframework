@@ -2,6 +2,7 @@
 import urllib
 from datamodel.user_circle import CircleDef
 from tools.helper import AutoFitJson
+from tools.json_tools import DefJsonEncoder
 
 __author__ = 'amen'
 import json
@@ -23,7 +24,7 @@ class CircleIcon(WebSiteBasePage.AutoPage):
         uptoken =policy.token()
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
-            return json.dumps({'token':uptoken})
+            return DefJsonEncoder.encode({'token':uptoken})
         tpl=WebSiteBasePage.jinja2_env.get_template('operational/circleicon.html')
         return tpl.render(token=uptoken)
     def POST(self):
@@ -35,9 +36,9 @@ class CircleIconDone(WebSiteBasePage.AutoPage):
         with dbconfig.Session() as session:
             cdef=session.query(CircleDef).filter(CircleDef.cid==imgdata['cid']).first()
             if cdef is None:
-                return json.dumps({"errno":1,"error":"cid lost"})
+                return DefJsonEncoder.encode({"errno":1,"error":"cid lost"})
             fileurl=dbconfig.qiniuDownLoadLinkHead+imgdata['hash']
             cdef.icon_url=fileurl
             session.merge(cdef)
             session.commit()
-        return json.dumps({"errno":0,"error":"Success","url":fileurl})
+        return DefJsonEncoder.encode({"errno":0,"error":"Success","url":fileurl})
