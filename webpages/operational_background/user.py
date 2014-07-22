@@ -43,7 +43,7 @@ class FindSession(WebSiteBasePage.AutoPage):
         sessionid=params['sessionid']
         uiddata=DecodeCryptSession(sessionid)
         if uiddata:
-            return DefJsonEncoder.encode(uiddata)
+            return DefJsonEncoder.encode({'uid':uiddata['uid']})
         return dbconfig.redisdb.get('session:'+params['sessionid'])
     def POST(self):
         return self.GET()

@@ -43,7 +43,7 @@ def RequestWork(params,body,reply_queue):
     try:
         request=json.loads(body)
     except Exception,e:
-        return params,'body error:%s'%str(e)
+        return params,'request body error:%s %s'%(str(e),body)
     function=request.get("func",None)
     if function:
         function_params=request.get("parm",None)
