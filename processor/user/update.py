@@ -12,11 +12,6 @@ import dbconfig
 def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height=None,position=None,
         tags=None,headpic=None):
     with dbconfig.Session() as session:
-        if nick:
-            user=session.query(User).filter(User.nick==nick).first()
-            if user:
-                if user.uid!=BackEndEnvData.uid:
-                    return Res(errno=1000,error="nick be taken")
         user=session.query(User).filter(User.uid==BackEndEnvData.uid).first();
         if user is None:
             return Res(errno=3,error='data error')
