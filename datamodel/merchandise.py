@@ -40,6 +40,15 @@ class StoreMerchandise(dbconfig.DBBase):
             'no_list':self.no_list,
         }
         return data
+    def toJson2(self):
+        data={
+            'mid':self.mid,
+            'productname':self.productname,
+            'time':self.time,
+            'show_post_url':self.show_post_url,
+            'icon_url':self.icon_url
+        }
+        return data
 class StoreWeixinNotify(dbconfig.DBBase):
     __tablename__ = 'store_weixinnotify'
     id=Column(Integer,autoincrement=True,primary_key=True,nullable=False)

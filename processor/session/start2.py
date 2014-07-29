@@ -76,6 +76,7 @@ def run(sessionid):
                 user_data.height=inviteinfo['height']
                 user_data.position=inviteinfo['position']
                 user_data=session.merge(user_data)
+                user_data_json=user_data.toJson()
                 session.commit()
             for one in eventpost:
                 AddEventNotify(one)

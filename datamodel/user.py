@@ -20,14 +20,6 @@ class User(dbconfig.DBBase):
     height = Column(Integer, default=0)
     position = Column(String(256))
 
-    actor=Column(Integer,default=0)
-    actor_level=Column(Integer,default=1)
-    active_by=Column(BigInteger,default=0)
-    active_level=Column(Integer,default=0)
-    active_time=Column(TIMESTAMP)
-
-    is_stew=Column(SmallInteger,default=0)
-
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     def toJson(self,showphone=False):
         data = {"uid":self.uid,
@@ -39,16 +31,8 @@ class User(dbconfig.DBBase):
                 "marriage":self.marriage,
                 "background_image":self.background_image,
                 "height":self.height,
-                "position":self.position,
-                "actor":self.actor,
-                "actor_level":self.actor_level,
-                "active_by":self.active_by,
-                "active_level":self.active_level,
-                "create_time":self.create_time,
-                'is_stew':self.is_stew,
+                "position":self.position
                 }
-        if self.active_time:
-            data["active_time"]=self.active_time
         if showphone:
             data['phone']=self.phone
         return data

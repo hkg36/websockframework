@@ -25,6 +25,8 @@ from tools.json_tools import  DefJsonEncoder
 
 connection_list={}
 class RabbitMQServer(tornado.websocket.WebSocketHandler):
+    def check_origin(self, origin):
+        return True
     last_act_time=0
     def open(self):
         self.usezlib=int(self.get_argument('usezlib',0))
