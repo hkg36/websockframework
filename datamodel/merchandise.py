@@ -44,6 +44,7 @@ class StoreMerchandise(dbconfig.DBBase):
         data={
             'mid':self.mid,
             'productname':self.productname,
+            'amount':self.amount,
             'time':self.time,
             'show_post_url':self.show_post_url,
             'icon_url':self.icon_url

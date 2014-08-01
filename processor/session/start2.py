@@ -1,5 +1,6 @@
 #coding:utf-8
 from sqlalchemy import text, or_
+from datamodel.Endorsement import EndorsementInfo
 from datamodel.connection_info import ConnectionInfo
 from datamodel.events import Events
 from datamodel.friendlist import FriendList
@@ -25,7 +26,6 @@ def run(sessionid):
     with dbconfig.Session() as session:
         user_data=session.query(User).filter(User.uid==be_uid).first()
         new_user=not user_data.nick
-        user_data_json=user_data.toJson()
         session.execute(text('delete from connection_info where uid=:uid or (queue_id=:queue_id and connection_id=:connection_id);'+
                     'insert into connection_info(uid,queue_id,connection_id) values(:uid,:queue_id,:connection_id);'),
                              {"uid":user_data.uid,"queue_id":BackEndEnvData.reply_queue,"connection_id":BackEndEnvData.connection_id})
@@ -76,15 +76,17 @@ def run(sessionid):
                 user_data.height=inviteinfo['height']
                 user_data.position=inviteinfo['position']
                 user_data=session.merge(user_data)
-                user_data_json=user_data.toJson()
                 session.commit()
             for one in eventpost:
                 AddEventNotify(one)
 
         uexd=UserExData.objects(uid=BackEndEnvData.uid).first()
-        resultdata={"user":user_data_json}
+        resultdata={"user":user_data.toJson()}
         if uexd:
             resultdata['client_data']=uexd.client_data
         if beinvitelist:
             resultdata['invite_list']=beinvitelist
+        einfo=session.query(EndorsementInfo).filter(EndorsementInfo.uid==user_data.uid).first()
+        if einfo:
+            resultdata['endorsement']=einfo.toJson()
         return Res(resultdata)

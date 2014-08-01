@@ -1,5 +1,7 @@
 #coding:utf8
 from sqlalchemy import and_
+from datamodel.Endorsement import Endorsement, EndorsementInfo
+from datamodel.merchandise import StoreMerchandise
 from datamodel.user import UserExData, User
 from datamodel.user_circle import UserCircle, CircleRole, CircleDef
 
@@ -23,9 +25,28 @@ def GetUserInfo(uid):
 
         user=session.query(User).filter(User.uid==uid).first()
 
+        user_endorsinfo=session.query(EndorsementInfo).filter(EndorsementInfo.uid==uid).first()
+
+        user_endors=[]
+        for epair in session.query(Endorsement).filter(Endorsement.uid==uid).all():
+            user_endors.append({'slogan':epair.slogan,'create_time':epair.create_time,'merchandise':GetMerchandise(epair.mid)})
+
         resultobj={"user":user.toJson()}
         if userexdata is not None:
             resultobj['exdata']=userexdata.toJson()
         if circles:
             resultobj['circles']=circles
+        if user_endorsinfo:
+            resultobj['endorsement']=user_endorsinfo.toJson()
+        if user_endors:
+            resultobj['endors_list']=user_endors
     return resultobj
+
+
+@helper.FunctionCache()
+def GetMerchandise(mid):
+    with dbconfig.Session() as session:
+        sm=session.query(StoreMerchandise).filter(StoreMerchandise.mid==mid).first()
+        if not sm:
+            return None
+        return sm.toJson2()
