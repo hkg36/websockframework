@@ -19,6 +19,7 @@ class User(dbconfig.DBBase):
     background_image = Column(String(1024))
     height = Column(Integer, default=0)
     position = Column(String(256))
+    job=Column(String(32))
 
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
     def toJson(self,showphone=False):
@@ -31,7 +32,8 @@ class User(dbconfig.DBBase):
                 "marriage":self.marriage,
                 "background_image":self.background_image,
                 "height":self.height,
-                "position":self.position
+                "position":self.position,
+                "job":self.job,
                 }
         if showphone:
             data['phone']=self.phone

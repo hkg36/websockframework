@@ -10,7 +10,7 @@ import dbconfig
 
 @CheckSession()
 def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height=None,position=None,
-        tags=None,headpic=None):
+        tags=None,headpic=None,job=None):
     with dbconfig.Session() as session:
         user=session.query(User).filter(User.uid==BackEndEnvData.uid).first();
         if user is None:
@@ -31,6 +31,8 @@ def run(nick=None,signature=None, sex=None, birthday=None, marriage=None, height
             user.position=position
         if headpic:
             user.headpic=headpic
+        if job:
+            user.job=job
         session.merge(user)
         session.commit()
     return Res()

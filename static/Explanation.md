@@ -262,7 +262,7 @@ Result={
 15. group.get\_new\_post(gid,frompos) 取得新消息，从某个位置开始，用于掉线后重新连上的情况
 16. group.create(name,board,type) 创建群
 17. group.delete(gid) 删除群，必须是创建者
-18. user.update(nick=None, signature=None,sex=None, birthday=None, marriage=None, height=None, position=None,headpic=None) 更新自己的信息,不提供的参数不更新,
+18. user.update(nick=None, signature=None,sex=None, birthday=None, marriage=None, height=None, position=None,headpic=None,job=None) 更新自己的信息,不提供的参数不更新,
 头像是http地址，请使用[上传图片文件](#uploadimage)上传，不检查图片是否存在
 19. ~~post.like(postid) 点喜欢~~
 20. ~~post.dislike(postid) 点不喜欢~~
