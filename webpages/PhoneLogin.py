@@ -54,4 +54,6 @@ class getcode(WebSiteBasePage.AutoPage):
         dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=60*60)
         if int(params.get('notsms',0))==0:
             pusher.sendCode(phone,gcode)
-        return DefJsonEncoder.encode({'code':gcode})
+            return '{}'
+        else:
+            return DefJsonEncoder.encode({'code':gcode})

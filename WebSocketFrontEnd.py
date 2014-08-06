@@ -134,6 +134,7 @@ class RabbitMQ_Queue(object):
         else:
             print 'connect rabbitmq success'
             self.channel = self.conn.channel()
+            self.channel.qos(prefetch_count=1)
             self.channel.exchange_declare('front_end',type='topic',durable=True,callback=self.on_exchange_declare)
 
     def on_exchange_declare(self):
