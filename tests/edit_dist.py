@@ -56,27 +56,36 @@ def LevenshteinDistance2(s,t):
         checked.add((i,j))
         if i==m and j==n:
             return True
-        if i==m or j==n:
-            return False
         now=d[i][j]
         if now>max:
             return False
-        delete=d[i+1][j]
-        replace=d[i+1][j+1]
-        insert=d[i][j+1]
+        if i==m:
+            delete=-1
+        else:
+            delete=d[i+1][j]
 
-        if replace>=now:
-            if findnextrount(i+1,j+1,rount):
-                if now==replace:
-                    rount.insert(0,(i,j,'keep',s[i]))
-                else:
-                    rount.insert(0,(i,j,'replace',s[i],t[j]))
-                return True
-        if delete>now:
+        if i==m or j==n:
+            replace=-1
+        else:
+            replace=d[i+1][j+1]
+
+        if j==n:
+            insert=-1
+        else:
+            insert=d[i][j+1]
+
+        if replace<=max_step and (replace>now or (replace==now and s[i]==t[j])):
+                if findnextrount(i+1,j+1,rount):
+                    if now==replace:
+                        rount.insert(0,(i,j,'keep',s[i]))
+                    else:
+                        rount.insert(0,(i,j,'replace',s[i],t[j]))
+                    return True
+        if delete<=max_step and delete>now:
             if findnextrount(i+1,j,rount):
                 rount.insert(0,(i,j,'delele',s[i]))
                 return True
-        if insert>now:
+        if insert<=max_step and insert>now:
             if findnextrount(i,j+1,rount):
                 rount.insert(0,(i,j,'add',t[j]))
                 return True
@@ -86,7 +95,7 @@ def LevenshteinDistance2(s,t):
 
 
 a='Sunday'
-b='Saturday'
+b='Saturdy'
 data= LevenshteinDistance2(a,b)
 for one in data[1]:
     print one
