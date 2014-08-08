@@ -1,3 +1,4 @@
+#coding:utf-8
 import sys
 def LevenshteinDistance(s, t):
     if (s == t):
@@ -57,7 +58,7 @@ def LevenshteinDistance2(s,t):
         if i==m and j==n:
             return True
         now=d[i][j]
-        if now>max:
+        if now>max_step:
             return False
         if i==m:
             delete=-1
@@ -94,8 +95,8 @@ def LevenshteinDistance2(s,t):
     return max_step,d,rount
 
 
-a='Sunday'
-b='Saturdy'
+a=u'Sunday'
+b=u'Saturday'
 data= LevenshteinDistance2(a,b)
 for one in data[1]:
     print one
