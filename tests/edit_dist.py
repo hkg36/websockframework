@@ -1,5 +1,7 @@
 #coding:utf-8
+#Levenshtein 编辑距离算法
 import sys
+#快速算法，节约内存，只能提供编辑距离
 def LevenshteinDistance(s, t):
     if (s == t):
         return 0
@@ -25,7 +27,7 @@ def LevenshteinDistance(s, t):
         v1=v2
 
     return v0[len(t)];
-
+#完整算法，提供编辑距离，转换矩阵，编辑路径，需要编辑路径的时候使用
 def LevenshteinDistance2(s,t):
     m=len(s)
     n=len(t)
