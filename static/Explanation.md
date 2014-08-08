@@ -396,7 +396,6 @@ user.info 里的每个user 增加 circle字段
 60. circle.likepost(postid) 给群动态点赞，重复给同一个动态点赞会返回过去的记录，不会有效果，可以通过记录的时间戳判断
 70. circle.addreply(postid,content) 给群动态回复，现在只能回复文字，需要回复图片就说很容易加上的
 71. endorsement.list_user() 列出所有的代言人
-72. endorsement.list_merchandise(uid) 列出某个代言人代言的所有商品
 ###向客户端推送消息
 ####1. 事件推送
 ```python

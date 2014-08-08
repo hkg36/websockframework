@@ -98,7 +98,7 @@ def LevenshteinDistance2(s,t):
 
 
 a=u'Sunday'
-b=u'Sturday'
+b=u'Staurday'
 data= LevenshteinDistance2(a,b)
 for one in data[1]:
     print one

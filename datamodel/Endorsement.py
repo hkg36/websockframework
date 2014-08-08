@@ -37,7 +37,8 @@ class EndorsementInfo(dbconfig.DBBase):
               'endorsement_type':self.endorsement_type,
               'consumer_point':self.consumer_point,
               'level':self.level,
-                'type':self.type.split(','),
                 "create_time":self.create_time}
+        if self.type:
+            data['type']=self.type.split(',')
         return data
 
