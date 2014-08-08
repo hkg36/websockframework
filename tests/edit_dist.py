@@ -55,48 +55,48 @@ def LevenshteinDistance2(s,t):
         if (i,j) in checked:
             return False
         checked.add((i,j))
-        if i==m and j==n:
+        if i==0 and j==0:
             return True
         now=d[i][j]
         if now>max_step:
             return False
-        if i==m:
-            delete=-1
+        if i==0:
+            delete=sys.maxint
         else:
-            delete=d[i+1][j]
+            delete=d[i-1][j]
 
-        if i==m or j==n:
-            replace=-1
+        if i==0 or j==0:
+            replace=sys.maxint
         else:
-            replace=d[i+1][j+1]
+            replace=d[i-1][j-1]
 
-        if j==n:
-            insert=-1
+        if j==0:
+            insert=sys.maxint
         else:
-            insert=d[i][j+1]
+            insert=d[i][j-1]
 
-        if replace<=max_step and (replace>now or (replace==now and s[i]==t[j])):
-                if findnextrount(i+1,j+1,rount):
+        if replace<=max_step and (replace<now or (replace==now and s[i-1]==t[j-1])):
+                if findnextrount(i-1,j-1,rount):
                     if now==replace:
-                        rount.insert(0,(i,j,'keep',s[i]))
+                        rount.append((i,j,'kep',s[i-1]))
                     else:
-                        rount.insert(0,(i,j,'replace',s[i],t[j]))
+                        rount.append((i,j,'rep',s[i-1],t[j-1]))
                     return True
-        if delete<=max_step and delete>now:
-            if findnextrount(i+1,j,rount):
-                rount.insert(0,(i,j,'delele',s[i]))
+        if delete<=max_step and delete<now:
+            if findnextrount(i-1,j,rount):
+                rount.append((i,j,'del',s[i-1]))
                 return True
-        if insert<=max_step and insert>now:
-            if findnextrount(i,j+1,rount):
-                rount.insert(0,(i,j,'add',t[j]))
+        if insert<=max_step and insert<now:
+            if findnextrount(i,j-1,rount):
+                rount.append((i,j,'add',t[j-1]))
                 return True
         return False
-    findnextrount(0,0,rount)
+    findnextrount(m,n,rount)
     return max_step,d,rount
 
 
 a=u'Sunday'
-b=u'Saturday'
+b=u'Sturday'
 data= LevenshteinDistance2(a,b)
 for one in data[1]:
     print one
