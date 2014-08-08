@@ -14,7 +14,7 @@ class User(dbconfig.DBBase):
     password=Column(String(128))
     headpic=Column(String(1024))
     sex=Column(Integer,default=0)
-    birthday = Column(DateTime)
+    birthday = Column(Integer)
     marriage = Column(Integer)
     background_image = Column(String(1024))
     height = Column(Integer, default=0)
