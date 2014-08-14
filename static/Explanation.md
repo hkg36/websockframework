@@ -396,6 +396,10 @@ user.info 里的每个user 增加 circle字段
 60. circle.likepost(postid) 给群动态点赞，重复给同一个动态点赞会返回过去的记录，不会有效果，可以通过记录的时间戳判断
 70. circle.addreply(postid,content) 给群动态回复，现在只能回复文字，需要回复图片就说很容易加上的
 71. endorsement.list_user() 列出所有的代言人
+
+72. album.add(url,filetype,content=None,width=None,height=None,length=None) 添加相册，url文件链接，filetype文件类型(1=图片，2=声音，3=视频),content 附加一句话，witdh=图片宽度(filetype=1)，height=图片高度(filetype=1)，length内容长度(filetype=2,3)
+73. album.read(uid,before=None,count=10) 读取相册，before=读取某个did之前的文件
+74. album.delete(did) 删除某个文件
 ###向客户端推送消息
 ####1. 事件推送
 ```python
