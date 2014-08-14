@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="application/javascript" src="script/jquery-2.1.1.min.js"></script>
+<script type="application/javascript" src="script/json2.js"></script>
+<script type="application/javascript" src="script/NativeBridge.js"></script>
+<input type="text" id="one" value="1">+<input type="text" id="two" value="2"><br>
+<input type="button" id="test" value="test"><br>
+<label id="result"></label>
+<script type="application/javascript">
+    $("#test").on("click",function(){
+        NativeBridge.call("test",{'one':parseInt($("#one").val()),"two":parseInt($("#two").val())},function(result){
+            $("#result").html(JSON.stringify(result));
+        });
+    });
+</script>
+</body>
+</html>
