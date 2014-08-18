@@ -8,15 +8,25 @@
 <script type="application/javascript" src="script/jquery-2.1.1.min.js"></script>
 <script type="application/javascript" src="script/json2.js"></script>
 <script type="application/javascript" src="script/NativeBridge.js"></script>
-<input type="text" id="one" value="1">+<input type="text" id="two" value="2"><br>
+test({"one":1,"two":2})=>{"res":3}<br>
+<input type="text" id="one" value="1" style="width: 20px">+<input type="text" id="two" value="2" style="width: 20px"><br>
 <input type="button" id="test" value="test"><br>
-<label id="result"></label>
+<label id="result"></label><br>
+<br>
+version({})=>{"os":"android","api_version":1}<br>
+<input type="button" id="checkversion" value="check version"><br>
+<label id="result2"></label>
 <script type="application/javascript">
     $("#test").on("click",function(){
         NativeBridge.call("test",{'one':parseInt($("#one").val()),"two":parseInt($("#two").val())},function(result){
             $("#result").html(JSON.stringify(result));
         });
     });
+    $("#checkversion").on("click",function(){
+        NativeBridge.call("version",{}, function (result) {
+            $("#result2").html(JSON.stringify(result));
+        })
+    })
 </script>
 </body>
 </html>

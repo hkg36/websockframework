@@ -30,6 +30,7 @@ class EndorsementInfo(dbconfig.DBBase):
     consumer_point=Column(BigInteger,default=0)
     level=Column(Integer,default=0)
     type=Column(String(32))
+    order_weigth=Column(Integer,default=0)
     create_time=Column(TIMESTAMP,server_default=text('CURRENT_TIMESTAMP'))
 
     def toJson(self):

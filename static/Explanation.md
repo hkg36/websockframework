@@ -290,7 +290,7 @@ Result={
 29. event.read(pos=0) 取得历史事件，从某个id开始，如果超过50条，只取最新的50条
 30. active.generate\_code（level）生成激活码，激活等级默认为1，不能高于自己的actor\_level
 31. active.do(active\_code) 激活自己，返回激活等级和激活者的id
-32. user.search(nick) 按昵称搜索用户，不支持全文检索
+32. user.search(nick) 按昵称或者手机号搜索用户，不支持全文检索,nick 是昵称或者手机号的前半部分或者全部，全是数字的时候按照手机号搜索
 33. geo.user.report(lat,long) 上报当前坐标,如lat=35.233334 long=134.556743
 34. group.update(gid,name=None,board=None,type=0,position=None,everyone\_caninvite=None,
 only\_member\_speak=None,only\_member\_watch=None, lat=None,long=None,member\_control=None) 更新群信息,必须是创建者, member\_control 是否启用成员权限控制(1或0)
