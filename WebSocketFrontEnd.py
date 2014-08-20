@@ -180,12 +180,17 @@ class RabbitMQ_Queue(object):
     def publish(self,msg):
         self.channel.publish(msg,'front_end','task.front')
 
-CHECK_TIMEOUT=10*60
+CHECK_TIMEOUT=5*60
 def RunPingFuncion():
     now=time.time()
-    for conn in connection_list.itervalues():
+    for key in connection_list.keys():
+        conn=connection_list[key]
         if now-conn.last_act_time>CHECK_TIMEOUT*2:
-            conn.ping(b'0')
+            connection_list.pop(conn.connid,'')
+            conn.close()
+            conn.on_close()
+        elif now-conn.last_act_time>CHECK_TIMEOUT:
+            conn.ping(b'')
     tornado.ioloop.IOLoop.instance().add_timeout(time.time()+CHECK_TIMEOUT,RunPingFuncion)
 mqserver=None
 
