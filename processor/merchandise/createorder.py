@@ -46,7 +46,7 @@ def run(mid,people_count,hardwareid,recommend_uid=None):
                                                               time.strftime("%m-%d %H:%M",time.localtime()))
         to_sendsms=session.query(StoreSmsNotify).filter(or_(StoreSmsNotify.mid==0,StoreSmsNotify.mid==None,StoreSmsNotify.mid==mid)).all()
         for ssn in to_sendsms:
-            BackEndEnvData.queue_producer.publish(DefJsonEncoder.encode({'content':msg_content,'phone':ssn.phone}),routing_key='sms.code',exchange='sys.sms')
+            BackEndEnvData.queue_producer.publish(DefJsonEncoder.encode({'content':msg_content,'phone':ssn.phone}),routing_key='sms.ad',exchange='sys.sms')
 
         to_notifys=session.query(StoreWeixinNotify).filter(or_(StoreWeixinNotify.mid==0,StoreWeixinNotify.mid==None,StoreWeixinNotify.mid==mid)).all()
         to_weixin_user=set()

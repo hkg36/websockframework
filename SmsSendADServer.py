@@ -14,28 +14,17 @@ from kombu import Exchange, Queue
 from lxml import etree
 import datetime
 import codecs
-import urllib2
 
 def RequestWork(params,body):
     jsonobj=json.loads(body)
     content=jsonobj['content']
     phone=jsonobj['phone']
-    if isinstance(content,unicode):
-        content=content.encode('utf-8')
-    data = {'apikey': 'a504a679f1a11dcd150cef275642a7e2',
-            'mobile':phone,
-            'text':content
-           }
-    res=urllib2.urlopen('http://yunpian.com/v1/sms/send.json',urllib.urlencode(data),20)
-    res=res.read()
     try:
-        f=codecs.open('/tmp/sms_log.txt','a','utf-8','ignore')
-        f.write(u'%s %s %s %s\n'%(phone,content,datetime.datetime.now().strftime('%b-%d-%y %H:%M:%S'),res))
+        f=codecs.open('/tmp/sms_ad_log.txt','a','utf-8','ignore')
+        f.write(u'%s %s %s\n'%(phone,content,datetime.datetime.now().strftime('%b-%d-%y %H:%M:%S')))
         f.close()
     except:
         pass
-
-    """
     print 'to phone',phone
     msg = urllib.quote(content.encode('utf-8'))
     curl=pycurl.Curl()
@@ -52,7 +41,6 @@ def RequestWork(params,body):
     curl.fp.seek(0)
     result=curl.fp.read()
     result=int(result)
-    """
     """doc=etree.fromstring(result)
     status=doc.xpath('/returnsms/returnstatus/text()')[0]
     remain=doc.xpath('/returnsms/remainpoint/text()')
@@ -84,7 +72,7 @@ connection = Connection(hostname=configs.Queue_Server,port=configs.Queue_Port,
 channel = connection.channel()
 producer=Producer(channel)
 exchange=Exchange("sys.sms",type='topic',channel=channel,durable=True,delivery_mode=2)
-task_queue = Queue(durable=False,routing_key='sms.code',auto_delete=True,exchange=exchange)
+task_queue = Queue(durable=False,routing_key='sms.ad',auto_delete=True,exchange=exchange)
 consumer = Consumer(channel,task_queue,no_ack=False)
 consumer.qos(prefetch_count=1)
 consumer.register_callback(RequestCallBack)

@@ -8,7 +8,8 @@ class P12Certificate(apnsclient.certificate.BaseCertificate):
         p12=OpenSSL.crypto.load_pkcs12(file(cert_file,'rb').read(),passphrase)
         cert =p12.get_certificate()
         context.use_certificate(cert)
-        context.use_privatekey(p12.get_privatekey())
+        key=p12.get_privatekey()
+        context.use_privatekey(key)
         context.check_privatekey()
         return context, cert
     def dump_certificate(self, raw_certificate):

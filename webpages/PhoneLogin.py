@@ -50,8 +50,11 @@ class getcode(WebSiteBasePage.AutoPage):
         phone=params['phone']
         if not dbconfig.memclient.add(str('sms_timeout:%s'%phone),'ok',time=60):
             return DefJsonEncoder.encode({"msg":"请等待60秒后再重新发送"})
-        gcode=str(random.randint(1000,9999))
-        dbconfig.memclient.set(str('vcode:%s'%phone),gcode,time=60*60)
+        phonekey=str('vcode:%s'%phone)
+        gcode=dbconfig.memclient.get(phonekey)
+        if not gcode:
+            gcode=str(random.randint(1000,9999))
+            dbconfig.memclient.set(phonekey,gcode,time=60*60)
         if int(params.get('notsms',0))==0:
             pusher.sendCode(phone,gcode)
             return '{}'
