@@ -1,17 +1,12 @@
+#coding:utf-8
 __author__ = 'amen'
-import time
-import random
+import apnsclient
+import tools.APN_Tools
 
-from kombu import Connection
-from kombu.messaging import Producer
-from kombu import Exchange
+apn_connarg=['push_sandbox','configs/laixin_debug.p12','Laixin123']
+session=apnsclient.Session()
+con=session.get_connection(apn_connarg[0],certificate=tools.APN_Tools.P12Certificate(cert_file=apn_connarg[1],passphrase=apn_connarg[2]))
+apnsrv = apnsclient.APNs(con)
 
-
-connection = Connection(hostname="192.173.1.213",virtual_host='/websocketserver')
-channel = connection.channel()
-exchange=Exchange("sys.apn",type='topic',channel=channel,durable=True,delivery_mode=2)
-publish_exchange = Producer(channel,exchange,routing_key='msg.debug')
-
-
-publish_exchange.publish("body",headers={"message":"you id code:%d"%random.randint(100,100000),
-              "uhid":"10c6644d00d6fffbf1eb9f368d7cadacae820a90badc8f625e85ba1a37f5764d","badge":5})
+apnmsg=apnsclient.Message(["df44dc87abb03ca7d7763a0d3e220fa30017dd2a6d19eb2fb5767672dd311e86"], alert=u"hello", badge=2)
+apnsrv.send(apnmsg)

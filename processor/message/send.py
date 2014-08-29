@@ -9,7 +9,7 @@ import BackEndEnvData
 import dbconfig
 @CheckSession()
 @FrequencyControl(5)
-def run(uid,content=None,lat=None,long=None,picture=None):
+def run(uid,content=None,lat=None,long=None,picture=None,width=None,height=None,length=None):
     if content==None and (lat==None or long==None) and picture==None:
         return Res(errno=3,error="param error")
     with dbconfig.Session() as session:
@@ -20,6 +20,9 @@ def run(uid,content=None,lat=None,long=None,picture=None):
         newmsg.lat=lat
         newmsg.long=long
         newmsg.picture=picture
+        newmsg.width=width
+        newmsg.height=height
+        newmsg.length=length
         newmsg=session.merge(newmsg)
         session.commit()
         AddMessageTrans(newmsg.toJson())

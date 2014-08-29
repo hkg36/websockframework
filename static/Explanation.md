@@ -268,7 +268,7 @@ Result={
 20. ~~post.dislike(postid) 点不喜欢~~
 21. ~~post.reply(postid,content) 回帖，只能回原帖~~
 22. ~~post.get\_reply(postid,pos=0,count=50) 读取回复~~
-23. message.send(uid,content=None,lat=None,long=None,picture=None) 私信,发送坐标或者文本或者图片,都填写就是发送文本，图片请使用[上传图片文件](#uploadimage)
+23. message.send(uid,content=None,lat=None,long=None,picture=None,width=None,heigth=None,length=None) 私信,发送坐标或者文本或者图片,都填写就是发送文本，图片请使用[上传图片文件](#uploadimage)
 24. message.read(afterid=0) 读私信
 25. ~~post.likes(postid,pos=0,count=50) //喜欢的人~~
 26. phonebook.upload(phone\_list) 上传通信录，不用每次上传完整的，服务器会合并

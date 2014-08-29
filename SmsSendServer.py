@@ -30,10 +30,13 @@ def RequestWork(params,body):
     res=res.read()
     try:
         f=codecs.open('/tmp/sms_log.txt','a','utf-8','ignore')
-        f.write(u'%s %s %s %s\n'%(phone,content,datetime.datetime.now().strftime('%b-%d-%y %H:%M:%S'),res))
+        f.write(u'%s %s %s\n'%(phone,content,datetime.datetime.now().strftime('%b-%d-%y %H:%M:%S')))
         f.close()
     except:
         pass
+    finally:
+        if f:
+            f.close()
 
     """
     print 'to phone',phone
