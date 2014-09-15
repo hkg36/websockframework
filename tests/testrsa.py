@@ -6,7 +6,7 @@ from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA,SHA256
 from base64 import b64encode, b64decode
 import os
-private = RSA.generate(1024, os.urandom)
+private = RSA.generate(2048, os.urandom)
 public=private.publickey()
 print private.exportKey("PEM")
 print public.exportKey("PEM")

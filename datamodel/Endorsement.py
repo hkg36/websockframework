@@ -43,3 +43,11 @@ class EndorsementInfo(dbconfig.DBBase):
             data['type']=self.type.split(',')
         return data
 
+class EndorsementTimes(dbconfig.DBBase):
+    __tablename__ = 'user_endorsement_times'
+    uid=Column(BigInteger,nullable=False)
+    start_date=Column(TIMESTAMP)
+    stop_date=Column(TIMESTAMP)
+    status=Column(Integer,default=1)
+
+    __table_args__ = (PrimaryKeyConstraint('uid', 'start_date'),)

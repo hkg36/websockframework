@@ -16,7 +16,7 @@ def run(uid=0,pos=0,count=10):
             .offset(pos).limit(count).all()
         fl=[]
         default_friend={
-            24, #来信小助手
+            #24, #来信小助手
         }
         for one in allfriend:
             if one.friendid in default_friend:

@@ -401,6 +401,8 @@ user.info 里的每个user 增加 circle字段
 72. album.add(url,filetype,content=None,width=None,height=None,length=None) 添加相册，url文件链接，filetype文件类型(1=图片，2=声音，3=视频),content 附加一句话，witdh=图片宽度(filetype=1)，height=图片高度(filetype=1)，length内容长度(filetype=2,3)
 73. album.read(uid,before=None,count=10) 读取相册，before=读取某个did之前的文件
 74. album.delete(did) 删除某个文件
+75. endorsement.set_times(times=格式\[\[12323234,45543342\],\[56413213,65334232\]\]) 设置代言时间段，注意参数格式 每一组前边是开始时间后边是结束时间
+76. endorsement.get_times() 取得所有代言时间段
 ###向客户端推送消息
 ####1. 事件推送
 ```python

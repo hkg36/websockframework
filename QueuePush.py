@@ -34,7 +34,7 @@ class QueuePush(object):
                               routing_key=routing_key,retry=True,compression='gzip',exchange=exchange)
     def sendCode(self,phone,code):
         self._InitConnect()
-        json_str=DefJsonEncoder.encode({'phone':str(phone),"content":u"感谢您注册%s，您的验证码是%s【%s】"%(u'川妹妹',str(code),u'成都莱福思')})
+        json_str=DefJsonEncoder.encode({'phone':str(phone),"content":u"感谢您注册%s，您的验证码是%s【%s】"%(u'川妹妹',str(code),u'成都莱福思'),"code":code})
         self.smsCodeProduce.publish(body=json_str,retry=True,compression='gzip')
 if __name__ == '__main__':
     Queue_User="guest"
