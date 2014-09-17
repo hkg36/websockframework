@@ -15,7 +15,7 @@ db=create_engine("mysql://root:123456@mysql1.master.lfs.server:3306/site?charset
 DBBase=declarative_base(name="DBBase")
 #Session = sessionmaker(bind=db)
 Session = sessionmaker(bind=db,autocommit=False,autoflush=False,class_=AutoSession)
-#ReadSession=sessionmaker(bind=readdb,autocommit=False,autoflush=False,class_=AutoSession)
+ReadSession=Session#sessionmaker(bind=readdb,autocommit=False,autoflush=False,class_=AutoSession)
 
 redisdb=redis.StrictRedis(host='redis1.lfs.server', port=6379)
 memclient=memcache.Client(['memcache1.lfs.server:11211'])

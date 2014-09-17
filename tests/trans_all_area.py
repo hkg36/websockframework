@@ -19,13 +19,16 @@ for one in lines:
         else:
             break
     if spacecount==0:
-        lay1cell=etree.Element('p',name=one.strip())
+        lay1cell=etree.Element('p')
+        lay1cell.text=one.strip()
         root.append(lay1cell)
     elif spacecount==4:
-        lay2cell=etree.Element('c',name=one.strip())
+        lay2cell=etree.Element('c')
+        lay2cell.text=one.strip()
         lay1cell.append(lay2cell)
     elif spacecount==8:
-        cell=etree.Element('z',name=one.strip())
+        cell=etree.Element('z')
+        cell.text=one.strip()
         lay2cell.append(cell)
 file=open('china_prov_city_area.xml','w')
 file.write(etree.tostring(root,encoding='utf-8',xml_declaration=True))

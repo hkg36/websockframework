@@ -9,7 +9,7 @@ import helper
 import dbconfig
 @helper.FunctionCache()
 def GetUserInfo(uid):
-    with dbconfig.Session() as session:
+    with dbconfig.ReadSession() as session:
         userexdata=UserExData.objects(uid=uid).first()
         users_circle=session.query(UserCircle,CircleRole,CircleDef)\
             .join(CircleRole,and_(CircleRole.cid==UserCircle.cid,CircleRole.roleid==UserCircle.roleid))\
