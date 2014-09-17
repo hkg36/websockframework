@@ -137,3 +137,27 @@ class UserInviteLog(Document):
             'sms_send_time':self.sms_send_time
         }
         return data
+
+class UserPostAddress(dbconfig.DBBase):
+    __tablename__ = 'user_post_address'
+    addrid=Column(BigInteger,autoincrement=True,primary_key=True,nullable=False)
+    uid=Column(BigInteger,index=True)
+    province=Column(String(32))
+    city=Column(String(32))
+    zone=Column(String(32))
+    detail=Column(String(256))
+    phone=Column(String(16))
+    name=Column(String(16))
+    use_time=Column(Integer)
+
+    def toJson(self):
+        data={'addrid':self.addrid,
+              'uid':self.uid,
+              'province':self.province,
+              'city':self.city,
+              'zone':self.zone,
+              'detail':self.detail,
+              'phone':self.phone,
+              'name':self.name,
+              'use_time':self.use_time}
+        return data
