@@ -53,7 +53,7 @@ def LevenshteinDistance2(s,t):
     max_step=d[m][n]
     rount=[]
     checked=set()
-    def findnextrount(i,j,rount):
+    def findnextrount(i,j):
         if (i,j) in checked:
             return False
         checked.add((i,j))
@@ -78,22 +78,22 @@ def LevenshteinDistance2(s,t):
             insert=d[i][j-1]
 
         if replace<=max_step and (replace<now or (replace==now and s[i-1]==t[j-1])):
-                if findnextrount(i-1,j-1,rount):
+                if findnextrount(i-1,j-1):
                     if now==replace:
                         rount.append((i,j,'kep',s[i-1]))
                     else:
                         rount.append((i,j,'rep',s[i-1],t[j-1]))
                     return True
         if delete<=max_step and delete<now:
-            if findnextrount(i-1,j,rount):
+            if findnextrount(i-1,j):
                 rount.append((i,j,'del',s[i-1]))
                 return True
         if insert<=max_step and insert<now:
-            if findnextrount(i,j-1,rount):
+            if findnextrount(i,j-1):
                 rount.append((i,j,'add',t[j-1]))
                 return True
         return False
-    findnextrount(m,n,rount)
+    findnextrount(m,n)
     return max_step,d,rount
 
 

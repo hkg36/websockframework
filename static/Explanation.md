@@ -405,7 +405,8 @@ user.info 里的每个user 增加 circle字段
 76. endorsement.get_times() 取得所有代言时间段
 77. user.post\_address() 取得所有收货地址
 78. user.post\_address\_add(province,city,zone,detail,phone,name,addrid=None) 添加收货地址,province 省,city 市,zone 区,detail 具体地址,phone,name,addrid 提供这个参数来修改收货地址，不提供添加新地址
-79. user.post\_address\_add(addrid) 删除一个收货地址
+79. user.post\_address\_delete(addrid) 删除一个收货地址
+80. album.endorsements(pos=None(**这个是did**),count=20) 代言人的相册，按时间排序，如果提供pos，只返回比pos的did小的记录
 ###向客户端推送消息
 ####1. 事件推送
 ```python
