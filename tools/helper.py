@@ -119,3 +119,10 @@ def LocalBuffer(timeout=30):
         return Work
     return ACF
 
+class AutoClose(object):
+    def __init__(self,session):
+        self._session=session
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._session.close()

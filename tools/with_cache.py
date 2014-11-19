@@ -9,7 +9,8 @@ import helper
 import dbconfig
 @helper.FunctionCache()
 def GetUserInfo(uid):
-    with dbconfig.ReadSession() as session:
+    session=dbconfig.ReadSession()
+    with helper.AutoClose(session) as autoclose:
         userexdata=UserExData.objects(uid=uid).first()
         users_circle=session.query(UserCircle,CircleRole,CircleDef)\
             .join(CircleRole,and_(CircleRole.cid==UserCircle.cid,CircleRole.roleid==UserCircle.roleid))\
