@@ -11,6 +11,7 @@ import sys
 import QueueWork
 import traceback
 import inspect
+import urllib2
 
 
 def LoadProcFunctionList(module_root='processor'):
@@ -50,7 +51,9 @@ def RequestWork(params,body,reply_queue):
         if function_params is not None and isinstance(function_params,dict):
             mfunc=function_list.get(function)
             if mfunc is None:
-                return params,'no function'
+                body=json.dumps(request).encode()
+                return params,urllib2.urlopen("http://192.173.1.113:8080/LifeStyleApp/ActivityDone.json",body).read()
+                #return params,'no function'
             try:
                 BackEndEnvData.reply_queue=reply_queue
                 BackEndEnvData.connection_id=params.get('connid')
