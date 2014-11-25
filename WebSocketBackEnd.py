@@ -51,8 +51,19 @@ def RequestWork(params,body,reply_queue):
         if function_params is not None and isinstance(function_params,dict):
             mfunc=function_list.get(function)
             if mfunc is None:
-                body=json.dumps(request).encode()
-                return params,urllib2.urlopen("http://192.173.1.113:8080/LifeStyleApp/ActivityDone.json",body).read()
+                modrequest={"func":request["func"],"parm":request["parm"],"uid":int(params.get('uid'))}
+                sendbody=json.dumps(modrequest).encode()
+                try:
+                    resstr=urllib2.urlopen("http://192.173.1.113:8080/LifeStyleApp/ActivityDone.json",sendbody,timeout = 1).read()
+                    if 'cdata' in request:
+                        resobj=json.loads(resstr)
+                        resobj['cdata']=request['cdata']
+                        resbody=json.dumps(resobj)
+                    else:
+                        resbody=resstr
+                except urllib2.URLError, e:
+                    resbody=str(e)
+                return params,resbody
                 #return params,'no function'
             try:
                 BackEndEnvData.reply_queue=reply_queue
