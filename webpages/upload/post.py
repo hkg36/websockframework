@@ -3,7 +3,6 @@ from tools.helper import AutoFitJson
 
 __author__ = 'amen'
 import WebSiteBasePage
-import qiniu.rs
 import web
 import dbconfig
 import datamodel.post
@@ -14,11 +13,9 @@ import json
 import tools.crypt_session
 
 def post_token(uid):
-    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-    policy.callbackUrl='http://%s/upload/PostDone'%website_config.hostname
-    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
-                        '"gid":"$(x:gid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%uid
-    return policy.token()
+    return dbconfig.qiniuAuth.upload_token(dbconfig.qiniuSpace,policy={"callbackUrl":'http://%s/upload/PostDone'%website_config.hostname,
+                                                                       "callbackBody":'{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                        '"gid":"$(x:gid)","content":"$(x:content)","length":"$(x:length)","uid":%d,"filetype":"$(x:filetype)"}'%uid})
 class Post(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')

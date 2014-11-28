@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker,Session
 import redis
 import memcache
-import qiniu.conf
+import qiniu.auth
 import mongoengine
 class AutoSession(Session):
     def __enter__(self):
@@ -21,7 +21,6 @@ redisdb=redis.StrictRedis(host='redis1.lfs.server', port=6379)
 memclient=memcache.Client(['192.173.1.213:11211'])
 mongoengine.connect('Site',host='mongodb://192.173.1.213:27010/')
 
-qiniu.conf.ACCESS_KEY = "W4nYpf8HOCEyCzjLHpO0QVYGOykRucI1MIniLpgL"
-qiniu.conf.SECRET_KEY = "3NRgrf8v_XHGGoWROaXYZoFYPvSeN3HnI_19eVfk"
+qiniuAuth=qiniu.auth.Auth("W4nYpf8HOCEyCzjLHpO0QVYGOykRucI1MIniLpgL","3NRgrf8v_XHGGoWROaXYZoFYPvSeN3HnI_19eVfk")
 qiniuSpace="laixinle"
 qiniuDownLoadLinkHead="http://%s.qiniudn.com/"%qiniuSpace

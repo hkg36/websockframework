@@ -6,21 +6,15 @@ from tools.json_tools import DefJsonEncoder
 
 __author__ = 'amen'
 import WebSiteBasePage
-import qiniu.rs
 import web
 import dbconfig
-import datamodel.post
 import website_config
-from webpages.MainPage import pusher
-import urllib
 import json
 
 def media_token(uid,recommend_uid):
-    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-    policy.callbackUrl='http://%s/recommend/upload/MediaDone'%website_config.hostname
-    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
-                        '"length":"$(x:length)","uid":%d,"recommend_uid":%d,"filetype":"$(x:filetype)"}'%(uid,recommend_uid)
-    return policy.token()
+    return dbconfig.qiniuAuth.upload_token(dbconfig.qiniuSpace,policy={"callbackUrl":'http://%s/recommend/upload/MediaDone'%website_config.hostname,
+                                                                       "callbackBody":'{"name":"$(fname)","hash":"$(etag)","width":"$(imageInfo.width)","height":"$(imageInfo.height)",' +\
+                        '"length":"$(x:length)","uid":%d,"recommend_uid":%d,"filetype":"$(x:filetype)"}'%(uid,recommend_uid)})
 class Media(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')

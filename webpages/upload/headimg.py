@@ -6,7 +6,6 @@ from tools.json_tools import DefJsonEncoder
 __author__ = 'amen'
 import json
 
-import qiniu.rs
 import web
 
 import WebSiteBasePage
@@ -16,11 +15,9 @@ import website_config
 import tools.crypt_session
 
 def headimg_token(uid):
-    policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-    policy.callbackUrl='http://%s/upload/HeadImgDone'%website_config.hostname
-    policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
-                        '"uid":%d}'%uid
-    return policy.token()
+    return dbconfig.qiniuAuth.upload_token(dbconfig.qiniuSpace,policy={"callbackUrl":'http://%s/upload/HeadImgDone'%website_config.hostname,
+                        "callbackBody":'{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),' +\
+                        '"uid":%d}'%uid})
 
 class HeadImg(WebSiteBasePage.AutoPage):
     def GET(self):

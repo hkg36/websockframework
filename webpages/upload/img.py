@@ -4,14 +4,10 @@ from tools.helper import AutoFitJson
 
 __author__ = 'amen'
 import json
-
-import qiniu.rs
 import web
 
 import WebSiteBasePage
 import dbconfig
-import datamodel.user
-import website_config
 import tools.crypt_session
 
 class Image(WebSiteBasePage.AutoPage):
@@ -25,9 +21,7 @@ class Image(WebSiteBasePage.AutoPage):
             data=dbconfig.redisdb.get(str('session:%s'%sessionid))
         if data is None:
             return {"errno":1,"error":"session not found","result":{}}
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.returnBody='{"errno":0,"error":"Success","url":"http://$(bucket).qiniudn.com/$(key)"}'
-        uptoken =policy.token()
+        uptoken = dbconfig.qiniuAuth.upload_token(dbconfig.qiniuSpace,policy={"returnBody":'{"errno":0,"error":"Success","url":"http://$(bucket).qiniudn.com/$(key)"}'})
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return json.dumps({'token':uptoken})

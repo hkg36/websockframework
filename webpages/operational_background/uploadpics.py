@@ -6,22 +6,17 @@ from tools.json_tools import DefJsonEncoder
 
 __author__ = 'amen'
 import json
-
-import qiniu.rs
 import web
 
 import WebSiteBasePage
 import dbconfig
-import datamodel.user
 import website_config
 
 class CircleIcon(WebSiteBasePage.AutoPage):
     def GET(self):
         params=web.input(usepage='0')
-        policy = qiniu.rs.PutPolicy(dbconfig.qiniuSpace)
-        policy.callbackUrl='http://%s/operational_background/CircleIconDone'%website_config.hostname
-        policy.callbackBody='{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),"cid":$(x:cid)}'
-        uptoken =policy.token()
+        uptoken =dbconfig.qiniuAuth.upload_token(dbconfig.qiniuSpace,policy={"callbackUrl":'http://%s/operational_background/CircleIconDone'%website_config.hostname,
+                                                                             "callbackBody":'{"name":"$(fname)","hash":"$(etag)","width":$(imageInfo.width),"height":$(imageInfo.height),"cid":$(x:cid)}'})
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return DefJsonEncoder.encode({'token':uptoken})
