@@ -22,6 +22,16 @@ def RequestWork(params,body):
     phone=jsonobj['phone']
     if isinstance(content,unicode):
         content=content.encode('utf-8')
+
+    url = "http://127.0.0.1:8888/LifeStyleMessageService/SendMessage.do"
+    data = urllib.urlencode({"deviceID":"APP",
+        "phone": phone,
+        "type":"TRX",
+        "content":content})
+    req = urllib2.Request(url)
+    fd = urllib2.urlopen(req,data)
+    print fd.read()
+    """
     data = {'apikey': 'a504a679f1a11dcd150cef275642a7e2',
             'mobile':phone,
             'text':content
@@ -37,7 +47,7 @@ def RequestWork(params,body):
     finally:
         if f:
             f.close()
-
+    """
     """
     print 'to phone',phone
     msg = urllib.quote(content.encode('utf-8'))

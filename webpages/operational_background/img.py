@@ -19,7 +19,7 @@ class Image(WebSiteBasePage.AutoPage):
         if int(params['usepage'])==0:
             web.header("Content-type","application/json")
             return DefJsonEncoder.encode({'token':uptoken})
-        tpl=WebSiteBasePage.jinja2_env.get_template('upload/HeadImg.html')
+        tpl=WebSiteBasePage.jinja2_env.get_template('upload/UploadImage.html')
         return tpl.render(token=uptoken)
     def POST(self):
         pass

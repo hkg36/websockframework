@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>上传头像</title>
+</head>
+<body>
+<form method="post" action="" id="qiniufrom" enctype="multipart/form-data">
+  		<input name="token" id="token" type="hidden" value="{{ token }}"><br />
+  		file<input name="file" id="file" type="file" /><br />
+</form>
+<input type="button" id="submit" value="提交"/><br>
+<input type="text" id="resurl" style="width:300px">
+<script type="application/javascript" src="/static/script/jquery-2.1.1.min.js"></script>
+<script type="application/javascript">
+	$("#submit").on("click",function(){
+		var formData = new FormData($("#qiniufrom")[0]);
+    $.ajax({
+        url: 'http://up.qiniu.com/',  //server script to process data
+        type: 'POST',
+        success: function(data){
+			$("#resurl").val(data.url)
+		},
+		error: function(error){
+			alert(error)
+		},
+		data: formData,
+        //Options to tell JQuery not to process data or worry about content-type
+        cache: false,
+		processData: false,
+		contentType: false
+    });
+	})
+</script>
+</body>
+</html>
